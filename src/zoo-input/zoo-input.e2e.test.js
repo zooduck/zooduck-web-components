@@ -25,15 +25,15 @@ const getComputedStyleProperty = async (page, el, prop) => {
     }, element, pseudoEl, prop);
 };
 
-describe('<zoo-input>', () => {
+describe('<zooduck-input>', () => {
     beforeAll(async () => {
         await page.goto('http://localhost:4444');
     });
 
     it('should render with elements in its shadow DOM', async () => {
-        await page.setContent('<zoo-input></zoo-input>');
+        await page.setContent('<zooduck-input></zooduck-input>');
 
-        const el = await page.$('zoo-input');
+        const el = await page.$('zooduck-input');
 
         const style = await getElementFromShadow(page, el, 'style');
         expect(await style.evaluate(node => node)).toBeTruthy();
@@ -60,33 +60,33 @@ describe('<zoo-input>', () => {
     describe('attributes', () => {
         describe('value', () => {
             it('should set the `value` of its input to the value of its `value` attribute', async () => {
-                await page.setContent('<zoo-input value="TEST_VAL"></zoo-input>');
+                await page.setContent('<zooduck-input value="TEST_VAL"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'value')).toEqual('TEST_VAL');
             });
 
             it('should set the `value` of its input to the value of its `value` property', async () => {
-                await page.setContent('<zoo-input value="TEST_VAL_FROM_ATTR"></zoo-input>');
+                await page.setContent('<zooduck-input value="TEST_VAL_FROM_ATTR"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'value')).toEqual('TEST_VAL_FROM_ATTR');
 
                 await page.evaluate(() => {
-                    document.querySelector('zoo-input').value = 'TEST_VAL_FROM_PROP';
+                    document.querySelector('zooduck-input').value = 'TEST_VAL_FROM_PROP';
                 });
 
                 expect(await getProperty(input, 'value')).toEqual('TEST_VAL_FROM_PROP');
             });
 
             it('should update its `value` attribute when its input is updated', async () => {
-                await page.setContent('<zoo-input></zoo-input>');
+                await page.setContent('<zooduck-input></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
 
@@ -100,8 +100,8 @@ describe('<zoo-input>', () => {
             });
 
             it('should toggle its `--has-content` class based on the value of its input', async () => {
-                await page.setContent('<zoo-input></zoo-input>');
-                const el = await page.$('zoo-input');
+                await page.setContent('<zooduck-input></zooduck-input>');
+                const el = await page.$('zooduck-input');
                 const inputValueToType = 'TEST_VALUE';
 
                 let zooInputClassList = await getClassList(el);
@@ -130,18 +130,18 @@ describe('<zoo-input>', () => {
 
         describe('name', () => {
             it('should set the `name` of its input to the value of its `name` attribute', async () => {
-                await page.setContent('<zoo-input name="TEST_NAME"></zoo-input>');
+                await page.setContent('<zooduck-input name="TEST_NAME"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'name')).toEqual('TEST_NAME');
             });
 
             it('should set the `name` of its input to the value of its `name` property', async () => {
-                await page.setContent('<zoo-input name="TEST_NAME_FROM_ATTR"></zoo-input>');
+                await page.setContent('<zooduck-input name="TEST_NAME_FROM_ATTR"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'name')).toEqual('TEST_NAME_FROM_ATTR');
@@ -156,18 +156,18 @@ describe('<zoo-input>', () => {
 
         describe('readonly', () => {
             it('should set the `readonly` attribute of its input if its `readonly` attribute is set', async () => {
-                await page.setContent('<zoo-input readonly></zoo-input>');
+                await page.setContent('<zooduck-input readonly></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'readOnly')).toEqual(true);
             });
 
             it('should set the `readOnly` property of its input if its `readOnly` property is set', async () => {
-                await page.setContent('<zoo-input></zoo-input>');
+                await page.setContent('<zooduck-input></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'readOnly')).toEqual(false);
@@ -182,18 +182,18 @@ describe('<zoo-input>', () => {
 
         describe('disabled', () => {
             it('should set the `disabled` attribute of its input if its `disabled` attribute is set', async () => {
-                await page.setContent('<zoo-input disabled></zoo-input>');
+                await page.setContent('<zooduck-input disabled></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'disabled')).toEqual(true);
             });
 
             it('should set the `disabled` property of its input if its `disabled` property is set', async () => {
-                await page.setContent('<zoo-input></zoo-input>');
+                await page.setContent('<zooduck-input></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'disabled')).toEqual(false);
@@ -208,9 +208,9 @@ describe('<zoo-input>', () => {
 
         describe('required', () => {
             it('should set the `required` attribute of its input if its `required` attribute is set', async () => {
-                await page.setContent('<zoo-input required></zoo-input>');
+                await page.setContent('<zooduck-input required></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
 
@@ -218,9 +218,9 @@ describe('<zoo-input>', () => {
             });
 
             it('should set the `required` property of its input if its `required` property is set', async () => {
-                await page.setContent('<zoo-input></zoo-input>');
+                await page.setContent('<zooduck-input></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'required')).toEqual(false);
@@ -233,9 +233,9 @@ describe('<zoo-input>', () => {
             });
 
             it('should add an asterisk to its label if its `required` attribute is set', async () => {
-                await page.setContent('<zoo-input required></zoo-input>');
+                await page.setContent('<zooduck-input required></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const labelEl = await getElementFromShadow(page, el, '.label');
                 const afterStyle = await getComputedStyleProperty(page, [labelEl, ':after'], 'content');
@@ -247,24 +247,24 @@ describe('<zoo-input>', () => {
 
         describe('autofocus', () => {
             it('should set the `autofocus` attribute of its input if its `autofocus` attribute is set', async () => {
-                await page.setContent('<zoo-input autofocus></zoo-input>');
+                await page.setContent('<zooduck-input autofocus></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'autofocus')).toEqual(true);
             });
 
             it('should set the `autofocus` property of its input if its `autofocus` property is set', async () => {
-                await page.setContent('<zoo-input></zoo-input>');
+                await page.setContent('<zooduck-input></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'autofocus')).toEqual(false);
 
                 await page.evaluate(() => {
-                    document.querySelector('zoo-input').autofocus = true;
+                    document.querySelector('zooduck-input').autofocus = true;
                 });
 
                 expect(await getProperty(input, 'autofocus')).toEqual(true);
@@ -273,18 +273,18 @@ describe('<zoo-input>', () => {
 
         describe('placeholder', () => {
             it('should set the `placeholder` of its input to the value of its `placeholder` attribute', async () => {
-                await page.setContent('<zoo-input value="TEST_VAL"></zoo-input>');
+                await page.setContent('<zooduck-input value="TEST_VAL"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'value')).toEqual('TEST_VAL');
             });
 
             it('should set the `placeholder` of its input to the value of its `placeholder` property', async () => {
-                await page.setContent('<zoo-input placeholder="TEST_VAL_FROM_ATTR"></zoo-input>');
+                await page.setContent('<zooduck-input placeholder="TEST_VAL_FROM_ATTR"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'placeholder')).toEqual('TEST_VAL_FROM_ATTR');
@@ -299,9 +299,9 @@ describe('<zoo-input>', () => {
 
         describe('type', () => {
             it('should set the `type` of its input to the value of its `type` attribute', async () => {
-                await page.setContent('<zoo-input type="email"></zoo-input>');
+                await page.setContent('<zooduck-input type="email"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
 
@@ -310,9 +310,9 @@ describe('<zoo-input>', () => {
             });
 
             it('should remove the `type` attribute of its input if its `type` attribute is removed', async () => {
-                await page.setContent('<zoo-input type="email"></zoo-input>');
+                await page.setContent('<zooduck-input type="email"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
 
@@ -327,9 +327,9 @@ describe('<zoo-input>', () => {
 
             describe('[type=hidden]', () => {
                 it('should hide the element if its `type` attribute is set to `hidden`', async () => {
-                    await page.setContent('<zoo-input type="hidden"></zoo-input>');
+                    await page.setContent('<zooduck-input type="hidden"></zooduck-input>');
 
-                    const el = await page.$('zoo-input');
+                    const el = await page.$('zooduck-input');
 
                     const displayStyle = await getComputedStyleProperty(page, el, 'display');
 
@@ -337,9 +337,9 @@ describe('<zoo-input>', () => {
                 });
 
                 it('should hide the element if its `type` property is set to `hidden`', async () => {
-                    await page.setContent('<zoo-input></zoo-input>');
+                    await page.setContent('<zooduck-input></zooduck-input>');
 
-                    const el = await page.$('zoo-input');
+                    const el = await page.$('zooduck-input');
 
                     let displayStyle;
                     displayStyle = await getComputedStyleProperty(page, el, 'display');
@@ -358,9 +358,9 @@ describe('<zoo-input>', () => {
 
             describe('[type=text] (default)', () => {
                 it('should clear the input if the right icon is clicked', async () => {
-                    await page.setContent('<zoo-input></zoo-input>');
+                    await page.setContent('<zooduck-input></zooduck-input>');
 
-                    const el = await page.$('zoo-input');
+                    const el = await page.$('zooduck-input');
                     const input = await getElementFromShadow(page, el, 'input');
 
                     await input.type('TEST_VALUE');
@@ -381,9 +381,9 @@ describe('<zoo-input>', () => {
 
             describe('[type=password]', () => {
                 it('should not display the `clear-input-icon` if its `type` is set to `password`', async () => {
-                    await page.setContent('<zoo-input type="password"></zoo-input>');
+                    await page.setContent('<zooduck-input type="password"></zooduck-input>');
 
-                    const el = await page.$('zoo-input');
+                    const el = await page.$('zooduck-input');
 
                     const clearInputIcon = await getElementFromShadow(page, el, 'slot[name=right-icon-clear-input]');
 
@@ -396,9 +396,9 @@ describe('<zoo-input>', () => {
                 });
 
                 it('should toggle the display of its right icon password slots when its right icon slot is clicked', async () => {
-                    await page.setContent('<zoo-input type="password"></zoo-input>');
+                    await page.setContent('<zooduck-input type="password"></zooduck-input>');
 
-                    const el = await page.$('zoo-input');
+                    const el = await page.$('zooduck-input');
 
                     let showPasswordIconDisplay;
                     let hidePasswordIconDisplay;
@@ -422,9 +422,9 @@ describe('<zoo-input>', () => {
                 });
 
                 it('should toggle its input\'s type between `password` and `text` when its right icon is clicked', async () => {
-                    await page.setContent('<zoo-input type="password"></zoo-input>');
+                    await page.setContent('<zooduck-input type="password"></zooduck-input>');
 
-                    const el = await page.$('zoo-input');
+                    const el = await page.$('zooduck-input');
 
                     const input = await getElementFromShadow(page, el, 'input');
 
@@ -454,9 +454,9 @@ describe('<zoo-input>', () => {
 
         describe('autocomplete', () => {
             it('should set the `autocomplete` attribute of its input if its `autocomplete` attribute is set', async () => {
-                await page.setContent('<zoo-input autocomplete="on"></zoo-input>');
+                await page.setContent('<zooduck-input autocomplete="on"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
 
@@ -464,9 +464,9 @@ describe('<zoo-input>', () => {
             });
 
             it('should set the `autocomplete` attribute of its input if its `autocomplete` property is set', async () => {
-                await page.setContent('<zoo-input></zoo-input>');
+                await page.setContent('<zooduck-input></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
 
@@ -481,9 +481,9 @@ describe('<zoo-input>', () => {
             });
 
             it('should remove the `autocomplete` attribute of its input if its `autocomplete` attribute is removed', async () => {
-                await page.setContent('<zoo-input autocomplete></zoo-input>');
+                await page.setContent('<zooduck-input autocomplete></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
 
@@ -499,18 +499,18 @@ describe('<zoo-input>', () => {
 
         describe('label', () => {
             it('should set the innerHTML of its label to the value of its `label` attribute', async () => {
-                await page.setContent('<zoo-input label="TEST_VAL"></zoo-input>');
+                await page.setContent('<zooduck-input label="TEST_VAL"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const label = await getElementFromShadow(page, el, '.label');
                 expect(await getProperty(label, 'innerHTML')).toEqual('TEST_VAL');
             });
 
             it('should set the innerHTML of its label to the value of its `label` property', async () => {
-                await page.setContent('<zoo-input label="TEST_VAL_FROM_ATTR"></zoo-input>');
+                await page.setContent('<zooduck-input label="TEST_VAL_FROM_ATTR"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const label = await getElementFromShadow(page, el, '.label');
                 expect(await getProperty(label, 'innerHTML')).toEqual('TEST_VAL_FROM_ATTR');
@@ -527,18 +527,18 @@ describe('<zoo-input>', () => {
                 let labelElementDisplay;
                 let el;
 
-                await page.setContent('<zoo-input label="TEST_LABEL" placeholder="TEST_PLACEHOLDER"></zoo-input>');
+                await page.setContent('<zooduck-input label="TEST_LABEL" placeholder="TEST_PLACEHOLDER"></zooduck-input>');
 
-                el = await page.$('zoo-input');
+                el = await page.$('zooduck-input');
 
                 labelElement = await getElementFromShadow(page, el, '.label');
                 labelElementDisplay = await getComputedStyleProperty(page, labelElement, 'display');
 
                 expect(labelElementDisplay).toEqual('none');
 
-                await page.setContent('<zoo-input label="TEST_LABEL"></zoo-input>');
+                await page.setContent('<zooduck-input label="TEST_LABEL"></zooduck-input>');
 
-                el = await page.$('zoo-input');
+                el = await page.$('zooduck-input');
 
                 labelElement = await getElementFromShadow(page, el, '.label');
                 labelElementDisplay = await getComputedStyleProperty(page, labelElement, 'display');
@@ -555,8 +555,8 @@ describe('<zoo-input>', () => {
             });
 
             it('should not display a label if its `label` attribute does not have a value', async () => {
-                await page.setContent('<zoo-input label=""></zoo-label>');
-                const el = await page.$('zoo-input');
+                await page.setContent('<zooduck-input label=""></zoo-label>');
+                const el = await page.$('zooduck-input');
                 const labelDisplay = await page.evaluate((el) => {
                     return getComputedStyle(el.shadowRoot.querySelector('.label')).getPropertyValue('display');
                 }, el);
@@ -565,41 +565,41 @@ describe('<zoo-input>', () => {
             });
 
             it('should set its `--has-valid-label` class if its `label` attribute has a value its `placholder` attribute is not set', async () => {
-                await page.setContent('<zoo-input label="TEST_VALUE"></zoo-label>');
-                const el = await page.$('zoo-input');
+                await page.setContent('<zooduck-input label="TEST_VALUE"></zoo-label>');
+                const el = await page.$('zooduck-input');
 
                 const zooInputClassList = await getClassList(el);
                 expect(zooInputClassList.includes('--has-valid-label')).toBeTruthy();
             });
 
             it('should not set its `--has-valid-label` class if its `label` attribute has a value its `placholder` attribute is set', async () => {
-                await page.setContent('<zoo-input label="TEST_LABEL" placeholder="TEST_PLACEHOLDER"></zoo-label>');
-                const el = await page.$('zoo-input');
+                await page.setContent('<zooduck-input label="TEST_LABEL" placeholder="TEST_PLACEHOLDER"></zoo-label>');
+                const el = await page.$('zooduck-input');
 
                 const zooInputClassList = await getClassList(el);
                 expect(zooInputClassList.includes('--has-valid-label')).toBeFalsy();
             });
 
             it('should not set its `--has-valid-label` class if its `label` attribute does not have a value', async () => {
-                await page.setContent('<zoo-input label=""></zoo-label>');
-                const el = await page.$('zoo-input');
+                await page.setContent('<zooduck-input label=""></zoo-label>');
+                const el = await page.$('zooduck-input');
 
                 const zooInputClassList = await getClassList(el);
                 expect(zooInputClassList.includes('--has-valid-label')).toBeFalsy();
             });
 
             it('should not set its `--has-valid-label` class if its `label` attribute is not set', async () => {
-                await page.setContent('<zoo-input></zoo-label>');
-                const el = await page.$('zoo-input');
+                await page.setContent('<zooduck-input></zoo-label>');
+                const el = await page.$('zooduck-input');
 
                 const zooInputClassList = await getClassList(el);
                 expect(zooInputClassList.includes('--has-valid-label')).toBeFalsy();
             });
 
             it('should not set a `label` attribute on its input if its `label` attribute is set', async () => {
-                await page.setContent('<zoo-input label="TEST_LABEL"></zoo-input>');
+                await page.setContent('<zooduck-input label="TEST_LABEL"></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
 
@@ -607,9 +607,9 @@ describe('<zoo-input>', () => {
             });
 
             it('should not set a `label` attribute on its input if its `label` property is set', async () => {
-                await page.setContent('<zoo-input></zoo-input>');
+                await page.setContent('<zooduck-input></zooduck-input>');
 
-                const el = await page.$('zoo-input');
+                const el = await page.$('zooduck-input');
 
                 await page.evaluate((el) => {
                     el.label = 'TEST_LABEL';
@@ -625,12 +625,12 @@ describe('<zoo-input>', () => {
     describe('focus', () => {
         it('should focus its input when it is clicked anywhere', async () => {
             await page.setContent(`
-                <zoo-input>
+                <zooduck-input>
                     <i slot="left-icon">LEFT_ICON</i>
-                </zoo-input>`
+                </zooduck-input>`
             );
 
-            const el = await page.$('zoo-input');
+            const el = await page.$('zooduck-input');
 
             await page.mouse.click(20, 20); // This click will happen on the left-icon
 
@@ -643,10 +643,10 @@ describe('<zoo-input>', () => {
 
         it('should toggle its `--active` class based on its input\'s focus state', async () => {
             await page.setContent(`
-                <zoo-input></zoo-input>
+                <zooduck-input></zooduck-input>
                 <span>CLICK_TO_LOSE_FOCUS</span>
             `);
-            const el = await page.$('zoo-input');
+            const el = await page.$('zooduck-input');
             const span = await page.$('span');
             const input = await getElementFromShadow(page, el, 'input');
 
@@ -670,8 +670,8 @@ describe('<zoo-input>', () => {
 
     describe('icons', () => {
         it('should display icons', async () => {
-            await page.setContent('<zoo-input></zoo-input>');
-            const el = await page.$('zoo-input');
+            await page.setContent('<zooduck-input></zooduck-input>');
+            const el = await page.$('zooduck-input');
 
             const iconDisplays = await page.evaluate((el) => {
                 const iconSlots = el.shadowRoot.querySelectorAll('slot[name*=icon]');
@@ -686,8 +686,8 @@ describe('<zoo-input>', () => {
         });
 
         it('should not display icons if its `noicons` attribute is set', async () => {
-            await page.setContent('<zoo-input noicons></zoo-input>');
-            const el = await page.$('zoo-input');
+            await page.setContent('<zooduck-input noicons></zooduck-input>');
+            const el = await page.$('zooduck-input');
 
             const iconDisplays = await page.evaluate((el) => {
                 const iconSlots = el.shadowRoot.querySelectorAll('slot[name*=icon]');
@@ -702,8 +702,8 @@ describe('<zoo-input>', () => {
         });
 
         it('should not display icons if its `noicons` property is set to `true`', async () => {
-            await page.setContent('<zoo-input></zoo-input>');
-            const el = await page.$('zoo-input');
+            await page.setContent('<zooduck-input></zooduck-input>');
+            const el = await page.$('zooduck-input');
 
             await page.evaluate((el) => el.noIcons = true, el);
 
@@ -721,10 +721,10 @@ describe('<zoo-input>', () => {
 
         it('should let you replace default icons with slotted content', async () => {
             await page.setContent(`
-                <zoo-input>
+                <zooduck-input>
                     <span slot="left-icon">TEST</span>
-                </zoo-input>`);
-            const el = await page.$('zoo-input');
+                </zooduck-input>`);
+            const el = await page.$('zooduck-input');
             const slottedContent = await page.evaluate((el) => {
                 return el.shadowRoot.querySelector('slot[name=left-icon]').assignedNodes()[0].outerHTML;
             }, el);
@@ -733,9 +733,9 @@ describe('<zoo-input>', () => {
         });
 
         it('should not set a `noicons` attribute on its input if its `noicons` attribute is set', async () => {
-            await page.setContent('<zoo-input noicons></zoo-input>');
+            await page.setContent('<zooduck-input noicons></zooduck-input>');
 
-            const el = await page.$('zoo-input');
+            const el = await page.$('zooduck-input');
 
             const input = await getElementFromShadow(page, el, 'input');
 
@@ -743,9 +743,9 @@ describe('<zoo-input>', () => {
         });
 
         it('should not set a `noicons` attribute on its input if its `noicons` property is set', async () => {
-            await page.setContent('<zoo-input></zoo-input>');
+            await page.setContent('<zooduck-input></zooduck-input>');
 
-            const el = await page.$('zoo-input');
+            const el = await page.$('zooduck-input');
 
             await page.evaluate((el) => {
                 el.noicons = true;
