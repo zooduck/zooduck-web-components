@@ -122,6 +122,84 @@ describe('<zoo-input>', () => {
             });
         });
 
+        describe('name', () => {
+            it('should set the `name` of its input to the value of its `name` attribute', async () => {
+                await page.setContent('<zoo-input name="TEST_NAME"></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+                expect(await getProperty(input, 'name')).toEqual('TEST_NAME');
+            });
+
+            it('should set the `name` of its input to the value of its `name` property', async () => {
+                await page.setContent('<zoo-input name="TEST_NAME_FROM_ATTR"></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+                expect(await getProperty(input, 'name')).toEqual('TEST_NAME_FROM_ATTR');
+
+                await page.evaluate(() => {
+                    document.querySelector('zoo-input').name = 'TEST_NAME_FROM_PROP';
+                });
+
+                expect(await getProperty(input, 'name')).toEqual('TEST_NAME_FROM_PROP');
+            });
+        });
+
+        describe('readonly', () => {
+            it('should set the `readonly` attribute of its input if its `readonly` attribute is set', async () => {
+                await page.setContent('<zoo-input readonly></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+                expect(await getProperty(input, 'readOnly')).toEqual(true);
+            });
+
+            it('should set the `readOnly` property of its input if its `readOnly` property is set', async () => {
+                await page.setContent('<zoo-input></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+                expect(await getProperty(input, 'readOnly')).toEqual(false);
+
+                await page.evaluate(() => {
+                    document.querySelector('zoo-input').readOnly = true;
+                });
+
+                expect(await getProperty(input, 'readOnly')).toEqual(true);
+            });
+        });
+
+        describe('autofocus', () => {
+            it('should set the `autofocus` attribute of its input if its `autofocus` attribute is set', async () => {
+                await page.setContent('<zoo-input autofocus></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+                expect(await getProperty(input, 'autofocus')).toEqual(true);
+            });
+
+            it('should set the `autofocus` property of its input if its `autofocus` property is set', async () => {
+                await page.setContent('<zoo-input></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+                expect(await getProperty(input, 'autofocus')).toEqual(false);
+
+                await page.evaluate(() => {
+                    document.querySelector('zoo-input').autofocus = true;
+                });
+
+                expect(await getProperty(input, 'autofocus')).toEqual(true);
+            });
+        });
+
         describe('placeholder', () => {
             it('should set the `placeholder` of its input to the value of its `placeholder` attribute', async () => {
                 await page.setContent('<zoo-input value="TEST_VAL"></zoo-input>');
@@ -531,7 +609,7 @@ describe('<zoo-input>', () => {
             await page.setContent('<zoo-input></zoo-input>');
             const el = await page.$('zoo-input');
 
-            await page.evaluate((el) => el.noicons = true, el);
+            await page.evaluate((el) => el.noIcons = true, el);
 
             const iconDisplays = await page.evaluate((el) => {
                 const iconSlots = el.shadowRoot.querySelectorAll('slot[name*=icon]');

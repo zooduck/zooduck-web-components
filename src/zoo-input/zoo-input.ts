@@ -2,21 +2,33 @@ import * as utils from './zoo-input-utils';
 import { style } from './zoo-input.style';
 
 export class HTMLZooInputElement extends HTMLElement {
-    _autocomplete: boolean;
+    _autocomplete: string;
+    _autofocus: boolean;
     _booleanAttrs = [
+        'autofocus',
         'noicons',
+        'readonly',
     ];
     _label: string;
-    _noicons: boolean;
+    _name: string;
+    _noIcons: boolean;
     _placeholder: string;
+    _readOnly: boolean;
     _sharedAttrs = [
         'autocomplete',
+        'autofocus',
+        'name',
         'placeholder',
+        'readonly',
         'type',
         'value'
     ];
     _type: string;
     _value: string;
+    camelCaseProps = {
+        noicons: 'noIcons',
+        readonly: 'readOnly',
+    };
     clearInputIconSlot: HTMLElement;
     hidePasswordIconSlot: HTMLElement;
     input: HTMLInputElement;
@@ -29,9 +41,12 @@ export class HTMLZooInputElement extends HTMLElement {
     public static get observedAttributes(): string[] {
         return [
             'autocomplete',
+            'autofocus',
             'label',
+            'name',
             'noicons',
             'placeholder',
+            'readonly',
             'type',
             'value',
         ];
@@ -171,10 +186,6 @@ export class HTMLZooInputElement extends HTMLElement {
         this._sharedAttrs.includes(attr) && this.input.setAttribute(attr, val);
     }
 
-    private _updateAutoComplete(): void {
-        this._syncStringAttribute('autocomplete', this.autocomplete);
-    }
-
     private _updateHasValidLabelClass(): void {
         if (this.label && !this.placeholder) {
             this.classList.add('--has-valid-label');
@@ -205,9 +216,9 @@ export class HTMLZooInputElement extends HTMLElement {
     }
 
     private _updateNoIcons(): void {
-        this._syncBooleanAttribute('noicons', this.noicons);
+        this._syncBooleanAttribute('noicons', this.noIcons);
 
-        if (this.noicons) {
+        if (this.noIcons) {
             this._updateIconSlots({ showSlots: false });
         } else {
             this._updateIconSlots({ showSlots: true });
@@ -262,13 +273,22 @@ export class HTMLZooInputElement extends HTMLElement {
         this.hidePasswordIconSlot = utils.buildIconSlot('right-icon-hide-password', 'fa-eye-slash');
     }
 
-    get autocomplete(): boolean {
+    get autocomplete(): string {
         return this._autocomplete;
     }
 
-    set autocomplete(val: boolean) {
+    set autocomplete(val: string) {
         this._autocomplete = val;
-        this._updateAutoComplete();
+        this._syncStringAttribute('autocomplete', this.autocomplete);
+    }
+
+    get autofocus(): boolean {
+        return this._autofocus;
+    }
+
+    set autofocus(val: boolean) {
+        this._autofocus = val;
+        this._syncBooleanAttribute('autofocus', this.autofocus);
     }
 
     get label(): string {
@@ -280,12 +300,21 @@ export class HTMLZooInputElement extends HTMLElement {
         this._updateLabel();
     }
 
-    get noicons(): boolean {
-        return this._noicons;
+    get name(): string {
+        return this._name;
     }
 
-    set noicons(val: boolean) {
-        this._noicons = val;
+    set name(val: string) {
+        this._name = val;
+        this._syncStringAttribute('name', this.name);
+    }
+
+    get noIcons(): boolean {
+        return this._noIcons;
+    }
+
+    set noIcons(val: boolean) {
+        this._noIcons = val;
         this._updateNoIcons();
     }
 
@@ -296,6 +325,15 @@ export class HTMLZooInputElement extends HTMLElement {
     set placeholder(val: string | null) {
         this._placeholder = val;
         this._updatePlaceholder();
+    }
+
+    get readOnly() {
+        return this._readOnly;
+    }
+
+    set readOnly(val: boolean) {
+        this._readOnly = val;
+        this._syncBooleanAttribute('readonly', val);
     }
 
     get root(): ShadowRoot | HTMLZooInputElement {
@@ -330,10 +368,12 @@ export class HTMLZooInputElement extends HTMLElement {
     }
 
     protected attributeChangedCallback(name: string, _oldVal: string, newVal: string) {
+        const prop = this.camelCaseProps[name] || name;
+
         if (this._isBooleanAttr(name)) {
-            this[name] = this.hasAttribute(name);
+            this[prop] = this.hasAttribute(name);
         } else {
-            this[name] = newVal;
+            this[prop] = newVal;
         }
     }
 }
