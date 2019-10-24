@@ -280,16 +280,16 @@ describe('<zoo-input>', () => {
 
         describe('autocomplete', () => {
             it('should set the `autocomplete` attribute of its input if its `autocomplete` attribute is set', async () => {
-                await page.setContent('<zoo-input autocomplete></zoo-input>');
+                await page.setContent('<zoo-input autocomplete="on"></zoo-input>');
 
                 const el = await page.$('zoo-input');
 
                 const input = await getElementFromShadow(page, el, 'input');
 
-                expect(await getAttribute(page, input, 'autocomplete')).toEqual('');
+                expect(await getAttribute(page, input, 'autocomplete')).toEqual('on');
             });
 
-            it('should set the `autocomplete` attribute of its input if its `autocomplete` property is set to `true`', async () => {
+            it('should set the `autocomplete` attribute of its input if its `autocomplete` property is set', async () => {
                 await page.setContent('<zoo-input></zoo-input>');
 
                 const el = await page.$('zoo-input');
@@ -299,26 +299,11 @@ describe('<zoo-input>', () => {
                 expect(await getAttribute(page, input, 'autocomplete')).toBeNull();
 
                 await page.evaluate(el => {
-                    el.autocomplete = true;
+                    el.autocomplete = 'off';
                 }, el);
 
                 expect(await getAttribute(page, input, 'autocomplete')).toBeDefined();
-            });
-
-            it('should remove the `autocomplete` attribute of its input if its `autocomplete` property is set to `false`', async () => {
-                await page.setContent('<zoo-input autocomplete></zoo-input>');
-
-                const el = await page.$('zoo-input');
-
-                const input = await getElementFromShadow(page, el, 'input');
-
-                expect(await getAttribute(page, input, 'autocomplete')).toBeDefined();
-
-                await page.evaluate(el => {
-                    el.autocomplete = false;
-                }, el);
-
-                expect(await getAttribute(page, input, 'autocomplete')).toBeNull();
+                expect(await getAttribute(page, input, 'autocomplete')).toEqual('off');
             });
 
             it('should remove the `autocomplete` attribute of its input if its `autocomplete` attribute is removed', async () => {

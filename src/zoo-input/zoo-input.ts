@@ -4,8 +4,7 @@ import { style } from './zoo-input.style';
 export class HTMLZooInputElement extends HTMLElement {
     _autocomplete: boolean;
     _booleanAttrs = [
-        'autocomplete',
-        'noicons'
+        'noicons',
     ];
     _label: string;
     _noicons: boolean;
@@ -132,7 +131,7 @@ export class HTMLZooInputElement extends HTMLElement {
     }
 
     private _syncStringAttribute(attr: string, val: any): void {
-        if (val === null) {
+        if (val === null || undefined) {
             /**
              * This is an **intentional deviation** from the default behaviour of attributes / properties.
              * It will **REMOVE** the attribute if you set the property for that attribute to **null**.
@@ -162,7 +161,7 @@ export class HTMLZooInputElement extends HTMLElement {
         }
 
         if (typeof val !== 'string') {
-            val = val.toString();
+            val = JSON.stringify(val);
         }
 
         if (!this.hasAttribute(attr) || (this.getAttribute(attr) !== val)) {
@@ -173,7 +172,7 @@ export class HTMLZooInputElement extends HTMLElement {
     }
 
     private _updateAutoComplete(): void {
-        this._syncBooleanAttribute('autocomplete', this.autocomplete);
+        this._syncStringAttribute('autocomplete', this.autocomplete);
     }
 
     private _updateHasValidLabelClass(): void {
