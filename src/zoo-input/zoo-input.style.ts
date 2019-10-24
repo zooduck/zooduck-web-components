@@ -9,6 +9,7 @@ export const style = `
  * @var --zoo-input-border: The \`border\` style of the element. Defaults to \`solid var(--gray)\`.
  * @var --zoo-input-border-width: The \`border-width\` style of the element. Defaults to \`1px\`.
  * @var --zoo-input-background-color: The \`background-color\` style of the element. Defaults to \`#fff\`.
+ * @var --zoo-input-disabled-background-color: The \`background-color\` style of the element when its \`disabled\` attribute is set. Defaults to \`#eee\`.
  * @var --zoo-input-color: The \`color\` style of the element's input. Defaults to \`var(--black)\`.
  * @var --zoo-input-label-color: The \`color\` style of the element's label. Defaults to \`var(--gray)\`.
  * @var --zoo-input-icon-color: The \`color\` style of the icon slots. Defaults to \`var(--zoo-input-label-color, var(--gray))\`.
@@ -24,6 +25,10 @@ export const style = `
     border: var(--zoo-input-border, solid var(--gray));
     border-width: var(--zoo-input-border-width, 1px);
     background-color: var(--zoo-input-background-color, #fff);
+}
+:host([disabled]),
+:host([disabled]) input {
+    background-color: var(--zoo-input-disabled-background-color, #eee);
 }
 :host([type=hidden]) {
     display: none;

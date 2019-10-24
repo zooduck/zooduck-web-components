@@ -140,9 +140,9 @@ describe('<zoo-input>', () => {
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'name')).toEqual('TEST_NAME_FROM_ATTR');
 
-                await page.evaluate(() => {
-                    document.querySelector('zoo-input').name = 'TEST_NAME_FROM_PROP';
-                });
+                await page.evaluate((el) => {
+                    el.name = 'TEST_NAME_FROM_PROP';
+                }, el);
 
                 expect(await getProperty(input, 'name')).toEqual('TEST_NAME_FROM_PROP');
             });
@@ -166,11 +166,37 @@ describe('<zoo-input>', () => {
                 const input = await getElementFromShadow(page, el, 'input');
                 expect(await getProperty(input, 'readOnly')).toEqual(false);
 
-                await page.evaluate(() => {
-                    document.querySelector('zoo-input').readOnly = true;
-                });
+                await page.evaluate((el) => {
+                    el.readOnly = true;
+                }, el);
 
                 expect(await getProperty(input, 'readOnly')).toEqual(true);
+            });
+        });
+
+        describe('disabled', () => {
+            it('should set the `disabled` attribute of its input if its `disabled` attribute is set', async () => {
+                await page.setContent('<zoo-input disabled></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+                expect(await getProperty(input, 'disabled')).toEqual(true);
+            });
+
+            it('should set the `disabled` property of its input if its `disabled` property is set', async () => {
+                await page.setContent('<zoo-input></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+                expect(await getProperty(input, 'disabled')).toEqual(false);
+
+                await page.evaluate((el) => {
+                    el.disabled = true;
+                }, el);
+
+                expect(await getProperty(input, 'disabled')).toEqual(true);
             });
         });
 

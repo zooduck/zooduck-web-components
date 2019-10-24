@@ -6,9 +6,11 @@ export class HTMLZooInputElement extends HTMLElement {
     _autofocus: boolean;
     _booleanAttrs = [
         'autofocus',
+        'disabled',
         'noicons',
         'readonly',
     ];
+    _disabled: boolean;
     _label: string;
     _name: string;
     _noIcons: boolean;
@@ -17,6 +19,7 @@ export class HTMLZooInputElement extends HTMLElement {
     _sharedAttrs = [
         'autocomplete',
         'autofocus',
+        'disabled',
         'name',
         'placeholder',
         'readonly',
@@ -42,6 +45,7 @@ export class HTMLZooInputElement extends HTMLElement {
         return [
             'autocomplete',
             'autofocus',
+            'disabled',
             'label',
             'name',
             'noicons',
@@ -146,7 +150,7 @@ export class HTMLZooInputElement extends HTMLElement {
     }
 
     private _syncStringAttribute(attr: string, val: any): void {
-        if (val === null || undefined) {
+        if (val === null || val === undefined) {
             /**
              * This is an **intentional deviation** from the default behaviour of attributes / properties.
              * It will **REMOVE** the attribute if you set the property for that attribute to **null**.
@@ -289,6 +293,15 @@ export class HTMLZooInputElement extends HTMLElement {
     set autofocus(val: boolean) {
         this._autofocus = val;
         this._syncBooleanAttribute('autofocus', this.autofocus);
+    }
+
+    get disabled() {
+        return this._disabled;
+    }
+
+    set disabled(val: boolean) {
+        this._disabled = val;
+        this._syncBooleanAttribute('disabled', this.disabled);
     }
 
     get label(): string {
