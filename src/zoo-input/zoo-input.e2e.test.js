@@ -254,6 +254,37 @@ describe('<zoo-input>', () => {
                 expect(await getAttribute(page, input, 'type')).toBeNull();
             });
 
+            describe('[type=hidden]', () => {
+                it('should hide the element if its `type` attribute is set to `hidden`', async () => {
+                    await page.setContent('<zoo-input type="hidden"></zoo-input>');
+
+                    const el = await page.$('zoo-input');
+
+                    const displayStyle = await getComputedStyleProperty(page, el, 'display');
+
+                    expect(displayStyle).toEqual('none');
+                });
+
+                it('should hide the element if its `type` property is set to `hidden`', async () => {
+                    await page.setContent('<zoo-input></zoo-input>');
+
+                    const el = await page.$('zoo-input');
+
+                    let displayStyle;
+                    displayStyle = await getComputedStyleProperty(page, el, 'display');
+
+                    expect(displayStyle).toEqual('flex');
+
+                    await page.evaluate((el)  => {
+                        el.type = 'hidden';
+                    }, el);
+
+                    displayStyle = await getComputedStyleProperty(page, el, 'display');
+
+                    expect(displayStyle).toEqual('none');
+                });
+            });
+
             describe('[type=text] (default)', () => {
                 it('should clear the input if the right icon is clicked', async () => {
                     await page.setContent('<zoo-input></zoo-input>');

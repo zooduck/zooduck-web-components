@@ -25,6 +25,9 @@ export const style = `
     border-width: var(--zoo-input-border-width, 1px);
     background-color: var(--zoo-input-background-color, #fff);
 }
+:host([type=hidden]) {
+    display: none;
+}
 .input-label-container {
     position: relative;
     display: flex;
