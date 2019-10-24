@@ -9,6 +9,7 @@ export class HTMLZooInputElement extends HTMLElement {
         'disabled',
         'noicons',
         'readonly',
+        'required',
     ];
     _disabled: boolean;
     _label: string;
@@ -16,6 +17,7 @@ export class HTMLZooInputElement extends HTMLElement {
     _noIcons: boolean;
     _placeholder: string;
     _readOnly: boolean;
+    _required: boolean;
     _sharedAttrs = [
         'autocomplete',
         'autofocus',
@@ -23,8 +25,9 @@ export class HTMLZooInputElement extends HTMLElement {
         'name',
         'placeholder',
         'readonly',
+        'required',
         'type',
-        'value'
+        'value',
     ];
     _type: string;
     _value: string;
@@ -51,6 +54,7 @@ export class HTMLZooInputElement extends HTMLElement {
             'noicons',
             'placeholder',
             'readonly',
+            'required',
             'type',
             'value',
         ];
@@ -338,6 +342,15 @@ export class HTMLZooInputElement extends HTMLElement {
     set placeholder(val: string | null) {
         this._placeholder = val;
         this._updatePlaceholder();
+    }
+
+    get required(): boolean {
+        return this._required;
+    }
+
+    set required(val: boolean) {
+        this._required = val;
+        this._syncBooleanAttribute('required', this.required);
     }
 
     get readOnly() {

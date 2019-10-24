@@ -18,6 +18,7 @@ export const style = `
 :host {
     --gray: #bbb;
     --black: #222;
+    --disabled: #eee;
 
     position: relative;
     display: var(--zoo-input-display, flex);
@@ -28,7 +29,7 @@ export const style = `
 }
 :host([disabled]),
 :host([disabled]) input {
-    background-color: var(--zoo-input-disabled-background-color, #eee);
+    background-color: var(--zoo-input-disabled-background-color, var(--disabled));
 }
 :host([type=hidden]) {
     display: none;
@@ -60,6 +61,9 @@ export const style = `
     transform-origin: left top;
     transform: translateY(-50%);
     transition: all .25s;
+}
+:host([required]) .label:after {
+    content: "*";
 }
 :host(.--active) .label,
 :host(.--has-content) .label {
@@ -93,7 +97,7 @@ slot[name*=icon] {
     align-items: center;
     justify-content: center;
     font-size: var(--zoo-input-font-size, 19px);
-    color: var(--zoo-input-label-color, var(--gray));
+    color: var(--zoo-input-icon-color, var(--zoo-input-label-color, var(--gray)));
 }
 slot[name*=icon] svg {
     height: var(--zoo-input-font-size, 19px);

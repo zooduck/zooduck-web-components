@@ -14,9 +14,15 @@ const getAttribute = async (page, node, attr) => {
 };
 const getClassList = async (el) =>  await page.evaluate((el) => Array.from(el.classList), el);
 const getComputedStyleProperty = async (page, el, prop) => {
-    return await page.evaluate((el, prop) => {
-        return getComputedStyle(el).getPropertyValue(prop);
-    }, el, prop);
+    const element = (el.constructor.name === 'Array') ? el[0] : el;
+    const pseudoEl = (el.constructor.name === 'Array' && el[1]) ? el[1] : undefined;
+    return await page.evaluate((el, pseudoEl, prop) => {
+        if (pseudoEl) {
+            return getComputedStyle(el, pseudoEl).getPropertyValue(prop);
+        } else {
+            return getComputedStyle(el).getPropertyValue(prop);
+        }
+    }, element, pseudoEl, prop);
 };
 
 describe('<zoo-input>', () => {
@@ -200,6 +206,45 @@ describe('<zoo-input>', () => {
             });
         });
 
+        describe('required', () => {
+            it('should set the `required` attribute of its input if its `required` attribute is set', async () => {
+                await page.setContent('<zoo-input required></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+
+                expect(await getProperty(input, 'required')).toEqual(true);
+            });
+
+            it('should set the `required` property of its input if its `required` property is set', async () => {
+                await page.setContent('<zoo-input></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const input = await getElementFromShadow(page, el, 'input');
+                expect(await getProperty(input, 'required')).toEqual(false);
+
+                await page.evaluate((el) => {
+                    el.required = true;
+                }, el);
+
+                expect(await getProperty(input, 'required')).toEqual(true);
+            });
+
+            it('should add an asterisk to its label if its `required` attribute is set', async () => {
+                await page.setContent('<zoo-input required></zoo-input>');
+
+                const el = await page.$('zoo-input');
+
+                const labelEl = await getElementFromShadow(page, el, '.label');
+                const afterStyle = await getComputedStyleProperty(page, [labelEl, ':after'], 'content');
+
+                expect(afterStyle).toBeDefined();
+                expect(afterStyle).toMatch(/\*/);
+            });
+        });
+
         describe('autofocus', () => {
             it('should set the `autofocus` attribute of its input if its `autofocus` attribute is set', async () => {
                 await page.setContent('<zoo-input autofocus></zoo-input>');
@@ -357,12 +402,6 @@ describe('<zoo-input>', () => {
 
                     let showPasswordIconDisplay;
                     let hidePasswordIconDisplay;
-
-                    const getComputedStyleProperty = async (page, el, prop) => {
-                        return await page.evaluate((el, prop) => {
-                            return getComputedStyle(el).getPropertyValue(prop);
-                        }, el, prop);
-                    };
 
                     const showPasswordIcon = await getElementFromShadow(page, el, 'slot[name=right-icon-show-password]');
                     const hidePasswordIcon = await getElementFromShadow(page, el, 'slot[name=right-icon-hide-password]');
