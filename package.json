@@ -7,8 +7,9 @@
     "pretest": "npm run build",
     "test": "jest --verbose --coverage",
     "lint": "eslint ./src/**/*",
-    "prebuild": "npm run lint",
-    "build": "parcel build src/index.ts --out-file zoo-components.min.js"
+    "prebuild": "npm run lint && node clean && node copy src/index.prod.html dist/index.html",
+    "build": "parcel build src/index.ts --out-file zoo-components.min.js",
+    "start": "parcel watch src/index.html"
   },
   "author": "zooduck",
   "license": "ISC",
