@@ -3,37 +3,37 @@ import { style } from './zoo-input.style';
 import { globalStyle } from './zoo-input.global-style';
 
 export class HTMLZooInputElement extends HTMLElement {
-    _autocomplete: string;
-    _autofocus: boolean;
-    _booleanAttrs = [
+    private _autocomplete: string;
+    private _autofocus: boolean;
+    private _booleanAttrs = [
         'autofocus',
         'disabled',
         'noicons',
         'readonly',
         'required',
     ];
-    _camelCaseProps = {
+    private _camelCaseProps = {
         noicons: 'noIcons',
         readonly: 'readOnly',
     };
-    _clearInputIconSlot: HTMLElement;
-    _disabled: boolean;
-    _filter: string;
-    _filterEventName = 'zooduck-input:filter';
-    _filterHiddenClass = '--zooduck-input-filter-hidden';
-    _filterTagsName = 'zooduck-input-tags';
-    _hidePasswordIconSlot: HTMLElement;
-    _input: HTMLInputElement;
-    _inputLabelContainer: HTMLElement;
-    _label: string;
-    _labelEl: HTMLElement;
-    _leftIconSlot: HTMLElement;
-    _name: string;
-    _noIcons: boolean;
-    _placeholder: string;
-    _readOnly: boolean;
-    _required: boolean;
-    _sharedAttrs = [
+    private _clearInputIconSlot: HTMLElement;
+    private _disabled: boolean;
+    private _filter: string;
+    private _filterEventName = 'zooduck-input:filter';
+    private _filterHiddenClass = '--zooduck-input-filter-hidden';
+    private _filterTagsName = 'zooduck-input-tags';
+    private _hidePasswordIconSlot: HTMLElement;
+    private _input: HTMLInputElement;
+    private _inputLabelContainer: HTMLElement;
+    private _label: string;
+    private _labelEl: HTMLElement;
+    private _leftIconSlot: HTMLElement;
+    private _name: string;
+    private _noIcons: boolean;
+    private _placeholder: string;
+    private _readOnly: boolean;
+    private _required: boolean;
+    private _sharedAttrs = [
         'autocomplete',
         'autofocus',
         'disabled',
@@ -44,9 +44,8 @@ export class HTMLZooInputElement extends HTMLElement {
         'type',
         'value',
     ];
-    _showPassword = false;
-    _showPasswordIconSlot: HTMLElement;
-    _supportedTypes = [
+    private _showPasswordIconSlot: HTMLElement;
+    private _supportedTypes = [
         'email',
         'filter',
         'password',
@@ -54,8 +53,8 @@ export class HTMLZooInputElement extends HTMLElement {
         'text',
         'url'
     ];
-    _type: string;
-    _value: string;
+    private _type: string;
+    private _value: string;
 
     public static get observedAttributes(): string[] {
         return [
@@ -308,7 +307,6 @@ export class HTMLZooInputElement extends HTMLElement {
     private _updateType(): void {
         this._syncStringAttribute('type', this.type);
 
-        this._showPassword = false;
         this.classList.remove('--show-password');
     }
 
