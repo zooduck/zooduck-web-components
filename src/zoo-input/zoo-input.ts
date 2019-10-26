@@ -12,9 +12,22 @@ export class HTMLZooInputElement extends HTMLElement {
         'readonly',
         'required',
     ];
+    _camelCaseProps = {
+        noicons: 'noIcons',
+        readonly: 'readOnly',
+    };
+    _clearInputIconSlot: HTMLElement;
     _disabled: boolean;
     _filter: string;
+    _filterEventName = 'zooduck-input:filter';
+    _filterHiddenClass = '--zooduck-input-filter-hidden';
+    _filterTagsName = 'zooduck-input-tags';
+    _hidePasswordIconSlot: HTMLElement;
+    _input: HTMLInputElement;
+    _inputLabelContainer: HTMLElement;
     _label: string;
+    _labelEl: HTMLElement;
+    _leftIconSlot: HTMLElement;
     _name: string;
     _noIcons: boolean;
     _placeholder: string;
@@ -31,6 +44,8 @@ export class HTMLZooInputElement extends HTMLElement {
         'type',
         'value',
     ];
+    _showPassword = false;
+    _showPasswordIconSlot: HTMLElement;
     _supportedTypes = [
         'email',
         'filter',
@@ -41,21 +56,6 @@ export class HTMLZooInputElement extends HTMLElement {
     ];
     _type: string;
     _value: string;
-    camelCaseProps = {
-        noicons: 'noIcons',
-        readonly: 'readOnly',
-    };
-    clearInputIconSlot: HTMLElement;
-    filterEventName = 'zooduck-input:filter';
-    filterHiddenClass = '--zooduck-input-filter-hidden';
-    filterTagsName = 'zooduck-input-tags';
-    hidePasswordIconSlot: HTMLElement;
-    input: HTMLInputElement;
-    inputLabelContainer: HTMLElement;
-    labelEl: HTMLElement;
-    leftIconSlot: HTMLElement;
-    showPassword = false;
-    showPasswordIconSlot: HTMLElement;
 
     public static get observedAttributes(): string[] {
         return [
@@ -76,48 +76,48 @@ export class HTMLZooInputElement extends HTMLElement {
 
     private _addEvents(): void {
         this.addEventListener('click', () => {
-            this.input.focus();
+            this._input.focus();
         });
 
-        this.input.addEventListener('focus', () => {
+        this._input.addEventListener('focus', () => {
             this.classList.add('--active');
         });
 
-        this.input.addEventListener('blur', () => {
+        this._input.addEventListener('blur', () => {
             this.classList.remove('--active');
         });
 
-        this.input.addEventListener('input', () => {
-            this.value = this.input.value;
+        this._input.addEventListener('input', () => {
+            this.value = this._input.value;
             this._updateValue();
         });
 
-        this.leftIconSlot.addEventListener('mousedown', (e: MouseEvent) => {
+        this._leftIconSlot.addEventListener('mousedown', (e: MouseEvent) => {
             e.preventDefault();
         });
 
         [
-            this.clearInputIconSlot,
-            this.showPasswordIconSlot,
-            this.hidePasswordIconSlot
+            this._clearInputIconSlot,
+            this._showPasswordIconSlot,
+            this._hidePasswordIconSlot
         ].forEach((slot) => {
             slot.addEventListener('mousedown', (e: MouseEvent) => e.preventDefault());
         });
 
-        this.clearInputIconSlot.addEventListener('click', () => {
+        this._clearInputIconSlot.addEventListener('click', () => {
             this.value = '';
-            this.input.focus();
+            this._input.focus();
         });
 
-        this.showPasswordIconSlot.addEventListener('click', () => {
-            this.input.type = 'text';
-            this.input.focus();
+        this._showPasswordIconSlot.addEventListener('click', () => {
+            this._input.type = 'text';
+            this._input.focus();
             this.classList.add('--show-password');
         });
 
-        this.hidePasswordIconSlot.addEventListener('click', () => {
-            this.input.type = 'password';
-            this.input.focus();
+        this._hidePasswordIconSlot.addEventListener('click', () => {
+            this._input.type = 'password';
+            this._input.focus();
             this.classList.remove('--show-password');
         });
     }
@@ -129,16 +129,16 @@ export class HTMLZooInputElement extends HTMLElement {
     }
 
     private _addInputLabelContainer = (): void => {
-        this.inputLabelContainer.appendChild(this.input);
-        this.inputLabelContainer.appendChild(this.labelEl);
-        this.root.appendChild(this.inputLabelContainer);
+        this._inputLabelContainer.appendChild(this._input);
+        this._inputLabelContainer.appendChild(this._labelEl);
+        this.root.appendChild(this._inputLabelContainer);
     }
 
     private _addSlots = (): void => {
-        this.root.insertBefore(this.leftIconSlot, this.inputLabelContainer);
-        this.root.appendChild(this.clearInputIconSlot);
-        this.root.appendChild(this.showPasswordIconSlot);
-        this.root.appendChild(this.hidePasswordIconSlot);
+        this.root.insertBefore(this._leftIconSlot, this._inputLabelContainer);
+        this.root.appendChild(this._clearInputIconSlot);
+        this.root.appendChild(this._showPasswordIconSlot);
+        this.root.appendChild(this._hidePasswordIconSlot);
     }
 
     private _applyFilter = () => {
@@ -146,23 +146,23 @@ export class HTMLZooInputElement extends HTMLElement {
             return;
         }
 
-        const sections = Array.from(document.querySelectorAll(`[${this.filterTagsName}]`));
+        const sections = Array.from(document.querySelectorAll(`[${this._filterTagsName}]`));
         let allTags = [];
 
         sections.forEach((section: HTMLElement) => {
-            const tags = section.getAttribute(this.filterTagsName).split(' ')
+            const tags = section.getAttribute(this._filterTagsName).split(' ')
                 .filter((tag: string) => !allTags.includes(tag));
             allTags = allTags.concat(tags);
         });
 
         const matchingTags = allTags.filter((tag: string) => {
-            const inputValuePattern = new RegExp(`(${this.input.value.split(' ').filter(val => val.trim().length).join('|')})`);
+            const inputValuePattern = new RegExp(`(${this._input.value.split(' ').filter(val => val.trim().length).join('|')})`);
 
-            return inputValuePattern.test(tag) || new RegExp(tag).test(this.input.value);
+            return inputValuePattern.test(tag) || new RegExp(tag).test(this._input.value);
         });
 
         const matchingSections = matchingTags.length ? sections.filter((section: HTMLElement) => {
-            const tags = section.getAttribute(this.filterTagsName);
+            const tags = section.getAttribute(this._filterTagsName);
             const matchingTagsPattern = new RegExp(`(${matchingTags.join('|')})`);
 
             return tags.search(matchingTagsPattern) !== -1;
@@ -170,13 +170,13 @@ export class HTMLZooInputElement extends HTMLElement {
 
         sections.forEach((section) => {
             if (!matchingSections.includes(section)) {
-                section.classList.add(this.filterHiddenClass);
+                section.classList.add(this._filterHiddenClass);
             } else {
-                section.classList.remove(this.filterHiddenClass);
+                section.classList.remove(this._filterHiddenClass);
             }
         });
 
-        window.dispatchEvent(new CustomEvent(this.filterEventName, {
+        window.dispatchEvent(new CustomEvent(this._filterEventName, {
             detail: {
                 tags: allTags,
                 matchingTags,
@@ -205,9 +205,9 @@ export class HTMLZooInputElement extends HTMLElement {
         }
 
         if (val) {
-            this._sharedAttrs.includes(attr) && this.input.setAttribute(attr, '');
+            this._sharedAttrs.includes(attr) && this._input.setAttribute(attr, '');
         } else {
-            this._sharedAttrs.includes(attr) && this.input.removeAttribute(attr);
+            this._sharedAttrs.includes(attr) && this._input.removeAttribute(attr);
         }
     }
 
@@ -236,7 +236,7 @@ export class HTMLZooInputElement extends HTMLElement {
              * ```
              */
             this.removeAttribute(attr);
-            this._sharedAttrs.includes(attr) && this.input.removeAttribute(attr);
+            this._sharedAttrs.includes(attr) && this._input.removeAttribute(attr);
 
             return;
         }
@@ -249,7 +249,7 @@ export class HTMLZooInputElement extends HTMLElement {
             this.setAttribute(attr, val);
         }
 
-        this._sharedAttrs.includes(attr) && this.input.setAttribute(attr, val);
+        this._sharedAttrs.includes(attr) && this._input.setAttribute(attr, val);
     }
 
     private _updateHasValidLabelClass(): void {
@@ -262,10 +262,10 @@ export class HTMLZooInputElement extends HTMLElement {
 
     private _updateIconSlots(options: any): void {
         [
-            this.leftIconSlot,
-            this.clearInputIconSlot,
-            this.showPasswordIconSlot,
-            this.hidePasswordIconSlot
+            this._leftIconSlot,
+            this._clearInputIconSlot,
+            this._showPasswordIconSlot,
+            this._hidePasswordIconSlot
         ].forEach((slot) => {
             slot.hidden = !options.showSlots;
         });
@@ -275,7 +275,7 @@ export class HTMLZooInputElement extends HTMLElement {
         this._syncStringAttribute('label', this.label);
 
         if (typeof this.label === 'string') {
-            this.labelEl.innerHTML = this.label;
+            this._labelEl.innerHTML = this.label;
         }
 
         this._updateHasValidLabelClass();
@@ -308,7 +308,7 @@ export class HTMLZooInputElement extends HTMLElement {
     private _updateType(): void {
         this._syncStringAttribute('type', this.type);
 
-        this.showPassword = false;
+        this._showPassword = false;
         this.classList.remove('--show-password');
     }
 
@@ -335,14 +335,14 @@ export class HTMLZooInputElement extends HTMLElement {
         const style = document.createElement('style');
         shadow.appendChild(style);
 
-        this.inputLabelContainer = utils.buildInputLabelContainer();
-        this.input = utils.buildInput();
-        this.labelEl = utils.buildLabel();
-        this.leftIconSlot = document.createElement('slot');
-        this.leftIconSlot.setAttribute('name', 'left-icon');
-        this.clearInputIconSlot = utils.buildIconSlot('right-icon-clear-input', 'fa-times');
-        this.showPasswordIconSlot = utils.buildIconSlot('right-icon-show-password', 'fa-eye');
-        this.hidePasswordIconSlot = utils.buildIconSlot('right-icon-hide-password', 'fa-eye-slash');
+        this._inputLabelContainer = utils.buildInputLabelContainer();
+        this._input = utils.buildInput();
+        this._labelEl = utils.buildLabel();
+        this._leftIconSlot = document.createElement('slot');
+        this._leftIconSlot.setAttribute('name', 'left-icon');
+        this._clearInputIconSlot = utils.buildIconSlot('right-icon-clear-input', 'fa-times');
+        this._showPasswordIconSlot = utils.buildIconSlot('right-icon-show-password', 'fa-eye');
+        this._hidePasswordIconSlot = utils.buildIconSlot('right-icon-hide-password', 'fa-eye-slash');
     }
 
     get autocomplete(): string {
@@ -457,7 +457,7 @@ export class HTMLZooInputElement extends HTMLElement {
 
     set value(val: string | null) {
         this._value = val;
-        this.input.value = val;
+        this._input.value = val;
         this._updateValue();
     }
 
@@ -470,7 +470,7 @@ export class HTMLZooInputElement extends HTMLElement {
     }
 
     protected attributeChangedCallback(name: string, _oldVal: string, newVal: string) {
-        const prop = this.camelCaseProps[name] || name;
+        const prop = this._camelCaseProps[name] || name;
 
         if (this._isBooleanAttr(name)) {
             this[prop] = this.hasAttribute(name);
