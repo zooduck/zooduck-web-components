@@ -38,7 +38,7 @@ input.label = 'example';
 | name | string | any | name |
 | noicons* | boolean | true, false | noIcons |
 | placeholder | string | any | placeholder |
-| type | string | email, filter, password, tel, text, url | type |
+| type | string | email, password, tel, text, url | type |
 
 *camelCase property
 
@@ -52,7 +52,7 @@ input.label = 'example';
 
 | Name | Description |
 | ---- | ----------- |
-| [type=filter] | If the type is set to filter, whenever the input's value changes all parent nodes in the DOM are checked for a `zooduck-input-tags` attribute, and a `--zooduck-input-filter-hidden` modifier class is applied to all elements without matching tags. This class has a default style of `display: none`, which can be easily overridden to suit any design choice.|
+| filter | If the type is set to filter, whenever the input's value changes all parent nodes in the DOM are checked for a `zooduck-input-tags` attribute, and a `--zooduck-input-filter-hidden` modifier class is applied to all elements without matching tags. This class has a default style of `display: none`, which can be easily overridden to suit any design choice.|
 
 For example, given the following:
 
