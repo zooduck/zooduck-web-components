@@ -46,7 +46,9 @@ export class HTMLZooInputElement extends HTMLElement {
         readonly: 'readOnly',
     };
     clearInputIconSlot: HTMLElement;
+    filterEventName = 'zooduck-input:filter';
     filterHiddenClass = '--zooduck-input-filter-hidden';
+    filterTagsName = 'zooduck-input-tags';
     hidePasswordIconSlot: HTMLElement;
     input: HTMLInputElement;
     inputLabelContainer: HTMLElement;
@@ -144,11 +146,11 @@ export class HTMLZooInputElement extends HTMLElement {
             return;
         }
 
-        const sections = Array.from(document.querySelectorAll('[zooduck-tags]'));
+        const sections = Array.from(document.querySelectorAll(`[${this.filterTagsName}]`));
         let allTags = [];
 
         sections.forEach((section: HTMLElement) => {
-            const tags = section.getAttribute('zooduck-tags').split(' ')
+            const tags = section.getAttribute(this.filterTagsName).split(' ')
                 .filter((tag: string) => !allTags.includes(tag));
             allTags = allTags.concat(tags);
         });
@@ -160,7 +162,7 @@ export class HTMLZooInputElement extends HTMLElement {
         });
 
         const matchingSections = matchingTags.length ? sections.filter((section: HTMLElement) => {
-            const tags = section.getAttribute('zooduck-tags');
+            const tags = section.getAttribute(this.filterTagsName);
             const matchingTagsPattern = new RegExp(`(${matchingTags.join('|')})`);
 
             return tags.search(matchingTagsPattern) !== -1;
@@ -174,7 +176,7 @@ export class HTMLZooInputElement extends HTMLElement {
             }
         });
 
-        window.dispatchEvent(new CustomEvent('zooduck-input:filter', {
+        window.dispatchEvent(new CustomEvent(this.filterEventName, {
             detail: {
                 tags: allTags,
                 matchingTags,

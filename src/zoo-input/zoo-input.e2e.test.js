@@ -373,11 +373,11 @@ describe('<zooduck-input>', () => {
             });
 
             describe('[type=filter]', () => {
-                it('should apply a `--zooduck-input-filter-hidden` class to elements that have `zooduck-tags` attributes when its value does not match one or more of the tags from the element\'s `zooduck-tags` attribute', async () => {
+                it('should apply a `--zooduck-input-filter-hidden` class to elements that have `zooduck-input-tags` attributes when its value does not match one or more of the tags from the element\'s `zooduck-input-tags` attribute', async () => {
                     await page.setContent(`
                         <zooduck-input type="filter"></zooduck-input>
-                        <section zooduck-tags="abc def">abc xyz</section>
-                        <section zooduck-tags="uvw xyz">def ghi</section>
+                        <section zooduck-input-tags="abc def">abc xyz</section>
+                        <section zooduck-input-tags="uvw xyz">def ghi</section>
                     `);
 
                     const el = await page.$('zooduck-input');
@@ -431,8 +431,8 @@ describe('<zooduck-input>', () => {
                 it('should hide filtered out elements by default', async () => {
                     await page.setContent(`
                         <zooduck-input type="filter"></zooduck-input>
-                        <section zooduck-tags="abc def">abc xyz</section>
-                        <section zooduck-tags="uvw xyz">def ghi</section>
+                        <section zooduck-input-tags="abc def">abc xyz</section>
+                        <section zooduck-input-tags="uvw xyz">def ghi</section>
                     `);
 
                     const el = await page.$('zooduck-input');
