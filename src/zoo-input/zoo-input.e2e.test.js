@@ -325,35 +325,21 @@ describe('<zooduck-input>', () => {
                 expect(await getAttribute(page, input, 'type')).toBeNull();
             });
 
-            describe('[type=hidden]', () => {
-                it('should hide the element if its `type` attribute is set to `hidden`', async () => {
-                    await page.setContent('<zooduck-input type="hidden"></zooduck-input>');
+            it('should set its `type` to `text` if an unsupported `type` is set', async () => {
+                await page.setContent('<zooduck-input type="password"></zooduck-input>');
 
-                    const el = await page.$('zooduck-input');
+                const el = await page.$('zooduck-input');
 
-                    const displayStyle = await getComputedStyleProperty(page, el, 'display');
+                const input = await getElementFromShadow(page, el, 'input');
 
-                    expect(displayStyle).toEqual('none');
-                });
+                expect(await getAttribute(page, input, 'type')).toEqual('password');
 
-                it('should hide the element if its `type` property is set to `hidden`', async () => {
-                    await page.setContent('<zooduck-input></zooduck-input>');
+                await page.evaluate((el) => {
+                    el.type = 'date';
+                }, el);
 
-                    const el = await page.$('zooduck-input');
-
-                    let displayStyle;
-                    displayStyle = await getComputedStyleProperty(page, el, 'display');
-
-                    expect(displayStyle).toEqual('flex');
-
-                    await page.evaluate((el)  => {
-                        el.type = 'hidden';
-                    }, el);
-
-                    displayStyle = await getComputedStyleProperty(page, el, 'display');
-
-                    expect(displayStyle).toEqual('none');
-                });
+                expect(await getAttribute(page, el, 'type')).toEqual('text');
+                expect(await getAttribute(page, input, 'type')).toEqual('text');
             });
 
             describe('[type=text] (default)', () => {

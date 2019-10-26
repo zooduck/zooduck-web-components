@@ -29,6 +29,13 @@ export class HTMLZooInputElement extends HTMLElement {
         'type',
         'value',
     ];
+    _supportedTypes = [
+        'email',
+        'password',
+        'tel',
+        'text',
+        'url'
+    ];
     _type: string;
     _value: string;
     camelCaseProps = {
@@ -371,7 +378,11 @@ export class HTMLZooInputElement extends HTMLElement {
     }
 
     set type(val: string) {
-        this._type = val;
+        let inferredVal = val;
+        if (!this._supportedTypes.includes(val) && val !== null) {
+            inferredVal = 'text';
+        }
+        this._type = inferredVal;
         this._updateType();
     }
 
