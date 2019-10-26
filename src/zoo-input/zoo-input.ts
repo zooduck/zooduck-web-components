@@ -1,5 +1,6 @@
 import * as utils from './zoo-input-utils';
 import { style } from './zoo-input.style';
+import { globalStyle } from './zoo-input.global-style';
 
 export class HTMLZooInputElement extends HTMLElement {
     _autocomplete: string;
@@ -12,6 +13,7 @@ export class HTMLZooInputElement extends HTMLElement {
         'required',
     ];
     _disabled: boolean;
+    _filter: string;
     _label: string;
     _name: string;
     _noIcons: boolean;
@@ -31,6 +33,7 @@ export class HTMLZooInputElement extends HTMLElement {
     ];
     _supportedTypes = [
         'email',
+        'filter',
         'password',
         'tel',
         'text',
@@ -43,6 +46,7 @@ export class HTMLZooInputElement extends HTMLElement {
         readonly: 'readOnly',
     };
     clearInputIconSlot: HTMLElement;
+    filterHiddenClass = '--zooduck-input-filter-hidden';
     hidePasswordIconSlot: HTMLElement;
     input: HTMLInputElement;
     inputLabelContainer: HTMLElement;
@@ -56,6 +60,7 @@ export class HTMLZooInputElement extends HTMLElement {
             'autocomplete',
             'autofocus',
             'disabled',
+            'filter',
             'label',
             'name',
             'noicons',
@@ -132,6 +137,50 @@ export class HTMLZooInputElement extends HTMLElement {
         this.root.appendChild(this.clearInputIconSlot);
         this.root.appendChild(this.showPasswordIconSlot);
         this.root.appendChild(this.hidePasswordIconSlot);
+    }
+
+    private _applyFilter = () => {
+        if (this.type !== 'filter') {
+            return;
+        }
+
+        const sections = Array.from(document.querySelectorAll('[zooduck-tags]'));
+        let allTags = [];
+
+        sections.forEach((section: HTMLElement) => {
+            const tags = section.getAttribute('zooduck-tags').split(' ')
+                .filter((tag: string) => !allTags.includes(tag));
+            allTags = allTags.concat(tags);
+        });
+
+        const matchingTags = allTags.filter((tag: string) => {
+            const inputValuePattern = new RegExp(`(${this.input.value.split(' ').filter(val => val.trim().length).join('|')})`);
+
+            return inputValuePattern.test(tag) || new RegExp(tag).test(this.input.value);
+        });
+
+        const matchingSections = matchingTags.length ? sections.filter((section: HTMLElement) => {
+            const tags = section.getAttribute('zooduck-tags');
+            const matchingTagsPattern = new RegExp(`(${matchingTags.join('|')})`);
+
+            return tags.search(matchingTagsPattern) !== -1;
+        }) : [];
+
+        sections.forEach((section) => {
+            if (!matchingSections.includes(section)) {
+                section.classList.add(this.filterHiddenClass);
+            } else {
+                section.classList.remove(this.filterHiddenClass);
+            }
+        });
+
+        window.dispatchEvent(new CustomEvent('zooduck-input:filter', {
+            detail: {
+                tags: allTags,
+                matchingTags,
+                matchingElements: matchingSections
+            }
+        }));
     }
 
     private _isBooleanAttr(attr: string): boolean {
@@ -248,6 +297,10 @@ export class HTMLZooInputElement extends HTMLElement {
     private _updateStyle(): void {
         const styleEl = this.shadowRoot.querySelector('style');
         styleEl.textContent = style;
+
+        const globalStyleEl = document.createElement('style');
+        globalStyleEl.textContent = globalStyle;
+        document.head.appendChild(globalStyleEl);
     }
 
     private _updateType(): void {
@@ -265,6 +318,8 @@ export class HTMLZooInputElement extends HTMLElement {
         } else {
             this.classList.remove('--has-content');
         }
+
+        this._applyFilter();
     }
 
     constructor() {
@@ -313,6 +368,14 @@ export class HTMLZooInputElement extends HTMLElement {
     set disabled(val: boolean) {
         this._disabled = val;
         this._syncBooleanAttribute('disabled', this.disabled);
+    }
+
+    get filter() {
+        return this._filter;
+    }
+
+    set filter(val: string) {
+        this._filter = val;
     }
 
     get label(): string {

@@ -1,4 +1,10 @@
-const shadowSelector = (el, selector) => el.shadowRoot.querySelector(selector);
+const clearInput = async (page, input) => {
+    await page.evaluate(async (input) => {
+        input.select();
+    }, input);
+
+    await input.press('Backspace');
+};
 const getElementFromShadow = async (page, el, selector) => await page.evaluateHandle(shadowSelector, el, selector);
 const getProperty = async (node, prop) => {
     const _prop = await node.getProperty(prop);
@@ -24,6 +30,7 @@ const getComputedStyleProperty = async (page, el, prop) => {
         }
     }, element, pseudoEl, prop);
 };
+const shadowSelector = (el, selector) => el.shadowRoot.querySelector(selector);
 
 describe('<zooduck-input>', () => {
     beforeAll(async () => {
@@ -362,6 +369,91 @@ describe('<zooduck-input>', () => {
                     inputValue = await getProperty(input, 'value');
 
                     expect(inputValue).toEqual('');
+                });
+            });
+
+            describe('[type=filter]', () => {
+                it('should apply a `--zooduck-input-filter-hidden` class to elements that have `zooduck-tags` attributes when its value does not match one or more of the tags from the element\'s `zooduck-tags` attribute', async () => {
+                    await page.setContent(`
+                        <zooduck-input type="filter"></zooduck-input>
+                        <section zooduck-tags="abc def">abc xyz</section>
+                        <section zooduck-tags="uvw xyz">def ghi</section>
+                    `);
+
+                    const el = await page.$('zooduck-input');
+                    const sectionWithTagsA = await page.$('section:nth-of-type(1)');
+                    const sectionWithTagsB = await page.$('section:nth-of-type(2)');
+                    const input = await getElementFromShadow(page, el, 'input');
+
+                    await input.type('ab');
+
+                    expect(await getProperty(input, 'value')).toEqual('ab');
+                    expect(await getClassList(sectionWithTagsA)).toEqual([]);
+                    expect(await getClassList(sectionWithTagsB)).toEqual(['--zooduck-input-filter-hidden']);
+
+                    await clearInput(page, input);
+
+                    await input.type('abc');
+
+                    expect(await getProperty(input, 'value')).toEqual('abc');
+                    expect(await getClassList(sectionWithTagsA)).toEqual([]);
+                    expect(await getClassList(sectionWithTagsB)).toEqual(['--zooduck-input-filter-hidden']);
+
+                    await clearInput(page, input);
+
+                    await input.type('abcd');
+                    expect(await getProperty(input, 'value')).toEqual('abcd');
+                    expect(await getClassList(sectionWithTagsA)).toEqual([]);
+                    expect(await getClassList(sectionWithTagsB)).toEqual(['--zooduck-input-filter-hidden']);
+
+                    await clearInput(page, input);
+
+                    await input.type('abx');
+                    expect(await getProperty(input, 'value')).toEqual('abx');
+                    expect(await getClassList(sectionWithTagsA)).toEqual(['--zooduck-input-filter-hidden']);
+                    expect(await getClassList(sectionWithTagsB)).toEqual(['--zooduck-input-filter-hidden']);
+
+                    await clearInput(page, input);
+
+                    await input.type('abt xy');
+                    expect(await getProperty(input, 'value')).toEqual('abt xy');
+                    expect(await getClassList(sectionWithTagsA)).toEqual(['--zooduck-input-filter-hidden']);
+                    expect(await getClassList(sectionWithTagsB)).toEqual([]);
+
+                    await clearInput(page, input);
+
+                    await input.type('abcd xy bc');
+                    expect(await getProperty(input, 'value')).toEqual('abcd xy bc');
+                    expect(await getClassList(sectionWithTagsA)).toEqual([]);
+                    expect(await getClassList(sectionWithTagsB)).toEqual([]);
+                });
+
+                it('should hide filtered out elements by default', async () => {
+                    await page.setContent(`
+                        <zooduck-input type="filter"></zooduck-input>
+                        <section zooduck-tags="abc def">abc xyz</section>
+                        <section zooduck-tags="uvw xyz">def ghi</section>
+                    `);
+
+                    const el = await page.$('zooduck-input');
+                    const sectionWithTagsA = await page.$('section:nth-of-type(1)');
+                    const sectionWithTagsB = await page.$('section:nth-of-type(2)');
+                    const input = await getElementFromShadow(page, el, 'input');
+
+                    await input.type('abc');
+
+                    const sectionWithTagsADisplay = await getComputedStyleProperty(page, sectionWithTagsA, 'display');
+                    const sectionWithTagsBDisplay = await getComputedStyleProperty(page, sectionWithTagsB, 'display');
+
+                    expect(await getClassList(sectionWithTagsA)).toEqual([]);
+                    expect(await getClassList(sectionWithTagsB)).toEqual(['--zooduck-input-filter-hidden']);
+
+                    expect(sectionWithTagsADisplay).toEqual('block');
+                    expect(sectionWithTagsBDisplay).toEqual('none');
+                });
+
+                it('should dispatch a `zooduck-input:filter` event on the window when its value is changed', async () => {
+                    // @TODO: Find a way to test this using Puppeteer
                 });
             });
 

@@ -31,9 +31,6 @@ export const style = `
 :host([disabled]) input {
     background-color: var(--zoo-input-disabled-background-color, var(--disabled));
 }
-:host([type=hidden]) {
-    display: none;
-}
 .input-label-container {
     position: relative;
     display: flex;
@@ -114,5 +111,8 @@ slot[name^=right-icon] {
 }
 :host([type=password].--show-password) slot[name=right-icon-hide-password] {
     display: flex;
+}
+.--zooduck-input-filter-hidden {
+    display: none;
 }
 `;
