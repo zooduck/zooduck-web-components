@@ -4,7 +4,7 @@
 Include the following `<script>` tag in the `<head>` of your page:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/zooduck/zooduck-web-components@0.0.1-alpha/dist/zooduck-web-components.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/zooduck/zooduck-web-components@0.0.2-alpha/dist/zooduck-web-components.min.js"></script>
 ```
 
 Then, either:
