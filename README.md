@@ -81,7 +81,7 @@ The result would be:
 
 | Name | Description |
 | ---- | ----------- |
-| signature | Adds a `<canvas>` element to the input, which can be drawn on using either mouse or touch. The image (signature) is saved to the input's value as a `Data URL` string - which is convenient for storing in a database and reproducing later on using an `<img>` element). |
+| signature | Adds a `<canvas>` element to the input, which can be drawn on using either mouse or touch.<br><br>The image (signature) is saved to the input's value as a `Data URL` string - which is convenient for storing in a database and reproducing later on using an `<img>` element). |
 
 ## Slots
 
