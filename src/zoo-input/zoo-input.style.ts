@@ -1,19 +1,18 @@
 export const style = `
 /**
- * @var --zoo-input-font-family: The \`font-family\` style of the element. Defaults to \`inherit\`.
- * @var --zoo-input-font-size: The \`font-size\` style of the element. Defaults to \`19px\`.
- * @var --zoo-input-font-weight: The \`font-weight\` style of the element. Defaults to \`inherit\`.
- * @var --zoo-input-font-style: The \`font-style\` style of the element. Defaults to \`inherit\`.
- * @var --zoo-input-width: The \`width\` style of the element. Defaults to \`auto\`.
- * @var --zoo-input-display: The \`display\` style of the element. Defaults to \`flex\`.
- * @var --zoo-input-border: The \`border\` style of the element. Defaults to \`solid var(--gray)\`.
- * @var --zoo-input-border-width: The \`border-width\` style of the element. Defaults to \`1px\`.
- * @var --zoo-input-background-color: The \`background-color\` style of the element. Defaults to \`#fff\`.
- * @var --zoo-input-disabled-background-color: The \`background-color\` style of the element when its \`disabled\` attribute is set. Defaults to \`#eee\`.
- * @var --zoo-input-color: The \`color\` style of the element's input. Defaults to \`var(--black)\`.
- * @var --zoo-input-label-color: The \`color\` style of the element's label. Defaults to \`var(--gray)\`.
- * @var --zoo-input-icon-color: The \`color\` style of the icon slots. Defaults to \`var(--zoo-input-label-color, var(--gray))\`.
- * @var --zoo-input-icon-padding: The \`padding\` style of icon slots. Defaults to \`0 20px\`.
+ * @var --zooduck-input-font-family: The \`font-family\` style of the element. Defaults to \`inherit\`.
+ * @var --zooduck-input-font-size: The \`font-size\` style of the element. Defaults to \`19px\`.
+ * @var --zooduck-input-font-weight: The \`font-weight\` style of the element. Defaults to \`inherit\`.
+ * @var --zooduck-input-font-style: The \`font-style\` style of the element. Defaults to \`inherit\`.
+ * @var --zooduck-input-width: The \`width\` style of the element. Defaults to \`auto\`.
+ * @var --zooduck-input-border: The \`border\` style of the element. Defaults to \`solid var(--gray)\`.
+ * @var --zooduck-input-border-width: The \`border-width\` style of the element. Defaults to \`1px\`.
+ * @var --zooduck-input-background-color: The \`background-color\` style of the element. Defaults to \`#fff\`.
+ * @var --zooduck-input-disabled-background-color: The \`background-color\` style of the element when its \`disabled\` attribute is set. Defaults to \`#eee\`.
+ * @var --zooduck-input-color: The \`color\` style of the element's input. Defaults to \`var(--black)\`.
+ * @var --zooduck-input-label-color: The \`color\` style of the element's label. Defaults to \`var(--gray)\`.
+ * @var --zooduck-input-icon-color: The \`color\` style of the icon slots. Defaults to \`var(--zooduck-input-label-color, var(--gray))\`.
+ * @var --zooduck-input-icon-padding: The \`padding\` style of icon slots. Defaults to \`0 20px\`.
  */
 :host {
     --gray: #bbb;
@@ -21,15 +20,15 @@ export const style = `
     --disabled: #eee;
 
     position: relative;
-    display: var(--zoo-input-display, flex);
-    width: var(--zoo-input-width, auto);
-    border: var(--zoo-input-border, solid var(--gray));
-    border-width: var(--zoo-input-border-width, 1px);
-    background-color: var(--zoo-input-background-color, #fff);
+    display: flex;
+    width: var(--zooduck-input-width, auto);
+    border: var(--zooduck-input-border, solid var(--gray));
+    border-width: var(--zooduck-input-border-width, 1px);
+    background-color: var(--zooduck-input-background-color, #fff);
 }
 :host([disabled]),
 :host([disabled]) input {
-    background-color: var(--zoo-input-disabled-background-color, var(--disabled));
+    background-color: var(--zooduck-input-disabled-background-color, var(--disabled));
 }
 .input-label-container {
     position: relative;
@@ -43,11 +42,11 @@ export const style = `
     display: block;
     position: absolute;
     pointer-events: none;
-    color: var(--zoo-input-label-color, var(--gray));
-    font-family: var(--zoo-input-font-family, 'Roboto', sans-serif);
-    font-size: var(--zoo-input-font-size, 19px);
-    font-weight: var(--zoo-input-font-weight, inherit);
-    font-style: var(--zoo-input-font-style, inherit);
+    color: var(--zooduck-input-label-color, var(--gray));
+    font-family: var(--zooduck-input-font-family, 'Roboto', sans-serif);
+    font-size: var(--zooduck-input-font-size, 19px);
+    font-weight: var(--zooduck-input-font-weight, inherit);
+    font-style: var(--zooduck-input-font-style, inherit);
     text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -72,19 +71,19 @@ input {
     outline: none;
     flex-grow: 1;
     padding: 10px;
-    font-family: var(--zoo-input-font-family, inherit);
-    font-size: var(--zoo-input-font-size, 19px);
-    font-weight: var(--zoo-input-font-weight, inherit);
-    font-style: var(--zoo-input-font-style, inherit);
-    background-color: var(--zoo-input-background-color, #fff);
-    color: var(--zoo-input-color, var(--black));
+    font-family: var(--zooduck-input-font-family, inherit);
+    font-size: var(--zooduck-input-font-size, 19px);
+    font-weight: var(--zooduck-input-font-weight, inherit);
+    font-style: var(--zooduck-input-font-style, inherit);
+    background-color: var(--zooduck-input-background-color, #fff);
+    color: var(--zooduck-input-color, var(--black));
 }
 :host(.--has-valid-label) input {
-    padding-top: calc(var(--zoo-input-font-size, 19px) + 5px);
+    padding-top: calc(var(--zooduck-input-font-size, 19px) + 5px);
 }
 ::slotted(*),
 slot > * {
-    padding: var(--zoo-input-icon-padding, 0 20px);
+    padding: var(--zooduck-input-icon-padding, 0 20px);
 }
 slot[hidden] {
     display: none !important;
@@ -93,11 +92,11 @@ slot[name*=icon] {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--zoo-input-font-size, 19px);
-    color: var(--zoo-input-icon-color, var(--zoo-input-label-color, var(--gray)));
+    font-size: var(--zooduck-input-font-size, 19px);
+    color: var(--zooduck-input-icon-color, var(--zooduck-input-label-color, var(--gray)));
 }
 slot[name*=icon] svg {
-    height: var(--zoo-input-font-size, 19px);
+    height: var(--zooduck-input-font-size, 19px);
 }
 slot[name^=right-icon] {
     cursor: pointer;
