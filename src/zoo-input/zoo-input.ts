@@ -146,26 +146,9 @@ export class HTMLZooInputElement extends HTMLElement {
         }
 
         const sections = Array.from(document.querySelectorAll(`[${this._filterTagsName}]`));
-        let allTags = [];
-
-        sections.forEach((section: HTMLElement) => {
-            const tags = section.getAttribute(this._filterTagsName).split(' ')
-                .filter((tag: string) => !allTags.includes(tag));
-            allTags = allTags.concat(tags);
-        });
-
-        const matchingTags = allTags.filter((tag: string) => {
-            const inputValuePattern = new RegExp(`(${this._input.value.split(' ').filter(val => val.trim().length).join('|')})`);
-
-            return inputValuePattern.test(tag) || new RegExp(tag).test(this._input.value);
-        });
-
-        const matchingSections = matchingTags.length ? sections.filter((section: HTMLElement) => {
-            const tags = section.getAttribute(this._filterTagsName);
-            const matchingTagsPattern = new RegExp(`(${matchingTags.join('|')})`);
-
-            return tags.search(matchingTagsPattern) !== -1;
-        }) : [];
+        const allTags = this._getAllFilterTags(sections);
+        const matchingTags = this._getMatchingTags(allTags);
+        const matchingSections = this._getMatchingSections(sections, matchingTags);
 
         sections.forEach((section) => {
             if (!matchingSections.includes(section)) {
@@ -182,6 +165,40 @@ export class HTMLZooInputElement extends HTMLElement {
                 matchingElements: matchingSections
             }
         }));
+    }
+
+    private _getAllFilterTags(sections: Element[]): string[] {
+        let allTags = [];
+
+        sections.forEach((section: Element) => {
+            const tags = section.getAttribute(this._filterTagsName).split(' ')
+                .filter((tag: string) => !allTags.includes(tag));
+            allTags = allTags.concat(tags);
+        });
+
+        return allTags;
+    }
+
+    private _getMatchingSections(sections: Element[], matchingTags: string[]): Element[] {
+        const matchingSections = matchingTags.length ? sections.filter((section: HTMLElement) => {
+            const tags = section.getAttribute(this._filterTagsName);
+            const matchingTagsPattern = new RegExp(`(${matchingTags.join('|')})`);
+
+            return tags.search(matchingTagsPattern) !== -1;
+        }) : [];
+
+        return matchingSections;
+    }
+
+    private _getMatchingTags(allTags: string[]): string[] {
+        return allTags.filter((tag: string) => {
+            const inputValuePattern = new RegExp(`(${this._input.value.split(' ').filter((val) => {
+                console.log(val.trim().length);
+                return val.trim().length > 1;
+            }).join('|')})`);
+
+            return inputValuePattern.test(tag) || new RegExp(tag).test(this._input.value);
+        });
     }
 
     private _isBooleanAttr(attr: string): boolean {

@@ -428,6 +428,34 @@ describe('<zooduck-input>', () => {
                     expect(await getClassList(sectionWithTagsB)).toEqual([]);
                 });
 
+                it('should ignore words of less than 2 characters', async () => {
+                    await page.setContent(`
+                        <zooduck-input type="filter"></zooduck-input>
+                        <section zooduck-input-tags="abc def">abc xyz</section>
+                        <section zooduck-input-tags="uvw xyz">def ghi</section>
+                    `);
+
+                    const el = await page.$('zooduck-input');
+                    const sectionWithTagsA = await page.$('section:nth-of-type(1)');
+                    const sectionWithTagsB = await page.$('section:nth-of-type(2)');
+                    const input = await getElementFromShadow(page, el, 'input');
+
+                    await input.type('abc x');
+
+                    const sectionWithTagsADisplay = await getComputedStyleProperty(page, sectionWithTagsA, 'display');
+                    const sectionWithTagsBDisplay = await getComputedStyleProperty(page, sectionWithTagsB, 'display');
+
+                    expect(await getClassList(sectionWithTagsA)).toEqual([]);
+                    expect(await getClassList(sectionWithTagsB)).toEqual(['--zooduck-input-filter-hidden']);
+
+                    await clearInput(page, input);
+
+                    await input.type('abc xy');
+
+                    expect(await getClassList(sectionWithTagsA)).toEqual([]);
+                    expect(await getClassList(sectionWithTagsB)).toEqual([]);
+                });
+
                 it('should hide filtered out elements by default', async () => {
                     await page.setContent(`
                         <zooduck-input type="filter"></zooduck-input>
