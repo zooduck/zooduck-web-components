@@ -5,7 +5,8 @@ export const style = `
  * @var --zooduck-input-font-weight: The \`font-weight\` style of the element. Defaults to \`inherit\`.
  * @var --zooduck-input-font-style: The \`font-style\` style of the element. Defaults to \`inherit\`.
  * @var --zooduck-input-width: The \`width\` style of the element. Defaults to \`auto\`.
- * @var --zooduck-input-border: The \`border\` style of the element. Defaults to \`solid var(--gray)\`.
+ * @var --zooduck-input-border-style: The \`border-style\` style of the element. Defaults to \`solid\`.
+ * @var --zooduck-input-border-color: The \`border-color\` style of the element. Defaults to \`var(--gray)\`.
  * @var --zooduck-input-border-width: The \`border-width\` style of the element. Defaults to \`1px\`.
  * @var --zooduck-input-background-color: The \`background-color\` style of the element. Defaults to \`#fff\`.
  * @var --zooduck-input-disabled-background-color: The \`background-color\` style of the element when its \`disabled\` attribute is set. Defaults to \`#eee\`.
@@ -22,7 +23,8 @@ export const style = `
     position: relative;
     display: flex;
     width: var(--zooduck-input-width, auto);
-    border: var(--zooduck-input-border, solid var(--gray));
+    border-style: var(--zooduck-input-border-style, solid);
+    border-color: var(--zooduck-input-border-color, var(--gray));
     border-width: var(--zooduck-input-border-width, 1px);
     background-color: var(--zooduck-input-background-color, #fff);
 }
@@ -67,6 +69,7 @@ export const style = `
     transform: translateY(0) scale(.8);
 }
 input {
+    width: 100%;
     border: none;
     outline: none;
     flex-grow: 1;
