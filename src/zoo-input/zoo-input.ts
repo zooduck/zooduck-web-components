@@ -15,7 +15,11 @@ export class HTMLZooInputElement extends HTMLElement {
     private _camelCaseProps = {
         noicons: 'noIcons',
         readonly: 'readOnly',
+        signatureinkcolor: 'signatureInkColor',
     };
+    private _canvas: HTMLCanvasElement;
+    private _canvasEvents: utils.CanvasEvents;
+    private _canvasHeight = 90;
     private _clearInputIconSlot: HTMLElement;
     private _disabled: boolean;
     private _filter: string;
@@ -45,10 +49,12 @@ export class HTMLZooInputElement extends HTMLElement {
         'value',
     ];
     private _showPasswordIconSlot: HTMLElement;
+    private _signatureInkColor = '#222';
     private _supportedTypes = [
         'email',
         'filter',
         'password',
+        'signature',
         'tel',
         'text',
         'url'
@@ -68,12 +74,31 @@ export class HTMLZooInputElement extends HTMLElement {
             'placeholder',
             'readonly',
             'required',
+            'signatureinkcolor',
             'type',
             'value',
         ];
     }
 
+    private _addCanvasEvents() {
+        this._canvas.addEventListener('mousedown', (e: MouseEvent) => this._canvasEvents.onTouchStart(e));
+        this._canvas.addEventListener('mousemove', (e: MouseEvent) => this._canvasEvents.onTouchMove(e));
+        this._canvas.addEventListener('mouseup', () => this._canvasEvents.onTouchEnd());
+        this._canvas.addEventListener('mouseout', () => this._canvasEvents.onTouchEnd());
+
+        this._canvas.addEventListener('touchstart', (e: TouchEvent) => this._canvasEvents.onTouchStart(e));
+        this._canvas.addEventListener('touchmove', (e: TouchEvent) => this._canvasEvents.onTouchMove(e));
+        this._canvas.addEventListener('touchcancel', () => this._canvasEvents.onTouchEnd());
+        this._canvas.addEventListener('touchend', () => this._canvasEvents.onTouchEnd());
+    }
+
     private _addEvents(): void {
+        window.addEventListener('resize', () => {
+            this._updateCanvasWidth();
+        });
+
+        this._addCanvasEvents();
+
         this.addEventListener('click', () => {
             this._input.focus();
         });
@@ -105,7 +130,12 @@ export class HTMLZooInputElement extends HTMLElement {
 
         this._clearInputIconSlot.addEventListener('click', () => {
             this.value = '';
-            this._input.focus();
+
+            if (this.type === 'signature') {
+                this._clearCanvas();
+            } else {
+                this._input.focus();
+            }
         });
 
         this._showPasswordIconSlot.addEventListener('click', () => {
@@ -129,6 +159,7 @@ export class HTMLZooInputElement extends HTMLElement {
 
     private _addInputLabelContainer = (): void => {
         this._inputLabelContainer.appendChild(this._input);
+        this._inputLabelContainer.appendChild(this._canvas);
         this._inputLabelContainer.appendChild(this._labelEl);
         this.root.appendChild(this._inputLabelContainer);
     }
@@ -165,6 +196,11 @@ export class HTMLZooInputElement extends HTMLElement {
                 matchingElements: matchingSections
             }
         }));
+    }
+
+    private _clearCanvas() {
+        const context = this._canvas.getContext('2d');
+        context.clearRect(0, 0, this._canvas.width, this._canvas.height);
     }
 
     private _getAllFilterTags(sections: Element[]): string[] {
@@ -210,6 +246,7 @@ export class HTMLZooInputElement extends HTMLElement {
         this._addEvents();
         this._addFonts();
         this._updateStyle();
+        this._updateCanvasWidth();
     }
 
     private _syncBooleanAttribute(attr: string, val: boolean): void {
@@ -256,6 +293,13 @@ export class HTMLZooInputElement extends HTMLElement {
             return;
         }
 
+        if (attr === 'value' && val === '') {
+            this.removeAttribute(attr);
+            this._input.removeAttribute(attr);
+
+            return;
+        }
+
         if (typeof val !== 'string') {
             val = JSON.stringify(val);
         }
@@ -265,6 +309,11 @@ export class HTMLZooInputElement extends HTMLElement {
         }
 
         this._sharedAttrs.includes(attr) && this._input.setAttribute(attr, val);
+    }
+
+    private _updateCanvasWidth() {
+        this._canvas.width = 0;
+        this._canvas.width = this._inputLabelContainer.offsetWidth;
     }
 
     private _updateHasValidLabelClass(): void {
@@ -323,6 +372,9 @@ export class HTMLZooInputElement extends HTMLElement {
     private _updateType(): void {
         this._syncStringAttribute('type', this.type);
 
+        this._input.value = '';
+        this._clearCanvas();
+
         this.classList.remove('--show-password');
     }
 
@@ -351,6 +403,8 @@ export class HTMLZooInputElement extends HTMLElement {
 
         this._inputLabelContainer = utils.buildInputLabelContainer();
         this._input = utils.buildInput();
+        this._canvas = utils.buildCanvas(this._canvasHeight);
+        this._canvasEvents = new utils.CanvasEvents(this._canvas, this._input);
         this._labelEl = utils.buildLabel();
         this._leftIconSlot = document.createElement('slot');
         this._leftIconSlot.setAttribute('name', 'left-icon');
@@ -450,6 +504,15 @@ export class HTMLZooInputElement extends HTMLElement {
 
     get root(): ShadowRoot | HTMLZooInputElement {
         return this.shadowRoot || this;
+    }
+
+    get signatureInkColor() {
+        return this._signatureInkColor;
+    }
+
+    set signatureInkColor(val: string) {
+        this._signatureInkColor = val;
+        this._canvasEvents.signatureInkColor = this.signatureInkColor;
     }
 
     get type(): string {

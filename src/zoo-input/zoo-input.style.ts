@@ -42,6 +42,7 @@ export const style = `
 }
 :host(.--has-valid-label) .label {
     display: block;
+    user-select: none;
     position: absolute;
     pointer-events: none;
     color: var(--zooduck-input-label-color, var(--gray));
@@ -64,7 +65,8 @@ export const style = `
     content: "*";
 }
 :host(.--active) .label,
-:host(.--has-content) .label {
+:host(.--has-content) .label,
+:host([type=signature]) .label {
     top: 5px;
     transform: translateY(0) scale(.8);
 }
@@ -80,6 +82,17 @@ input {
     font-style: var(--zooduck-input-font-style, inherit);
     background-color: var(--zooduck-input-background-color, #fff);
     color: var(--zooduck-input-color, var(--black));
+}
+canvas {
+   display: none;
+}
+:host([type=signature]) input {
+    display: none;
+}
+:host([type=signature]) canvas {
+    display: block;
+    margin-top: calc(var(--zooduck-input-font-size, 19px) + 15px);
+    background-color: rgba(0, 0, 0, .05);
 }
 :host(.--has-valid-label) input {
     padding-top: calc(var(--zooduck-input-font-size, 19px) + 5px);
