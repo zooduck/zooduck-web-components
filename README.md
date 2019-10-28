@@ -19,10 +19,10 @@ or:
 <zooduck-input></zooduck-input>
 
 <script>
-const input = document.querySelector('zooduck-input');
-input.type = 'text';
-input.name = 'example';
-input.label = 'example';
+  const input = document.querySelector('zooduck-input');
+  input.type = 'text';
+  input.name = 'example';
+  input.label = 'example';
 </script>
 ```
 
@@ -46,13 +46,14 @@ input.label = 'example';
 
 | Name | Type | Values | Property | Description |
 | ---- | ---- | ------ | -------- | ----------- |
-| label | string | any | label | Animated placeholder. If both `label` and `placeholder` are set, `placeholder` is ignored.
+| label | string | any | label | Animated placeholder. If both `label` and `placeholder` are set, `placeholder` is ignored. |
+| signatureinkcolor | string | any | signatureInkColor | Sets the ink color for the `signature` type. |
 
 ## Special types:
 
 | Name | Description |
 | ---- | ----------- |
-| filter | If the type is set to filter, whenever the input's value changes all parent nodes in the DOM are checked for a `zooduck-input-tags` attribute, and a `--zooduck-input-filter-hidden` modifier class is applied to all elements without matching tags. This class has a default style of `display: none`.
+| filter | If the type is set to filter, whenever the input's value changes all parent nodes in the DOM are checked for a `zooduck-input-tags` attribute, and a `--zooduck-input-filter-hidden` modifier class is applied to all elements without matching tags.<br><br>This class has a default style of `display: none`. |
 
 For example, given the following:
 
@@ -77,6 +78,10 @@ The result would be:
 <!-- this section is ignored, since it has a tag of "frost" that contains "fro" -->
 <section zooduck-input-tags="cold snow frost ice">winter weather</section>
 ```
+
+| Name | Description |
+| ---- | ----------- |
+| signature | Adds a `<canvas>` which can be drawn on using mouse or touch. The input value is then set to a `Data URL` of the signature, so it can be easily saved to a database. <br><br>You can easily render the image later by setting an `<img>` element's `src` to the value of the `Data URL`. |
 
 ## Slots
 
