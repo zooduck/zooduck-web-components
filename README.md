@@ -72,7 +72,7 @@ The result would be:
 <section class="--zooduck-input-filter-hidden" zooduck-input-tags="blue monster muppet cookie henson disney">cookie monster</section>
 <!-- this section is ignored, since it has a tag of "frog" that contains "fro" -->
 <section zooduck-input-tags="frog amphibian muppet henson disney">kermit</section>
-<!-- this section is ignored since it has no "zooduck-input-tags" attribute -->
+<!-- this section is ignored, since it has no "zooduck-input-tags" attribute -->
 <section>fraggle rock</section>
 <!-- this section is ignored, since it has a tag of "frost" that contains "fro" -->
 <section zooduck-input-tags="cold snow frost ice">winter weather</section>
@@ -120,6 +120,10 @@ There are a number of CSS configuration options, in the form of CSS variables, t
 | --zooduck-input-icon-padding | The `padding` style of icon slots | 0 20px |
 
 Default:
+
+```html
+<zooduck-input label="zooduck-input"></zooduck-input>
+```
 
 ![alt text](https://github.com/zooduck/screenshots/blob/master/zooduck-web-components/zooduck-input/zooduck-input-default.png)
 
