@@ -57,21 +57,25 @@ input.label = 'example';
 For example, given the following:
 
 ```html
-<zooduck-input type="filter" value"frog"></zooduck-input>
+<zooduck-input type="filter" value"fro"></zooduck-input>
 <section zooduck-input-tags="blue monster muppet cookie henson disney">cookie monster</section>
 <section zooduck-input-tags="frog amphibian muppet henson disney">kermit</section>
 <section>fraggle rock</section>
+<section zooduck-input-tags="cold snow frost ice">winter weather</section>
 ```
 
 The result would be:
 
 ```html
-<zooduck-input type="filter" value"frog"></zooduck-input>
-<!-- this section gets the modifier class applied since it does not have any tags that match "frog" -->
+<zooduck-input type="filter" value"fro"></zooduck-input>
+<!-- this section gets the modifier class applied since it does not have any tags that contain "fro" -->
 <section class="--zooduck-input-filter-hidden" zooduck-input-tags="blue monster muppet cookie henson disney">cookie monster</section>
+<!-- this section is ignored, since it has a tag of "frog" that contains "fro" -->
 <section zooduck-input-tags="frog amphibian muppet henson disney">kermit</section>
 <!-- this section is ignored since it has no "zooduck-input-tags" attribute -->
 <section>fraggle rock</section>
+<!-- this section is ignored, since it has a tag of "frost" that contains "fro" -->
+<section zooduck-input-tags="cold snow frost ice">winter weather</section>
 ```
 
 ## Slots
