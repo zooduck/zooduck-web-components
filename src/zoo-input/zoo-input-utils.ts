@@ -48,7 +48,7 @@ export class CanvasEvents {
     private _canvas: HTMLCanvasElement;
     private _context: CanvasRenderingContext2D;
     private _domRect: DOMRect;
-    private _input: HTMLInputElement;
+    private _imageData: string;
     private _lineWidth = 3;
     private _signatureInkColor: string;
     private _signatureInkColorDefault = '#222';
@@ -82,9 +82,8 @@ export class CanvasEvents {
         return true;
     }
 
-    constructor(canvas: HTMLCanvasElement, input: HTMLInputElement) {
+    constructor(canvas: HTMLCanvasElement) {
         this._canvas = canvas;
-        this._input = input;
     }
 
     public onTouchStart(e: MouseEvent | TouchEvent) {
@@ -136,12 +135,14 @@ export class CanvasEvents {
         }
 
         this._canDraw = false;
-
-        const imageData = this._canvas.toDataURL();
-        this._input.value = imageData;
+        this._imageData = this._canvas.toDataURL();
     }
 
-    set signatureInkColor(color: string) {
+    public get imageData() {
+        return this._imageData;
+    }
+
+    public set signatureInkColor(color: string) {
         this._signatureInkColor = color;
     }
 }

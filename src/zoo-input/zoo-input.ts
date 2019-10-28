@@ -83,13 +83,13 @@ export class HTMLZooInputElement extends HTMLElement {
     private _addCanvasEvents() {
         this._canvas.addEventListener('mousedown', (e: MouseEvent) => this._canvasEvents.onTouchStart(e));
         this._canvas.addEventListener('mousemove', (e: MouseEvent) => this._canvasEvents.onTouchMove(e));
-        this._canvas.addEventListener('mouseup', () => this._canvasEvents.onTouchEnd());
-        this._canvas.addEventListener('mouseout', () => this._canvasEvents.onTouchEnd());
+        this._canvas.addEventListener('mouseup', () => this._canvasOnTouchEnd());
+        this._canvas.addEventListener('mouseout', () => this._canvasOnTouchEnd());
 
         this._canvas.addEventListener('touchstart', (e: TouchEvent) => this._canvasEvents.onTouchStart(e));
         this._canvas.addEventListener('touchmove', (e: TouchEvent) => this._canvasEvents.onTouchMove(e));
-        this._canvas.addEventListener('touchcancel', () => this._canvasEvents.onTouchEnd());
-        this._canvas.addEventListener('touchend', () => this._canvasEvents.onTouchEnd());
+        this._canvas.addEventListener('touchcancel', () => this._canvasOnTouchEnd());
+        this._canvas.addEventListener('touchend', () => this._canvasOnTouchEnd());
     }
 
     private _addEvents(): void {
@@ -196,6 +196,11 @@ export class HTMLZooInputElement extends HTMLElement {
                 matchingElements: matchingSections
             }
         }));
+    }
+
+    private _canvasOnTouchEnd() {
+        this._canvasEvents.onTouchEnd();
+        this.value = this._canvasEvents.imageData;
     }
 
     private _clearCanvas() {
@@ -372,7 +377,7 @@ export class HTMLZooInputElement extends HTMLElement {
     private _updateType(): void {
         this._syncStringAttribute('type', this.type);
 
-        this._input.value = '';
+        this.value = '';
         this._clearCanvas();
 
         this.classList.remove('--show-password');
@@ -404,7 +409,7 @@ export class HTMLZooInputElement extends HTMLElement {
         this._inputLabelContainer = utils.buildInputLabelContainer();
         this._input = utils.buildInput();
         this._canvas = utils.buildCanvas(this._canvasHeight);
-        this._canvasEvents = new utils.CanvasEvents(this._canvas, this._input);
+        this._canvasEvents = new utils.CanvasEvents(this._canvas);
         this._labelEl = utils.buildLabel();
         this._leftIconSlot = document.createElement('slot');
         this._leftIconSlot.setAttribute('name', 'left-icon');
