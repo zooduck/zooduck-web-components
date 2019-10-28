@@ -193,7 +193,6 @@ export class HTMLZooInputElement extends HTMLElement {
     private _getMatchingTags(allTags: string[]): string[] {
         return allTags.filter((tag: string) => {
             const inputValuePattern = new RegExp(`(${this._input.value.split(' ').filter((val) => {
-                console.log(val.trim().length);
                 return val.trim().length > 1;
             }).join('|')})`);
 
