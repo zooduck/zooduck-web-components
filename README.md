@@ -1,4 +1,7 @@
 # zooduck-web-components
+A library of native HTML Custom Elements ("Web Components") *without polyfills*. Can be used with any modern browser that supports "Autonomous custom elements" (i.e. Chrome, Firefox, Opera, Safari).
+
+An up-to-date list of supported browsers can be found here: https://caniuse.com/#search=custom%20element
 
 ## Usage
 Include the following `<script>` tag in the `<head>` of your page:
