@@ -1,8 +1,8 @@
-import * as utils from './zoo-input-utils';
-import { style } from './zoo-input.style';
-import { globalStyle } from './zoo-input.global-style';
+import * as utils from './zooduck-input-utils';
+import { style } from './zooduck-input.style';
+import { globalStyle } from './zooduck-input.global-style';
 
-export class HTMLZooInputElement extends HTMLElement {
+export class HTMLZooduckInputElement extends HTMLElement {
     private _autocomplete: string;
     private _autofocus: boolean;
     private _booleanAttrs = [
@@ -500,7 +500,7 @@ export class HTMLZooInputElement extends HTMLElement {
         this._syncBooleanAttribute('readonly', val);
     }
 
-    private get root(): ShadowRoot | HTMLZooInputElement {
+    private get root(): ShadowRoot | HTMLZooduckInputElement {
         return this.shadowRoot || this;
     }
 

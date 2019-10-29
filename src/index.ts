@@ -1,4 +1,4 @@
 import 'regenerator-runtime/runtime'; // required for async/await to work with babel7+
-import { HTMLZooInputElement } from './zoo-input/zoo-input';
+import { HTMLZooduckInputElement } from './zooduck-input/zooduck-input';
 
-customElements.define('zooduck-input', HTMLZooInputElement);
+customElements.define('zooduck-input', HTMLZooduckInputElement);
