@@ -14,6 +14,7 @@ export const style = `
  * @var --zooduck-input-label-color: The \`color\` style of the element's label. Defaults to \`var(--gray)\`.
  * @var --zooduck-input-icon-color: The \`color\` style of the icon slots. Defaults to \`var(--zooduck-input-label-color, var(--gray))\`.
  * @var --zooduck-input-icon-padding: The \`padding\` style of icon slots. Defaults to \`0 20px\`.
+ * @var --zooduck-input-signature-border-color: The \`border-color\` style of the signature area. Defaults to \`#eee\`.
  */
 :host {
     --gray: #bbb;
@@ -92,7 +93,9 @@ canvas {
 :host([type=signature]) canvas {
     display: block;
     margin-top: calc(var(--zooduck-input-font-size, 19px) + 15px);
-    background-color: rgba(0, 0, 0, .05);
+    border-style: dashed;
+    border-color: var(--zooduck-input-signature-border-color, #eee);
+    border-width: 6px 6px 0 0;
 }
 :host(.--has-valid-label) input {
     padding-top: calc(var(--zooduck-input-font-size, 19px) + 5px);
