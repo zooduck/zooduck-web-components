@@ -123,6 +123,7 @@ There are a number of CSS configuration options, in the form of CSS variables, t
 | --zooduck-input-label-color | The `color` style of the element's label | var(--gray) |
 | --zooduck-input-icon-color | The `color` style of the icon slots | var(--zooduck-input-label-color, var(--gray)) |
 | --zooduck-input-icon-padding | The `padding` style of icon slots | 0 20px |
+| --zooduck-input-signature-border-color | The `border-color` style of the signature canvas | #eee |
 
 Default:
 
