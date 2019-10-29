@@ -54,6 +54,8 @@ or:
 
 ## Special types:
 
+### `<zooduck-input type="filter"></zooduck-input>`
+
 | Name | Description |
 | ---- | ----------- |
 | filter | If the type is set to filter, whenever the input's value changes all parent nodes in the DOM are checked for a `zooduck-input-tags` attribute, and a `--zooduck-input-filter-hidden` modifier class is applied to all elements without matching tags.<br><br>This class has a default style of `display: none`. |
@@ -81,6 +83,7 @@ The result would be:
 <!-- this section is ignored, since it has a tag of "frost" that contains "fro" -->
 <section zooduck-input-tags="cold snow frost ice">winter weather</section>
 ```
+### `<zooduck-input type="signature"></zooduck-input>`
 
 | Name | Description |
 | ---- | ----------- |
