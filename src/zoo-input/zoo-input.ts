@@ -298,13 +298,6 @@ export class HTMLZooInputElement extends HTMLElement {
             return;
         }
 
-        if (attr === 'value' && val === '') {
-            this.removeAttribute(attr);
-            this._input.removeAttribute(attr);
-
-            return;
-        }
-
         if (typeof val !== 'string') {
             val = JSON.stringify(val);
         }

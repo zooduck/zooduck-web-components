@@ -485,6 +485,107 @@ describe('<zooduck-input>', () => {
                 });
             });
 
+            describe('[type=signature]', () => {
+                it('should display a <canvas> element', async () => {
+                    await page.setContent('<zooduck-input></zooduck-input>');
+
+                    const el = await page.$('zooduck-input');
+                    const canvas = await getElementFromShadow(page, el, 'canvas');
+                    let canvasDisplayStyle;
+
+                    canvasDisplayStyle = await getComputedStyleProperty(page, canvas, 'display');
+
+                    expect(canvasDisplayStyle).toEqual('none');
+
+                    await page.evaluate((el) => {
+                        el.type = 'signature';
+                    }, el);
+
+                    canvasDisplayStyle = await getComputedStyleProperty(page, canvas, 'display');
+
+                    expect(canvasDisplayStyle).toEqual('block');
+                });
+
+                it('should hide the <input> element', async () => {
+                    await page.setContent('<zooduck-input type="signature"></zooduck-input>');
+
+                    const el = await page.$('zooduck-input');
+                    const input = await getElementFromShadow(page, el, 'input');
+
+                    const inputDisplayStyle = await getComputedStyleProperty(page, input, 'display');
+
+                    expect(inputDisplayStyle).toEqual('none');
+                });
+
+                it('should let the user draw a signature using the mouse', async () => {
+                    await page.setContent('<zooduck-input type="signature"></zooduck-input>');
+
+                    const el = await page.$('zooduck-input');
+                    let zooduckInputValue;
+
+                    await page.mouse.move(50, 50);
+                    await page.mouse.down();
+                    await page.mouse.move(100, 50);
+                    await page.mouse.move(100, 100);
+                    await page.mouse.move(50, 100);
+                    await page.mouse.move(50, 50);
+
+                    zooduckInputValue = await getProperty(el, 'value');
+
+                    expect(zooduckInputValue).toEqual('');
+
+                    await page.mouse.up();
+
+                    zooduckInputValue = await getProperty(el, 'value');
+
+                    expect(zooduckInputValue).toMatch(/^data:image\/png;base64,/);
+                });
+
+                it('should let the user draw a signature using a touchscreen', async () => {
+                    await page.setContent('<zooduck-input type="signature"></zooduck-input>');
+
+                    const el = await page.$('zooduck-input');
+                    let zooduckInputValue;
+
+                    zooduckInputValue = await getProperty(el, 'value');
+
+                    expect(zooduckInputValue).toEqual('');
+
+                    await page.touchscreen.tap(50, 50);
+
+                    zooduckInputValue = await getProperty(el, 'value');
+
+                    expect(zooduckInputValue).toMatch(/^data:image\/png;base64,/);
+                });
+
+                it('should set its value to an empty string when the clear input icon is clicked', async () => {
+                    await page.setContent('<zooduck-input type="signature"></zooduck-input>');
+
+                    const el = await page.$('zooduck-input');
+                    const clearInputIcon = await getElementFromShadow(page, el, 'slot[name=right-icon-clear-input]');
+                    let zooduckInputValue;
+
+                    await page.mouse.move(50, 50);
+                    await page.mouse.down();
+                    await page.mouse.move(100, 50);
+                    await page.mouse.move(100, 100);
+                    await page.mouse.move(50, 100);
+                    await page.mouse.move(50, 50);
+
+                    await page.mouse.up();
+
+                    zooduckInputValue = await getProperty(el, 'value');
+
+                    expect(zooduckInputValue).toMatch(/^data:image\/png;base64,/);
+
+                    await clearInputIcon.click();
+
+                    zooduckInputValue = await getProperty(el, 'value');
+
+                    expect(zooduckInputValue).toEqual('');
+                });
+            });
+
             describe('[type=password]', () => {
                 it('should not display the `clear-input-icon` if its `type` is set to `password`', async () => {
                     await page.setContent('<zooduck-input type="password"></zooduck-input>');
