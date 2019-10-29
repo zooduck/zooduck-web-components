@@ -418,113 +418,113 @@ export class HTMLZooInputElement extends HTMLElement {
         this._hidePasswordIconSlot = utils.buildIconSlot('right-icon-hide-password', 'fa-eye-slash');
     }
 
-    get autocomplete(): string {
+    public get autocomplete(): string {
         return this._autocomplete;
     }
 
-    set autocomplete(val: string) {
+    public set autocomplete(val: string) {
         this._autocomplete = val;
         this._syncStringAttribute('autocomplete', this.autocomplete);
     }
 
-    get autofocus(): boolean {
+    public get autofocus(): boolean {
         return this._autofocus;
     }
 
-    set autofocus(val: boolean) {
+    public set autofocus(val: boolean) {
         this._autofocus = val;
         this._syncBooleanAttribute('autofocus', this.autofocus);
     }
 
-    get disabled() {
+    public get disabled() {
         return this._disabled;
     }
 
-    set disabled(val: boolean) {
+    public set disabled(val: boolean) {
         this._disabled = val;
         this._syncBooleanAttribute('disabled', this.disabled);
     }
 
-    get filter() {
+    public get filter() {
         return this._filter;
     }
 
-    set filter(val: string) {
+    public set filter(val: string) {
         this._filter = val;
     }
 
-    get label(): string {
+    public get label(): string {
         return this._label;
     }
 
-    set label(val: string | null) {
+    public set label(val: string | null) {
         this._label = val;
         this._updateLabel();
     }
 
-    get name(): string {
+    public get name(): string {
         return this._name;
     }
 
-    set name(val: string) {
+    public set name(val: string) {
         this._name = val;
         this._syncStringAttribute('name', this.name);
     }
 
-    get noIcons(): boolean {
+    public get noIcons(): boolean {
         return this._noIcons;
     }
 
-    set noIcons(val: boolean) {
+    public set noIcons(val: boolean) {
         this._noIcons = val;
         this._updateNoIcons();
     }
 
-    get placeholder(): string {
+    public get placeholder(): string {
         return this._placeholder;
     }
 
-    set placeholder(val: string | null) {
+    public set placeholder(val: string | null) {
         this._placeholder = val;
         this._updatePlaceholder();
     }
 
-    get required(): boolean {
+    public get required(): boolean {
         return this._required;
     }
 
-    set required(val: boolean) {
+    public set required(val: boolean) {
         this._required = val;
         this._syncBooleanAttribute('required', this.required);
     }
 
-    get readOnly() {
+    public get readOnly() {
         return this._readOnly;
     }
 
-    set readOnly(val: boolean) {
+    public set readOnly(val: boolean) {
         this._readOnly = val;
         this._syncBooleanAttribute('readonly', val);
     }
 
-    get root(): ShadowRoot | HTMLZooInputElement {
+    private get root(): ShadowRoot | HTMLZooInputElement {
         return this.shadowRoot || this;
     }
 
-    get signatureInkColor() {
+    public get signatureInkColor() {
         return this._signatureInkColor;
     }
 
-    set signatureInkColor(val: string) {
+    public set signatureInkColor(val: string) {
         this._signatureInkColor = val;
         this._canvasEvents.signatureInkColor = this.signatureInkColor;
     }
 
-    get type(): string {
+    public get type(): string {
         return this._type;
     }
 
-    set type(val: string) {
+    public set type(val: string) {
         let inferredVal = val;
         if (!this._supportedTypes.includes(val) && val !== null) {
             inferredVal = 'text';
@@ -533,11 +533,11 @@ export class HTMLZooInputElement extends HTMLElement {
         this._updateType();
     }
 
-    get value(): string {
+    public get value(): string {
         return this._value;
     }
 
-    set value(val: string | null) {
+    public set value(val: string | null) {
         this._value = val;
         this._input.value = val;
         this._updateValue();
