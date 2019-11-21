@@ -50,7 +50,9 @@ or:
 | Name | Type | Values | Property | Description |
 | ---- | ---- | ------ | -------- | ----------- |
 | label | string | any | label | Animated placeholder. If both `label` and `placeholder` are set, `placeholder` is ignored. |
-| signatureinkcolor | string | any | signatureInkColor | Sets the ink color for the `signature` type. |
+| signatureinkcolor* | string | any | signatureInkColor | Sets the ink color for the `signature` type. |
+
+*camelCase property
 
 ## Special types:
 
@@ -98,7 +100,7 @@ The result would be:
 | right-icon-hide-password | Yes | password | Interactive icon that hides the password when clicked. | fas fa-eye-slash* |
 | right-icon-show-password | Yes | password | Intetractive icon that shows the password when clicked. | fas fa-eye* |
 
-*Icons provided by Font Awesome - https://fontawesome.com/license
+*icons provided by Font Awesome - https://fontawesome.com/license
 
 For example, to set an icon for the left-icon (assuming you are using Font Awesome icons):
 
