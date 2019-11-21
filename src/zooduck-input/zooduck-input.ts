@@ -22,9 +22,11 @@ export class HTMLZooduckInputElement extends HTMLElement {
     private _canvasHeight = 90;
     private _clearInputIconSlot: HTMLElement;
     private _disabled: boolean;
+    private _enterKeydownEvent = 'zooduck-input:enter-keydown';
     private _filter: string;
     private _filterEventName = 'zooduck-input:filter';
     private _filterHiddenClass = '--zooduck-input-filter-hidden';
+    private _filterMinChars = 2;
     private _filterTagsName = 'zooduck-input-tags';
     private _hidePasswordIconSlot: HTMLElement;
     private _input: HTMLInputElement;
@@ -118,6 +120,16 @@ export class HTMLZooduckInputElement extends HTMLElement {
             this._updateValue();
         });
 
+        this._input.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.code === 'Enter' || e.key === 'Enter') {
+                this.dispatchEvent(new CustomEvent(this._enterKeydownEvent, {
+                    detail: {
+                        value: this._input.value,
+                    }
+                }));
+            }
+        });
+
         this._leftIconSlot.addEventListener('mousedown', (e: MouseEvent) => {
             e.preventDefault();
         });
@@ -176,16 +188,16 @@ export class HTMLZooduckInputElement extends HTMLElement {
     }
 
     private _applyFilter = () => {
-        if (this.type !== 'filter') {
+        if (this._type !== 'filter') {
             return;
         }
 
-        const sections = Array.from(document.querySelectorAll(`[${this._filterTagsName}]`));
-        const allTags = this._getAllFilterTags(sections);
-        const matchingTags = this._getMatchingTags(allTags);
-        const matchingSections = this._getMatchingSections(sections, matchingTags);
+        const sections: HTMLElement[] = Array.from(document.querySelectorAll(`[${this._filterTagsName}]`));
+        const allTags: string[] = this._getAllFilterTags(sections);
+        const matchingTags: string[] = this._getMatchingTags(allTags);
+        const matchingSections: Element[] = this._getMatchingSections(sections, matchingTags);
 
-        sections.forEach((section) => {
+        sections.forEach((section: HTMLElement) => {
             if (!matchingSections.includes(section)) {
                 section.classList.add(this._filterHiddenClass);
             } else {
@@ -193,7 +205,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
             }
         });
 
-        window.dispatchEvent(new CustomEvent(this._filterEventName, {
+        this.dispatchEvent(new CustomEvent(this._filterEventName, {
             detail: {
                 tags: allTags,
                 matchingTags,
@@ -239,7 +251,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
     private _getMatchingTags(allTags: string[]): string[] {
         return allTags.filter((tag: string) => {
             const inputValuePattern = new RegExp(`(${this._input.value.split(' ').filter((val) => {
-                return val.trim().length > 1;
+                return val.trim().length >= this._filterMinChars;
             }).join('|')})`);
 
             return inputValuePattern.test(tag) || new RegExp(tag).test(this._input.value);

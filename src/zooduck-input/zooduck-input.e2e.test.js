@@ -64,6 +64,10 @@ describe('<zooduck-input>', () => {
         expect(await slotD.evaluate(node => node)).toBeTruthy();
     });
 
+    it('should dispatch a `zooduck-input:enter-keydown` event when the `Enter` key is pressed', async () => {
+        // @TODO: Find a way to test this using Puppeteer
+    });
+
     describe('attributes', () => {
         describe('value', () => {
             it('should set the `value` of its input to the value of its `value` attribute', async () => {
@@ -480,7 +484,7 @@ describe('<zooduck-input>', () => {
                     expect(sectionWithTagsBDisplay).toEqual('none');
                 });
 
-                it('should dispatch a `zooduck-input:filter` event on the window when its value is changed', async () => {
+                it('should dispatch a `zooduck-input:filter` event when its value is changed', async () => {
                     // @TODO: Find a way to test this using Puppeteer
                 });
             });
