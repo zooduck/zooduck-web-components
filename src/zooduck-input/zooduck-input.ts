@@ -31,7 +31,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
     private _inputLabelContainer: HTMLElement;
     private _label: string;
     private _labelEl: HTMLElement;
-    private _leftIconSlot: HTMLElement;
+    private _leftIconSlot: HTMLSlotElement;
     private _name: string;
     private _noIcons: boolean;
     private _placeholder: string;
@@ -171,6 +171,8 @@ export class HTMLZooduckInputElement extends HTMLElement {
         this.root.appendChild(this._clearInputIconSlot);
         this.root.appendChild(this._showPasswordIconSlot);
         this.root.appendChild(this._hidePasswordIconSlot);
+
+        this._setHasLeftIconSlotModifierClass();
     }
 
     private _applyFilter = () => {
@@ -246,6 +248,12 @@ export class HTMLZooduckInputElement extends HTMLElement {
 
     private _isBooleanAttr(attr: string): boolean {
         return this._booleanAttrs.includes(attr);
+    }
+
+    private _setHasLeftIconSlotModifierClass() {
+        if (this._leftIconSlot.assignedElements().length) {
+            this.classList.add('--has-left-icon');
+        }
     }
 
     private _setup() {
@@ -325,7 +333,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
         }
     }
 
-    private _updateIconSlots(options: any): void {
+    private _updateIconSlotsDisplay(options: any): void {
         [
             this._leftIconSlot,
             this._clearInputIconSlot,
@@ -350,9 +358,9 @@ export class HTMLZooduckInputElement extends HTMLElement {
         this._syncBooleanAttribute('noicons', this.noIcons);
 
         if (this.noIcons) {
-            this._updateIconSlots({ showSlots: false });
+            this._updateIconSlotsDisplay({ showSlots: false });
         } else {
-            this._updateIconSlots({ showSlots: true });
+            this._updateIconSlotsDisplay({ showSlots: true });
         }
     }
 

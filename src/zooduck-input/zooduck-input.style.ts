@@ -71,6 +71,9 @@ export const style = `
     top: 5px;
     transform: translateY(0) scale(.8);
 }
+:host(.--has-left-icon) .label {
+    left: 0;
+}
 input {
     width: 100%;
     border: none;
@@ -83,6 +86,9 @@ input {
     font-style: var(--zooduck-input-font-style, inherit);
     background-color: var(--zooduck-input-background-color, #fff);
     color: var(--zooduck-input-color, var(--black));
+}
+:host(.--has-left-icon) input {
+    padding-left: 0;
 }
 canvas {
    display: none;
