@@ -109,10 +109,18 @@ export class HTMLZooduckInputElement extends HTMLElement {
 
         this._input.addEventListener('focus', () => {
             this.classList.add('--active');
+
+            if (this._placeholder) {
+                this._input.setAttribute('placeholder', this._placeholder);
+            }
         });
 
         this._input.addEventListener('blur', () => {
             this.classList.remove('--active');
+
+            if (this._placeholder && this._label) {
+                this._input.removeAttribute('placeholder');
+            }
         });
 
         this._input.addEventListener('input', () => {
@@ -344,7 +352,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
     }
 
     private _updateHasValidLabelClass(): void {
-        if (this.label && !this.placeholder) {
+        if (this._label) {
             this.classList.add('--has-valid-label');
         } else {
             this.classList.remove('--has-valid-label');
@@ -363,19 +371,27 @@ export class HTMLZooduckInputElement extends HTMLElement {
     }
 
     private _updateLabel(): void {
-        this._syncStringAttribute('label', this.label);
+        this._syncStringAttribute('label', this._label);
 
-        if (typeof this.label === 'string') {
-            this._labelEl.innerHTML = this.label;
+        if (typeof this._label === 'string') {
+            this._labelEl.innerHTML = this._label;
+        }
+
+        if (!this._label && this._placeholder) {
+            this._syncStringAttribute('placeholder', this._placeholder);
+        }
+
+        if (this._label && this._placeholder) {
+            this._input.removeAttribute('placeholder');
         }
 
         this._updateHasValidLabelClass();
     }
 
     private _updateNoIcons(): void {
-        this._syncBooleanAttribute('noicons', this.noIcons);
+        this._syncBooleanAttribute('noicons', this._noIcons);
 
-        if (this.noIcons) {
+        if (this._noIcons) {
             this._updateIconSlotsDisplay({ showSlots: false });
         } else {
             this._updateIconSlotsDisplay({ showSlots: true });
@@ -383,11 +399,14 @@ export class HTMLZooduckInputElement extends HTMLElement {
     }
 
     private _updatePlaceholder(): void {
-        this._syncStringAttribute('placeholder', this.placeholder);
-        this._updateHasValidLabelClass();
+        this._syncStringAttribute('placeholder', this._placeholder);
     }
 
     private _updateRawInput(attr: string, val: string) {
+        if (attr === 'placeholder' && this._label) {
+            return;
+        }
+
         if (attr === 'type') {
             this._supportedTypes.includes(val)
                 ? this._input.setAttribute(attr, val)
@@ -407,7 +426,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
     }
 
     private _updateType(): void {
-        this._syncStringAttribute('type', this.type);
+        this._syncStringAttribute('type', this._type);
 
         this._value = '';
         this._clearCanvas();
@@ -416,9 +435,9 @@ export class HTMLZooduckInputElement extends HTMLElement {
     }
 
     private _updateValue(): void {
-        this._syncStringAttribute('value', this.value);
+        this._syncStringAttribute('value', this._value);
 
-        if (this.value) {
+        if (this._value) {
             this.classList.add('--has-content');
         } else {
             this.classList.remove('--has-content');

@@ -768,36 +768,96 @@ describe('<zooduck-input>', () => {
                 expect(await getProperty(label, 'innerHTML')).toEqual('TEST_VAL_FROM_PROP');
             });
 
-            it('should not display a label if its placeholder is set', async () => {
-                let labelElement;
-                let labelElementDisplay;
-                let el;
-
+            it('should not set a `placeholder` on its input if its `label` attribute is set and its input does not have focus', async () => {
                 await page.setContent('<zooduck-input label="TEST_LABEL" placeholder="TEST_PLACEHOLDER"></zooduck-input>');
 
-                el = await page.$('zooduck-input');
+                const el = await page.$('zooduck-input');
+                const input = await getElementFromShadow(page, el, 'input');
 
-                labelElement = await getElementFromShadow(page, el, '.label');
-                labelElementDisplay = await getComputedStyleProperty(page, labelElement, 'display');
+                let inputPlaceholderAttribute;
+                let inputPlaceholderProperty;
 
-                expect(labelElementDisplay).toEqual('none');
+                inputPlaceholderAttribute = await getAttribute(page, input, 'placeholder');
+                inputPlaceholderProperty = await getProperty(input, 'placeholder');
 
-                await page.setContent('<zooduck-input label="TEST_LABEL"></zooduck-input>');
+                expect(inputPlaceholderAttribute).toBeFalsy();
+                expect(inputPlaceholderProperty).toBeFalsy();
+            });
 
-                el = await page.$('zooduck-input');
+            it('should set a `placeholder` on its input if its `label` attribute is set and its input has focus', async () => {
+                await page.setContent('<zooduck-input label="TEST_LABEL" placeholder="TEST_PLACEHOLDER"></zooduck-input>');
 
-                labelElement = await getElementFromShadow(page, el, '.label');
-                labelElementDisplay = await getComputedStyleProperty(page, labelElement, 'display');
+                const el = await page.$('zooduck-input');
+                const input = await getElementFromShadow(page, el, 'input');
 
-                expect(labelElementDisplay).toEqual('block');
+                let inputPlaceholderAttribute;
+                let inputPlaceholderProperty;
+
+                inputPlaceholderAttribute = await getAttribute(page, input, 'placeholder');
+                inputPlaceholderProperty = await getProperty(input, 'placeholder');
+
+                expect(inputPlaceholderAttribute).toBeFalsy();
+                expect(inputPlaceholderProperty).toBeFalsy();
+
+                await input.click();
+
+                inputPlaceholderAttribute = await getAttribute(page, input, 'placeholder');
+                inputPlaceholderProperty = await getProperty(input, 'placeholder');
+
+                expect(inputPlaceholderAttribute).toEqual('TEST_PLACEHOLDER');
+                expect(inputPlaceholderProperty).toEqual('TEST_PLACEHOLDER');
+            });
+
+            it('should set a `placeholder` on its input when its `label` attribute is set to an empty string and its `placeholder` attribute has a value', async () => {
+                await page.setContent('<zooduck-input label="TEST_LABEL" placeholder="TEST_PLACEHOLDER"></zooduck-input>');
+
+                const el = await page.$('zooduck-input');
+                const input = await getElementFromShadow(page, el, 'input');
+
+                let inputPlaceholderAttribute;
+                let inputPlaceholderProperty;
+
+                inputPlaceholderAttribute = await getAttribute(page, input, 'placeholder');
+                inputPlaceholderProperty = await getProperty(input, 'placeholder');
+
+                expect(inputPlaceholderAttribute).toBeFalsy();
+                expect(inputPlaceholderProperty).toBeFalsy();
 
                 await page.evaluate((el) => {
-                    el.placeholder = 'TEST_PLACEHOLDER';
+                    el.setAttribute('label', '');
                 }, el);
 
-                labelElementDisplay = await getComputedStyleProperty(page, labelElement, 'display');
+                inputPlaceholderAttribute = await getAttribute(page, input, 'placeholder');
+                inputPlaceholderProperty = await getProperty(input, 'placeholder');
 
-                expect(labelElementDisplay).toEqual('none');
+                expect(inputPlaceholderAttribute).toEqual('TEST_PLACEHOLDER');
+                expect(inputPlaceholderProperty).toEqual('TEST_PLACEHOLDER');
+            });
+
+            it('should set a `placeholder` on its input when its `label` attribute is removed and its `placeholder` attribute has a value', async () => {
+                await page.setContent('<zooduck-input label="TEST_LABEL" placeholder="TEST_PLACEHOLDER"></zooduck-input>');
+
+                const el = await page.$('zooduck-input');
+                const input = await getElementFromShadow(page, el, 'input');
+
+                let inputPlaceholderAttribute;
+                let inputPlaceholderProperty;
+
+                inputPlaceholderAttribute = await getAttribute(page, input, 'placeholder');
+                inputPlaceholderProperty = await getProperty(input, 'placeholder');
+
+                expect(inputPlaceholderAttribute).toBeFalsy();
+                expect(inputPlaceholderProperty).toBeFalsy();
+
+                await page.evaluate((el) => {
+                    el.removeAttribute('label');
+                }, el);
+
+                inputPlaceholderAttribute = await getAttribute(page, input, 'placeholder');
+                inputPlaceholderProperty = await getProperty(input, 'placeholder');
+
+                expect(inputPlaceholderAttribute).toEqual('TEST_PLACEHOLDER');
+                expect(inputPlaceholderProperty).toEqual('TEST_PLACEHOLDER');
             });
 
             it('should not display a label if its `label` attribute does not have a value', async () => {
@@ -810,20 +870,12 @@ describe('<zooduck-input>', () => {
                 expect(labelDisplay).toEqual('none');
             });
 
-            it('should set its `--has-valid-label` class if its `label` attribute has a value its `placholder` attribute is not set', async () => {
+            it('should set its `--has-valid-label` class if its `label` attribute has a value', async () => {
                 await page.setContent('<zooduck-input label="TEST_VALUE"></zoo-label>');
                 const el = await page.$('zooduck-input');
 
                 const zooInputClassList = await getClassList(el);
                 expect(zooInputClassList.includes('--has-valid-label')).toBeTruthy();
-            });
-
-            it('should not set its `--has-valid-label` class if its `label` attribute has a value its `placholder` attribute is set', async () => {
-                await page.setContent('<zooduck-input label="TEST_LABEL" placeholder="TEST_PLACEHOLDER"></zoo-label>');
-                const el = await page.$('zooduck-input');
-
-                const zooInputClassList = await getClassList(el);
-                expect(zooInputClassList.includes('--has-valid-label')).toBeFalsy();
             });
 
             it('should not set its `--has-valid-label` class if its `label` attribute does not have a value', async () => {
