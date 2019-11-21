@@ -208,6 +208,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
     private _clearCanvas() {
         const context = this._canvas.getContext('2d');
         context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        this._canvasEvents.clearImageData();
     }
 
     private _getAllFilterTags(sections: Element[]): string[] {

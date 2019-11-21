@@ -142,6 +142,10 @@ export class CanvasEvents {
         return this._imageData;
     }
 
+    public clearImageData() {
+        this._imageData = '';
+    }
+
     public set signatureInkColor(color: string) {
         this._signatureInkColor = color;
     }
