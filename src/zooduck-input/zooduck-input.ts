@@ -52,12 +52,14 @@ export class HTMLZooduckInputElement extends HTMLElement {
     private _signatureInkColor = '#222';
     private _supportedTypes = [
         'email',
-        'filter',
         'password',
-        'signature',
         'tel',
         'text',
         'url'
+    ];
+    private _customTypes = [
+        'filter',
+        'signature',
     ];
     private _type: string;
     private _value: string;
@@ -262,7 +264,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
         }
 
         if (val) {
-            this._sharedAttrs.includes(attr) && this._input.setAttribute(attr, '');
+            this._updateRawInput(attr, '');
         } else {
             this._sharedAttrs.includes(attr) && this._input.removeAttribute(attr);
         }
@@ -306,7 +308,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
             this.setAttribute(attr, val);
         }
 
-        this._sharedAttrs.includes(attr) && this._input.setAttribute(attr, val);
+        this._updateRawInput(attr, val);
     }
 
     private _updateCanvasWidth() {
@@ -358,6 +360,16 @@ export class HTMLZooduckInputElement extends HTMLElement {
         this._updateHasValidLabelClass();
     }
 
+    private _updateRawInput(attr: string, val: string) {
+        if (attr === 'type') {
+            this._supportedTypes.includes(val)
+                ? this._input.setAttribute(attr, val)
+                : this._input.removeAttribute(attr);
+        } else {
+            this._sharedAttrs.includes(attr) && this._input.setAttribute(attr, val);
+        }
+    }
+
     private _updateStyle(): void {
         const styleEl = this.shadowRoot.querySelector('style');
         styleEl.textContent = style;
@@ -370,7 +382,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
     private _updateType(): void {
         this._syncStringAttribute('type', this.type);
 
-        this.value = '';
+        this._value = '';
         this._clearCanvas();
 
         this.classList.remove('--show-password');
@@ -519,7 +531,8 @@ export class HTMLZooduckInputElement extends HTMLElement {
 
     public set type(val: string) {
         let inferredVal = val;
-        if (!this._supportedTypes.includes(val) && val !== null) {
+        const allSupportedTypes = this._supportedTypes.concat(this._customTypes);
+        if (!allSupportedTypes.includes(val) && val !== null) {
             inferredVal = 'text';
         }
         this._type = inferredVal;
@@ -546,6 +559,10 @@ export class HTMLZooduckInputElement extends HTMLElement {
 
     protected attributeChangedCallback(name: string, _oldVal: string, newVal: string) {
         const prop = this._camelCaseProps[name] || name;
+
+        if (this[prop] === newVal) {
+            return;
+        }
 
         if (this._isBooleanAttr(name)) {
             this[prop] = this.hasAttribute(name);
