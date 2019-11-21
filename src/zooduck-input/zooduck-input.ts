@@ -205,13 +205,19 @@ export class HTMLZooduckInputElement extends HTMLElement {
             }
         });
 
-        this.dispatchEvent(new CustomEvent(this._filterEventName, {
-            detail: {
-                tags: allTags,
-                matchingTags,
-                matchingElements: matchingSections
-            }
-        }));
+        const filterValid = matchingTags.length != allTags.length;
+
+        if (filterValid) {
+            this.dispatchEvent(new CustomEvent(this._filterEventName, {
+                detail: {
+                    tags: allTags,
+                    matchingTags,
+                    matchingElements: matchingSections
+                }
+            }));
+
+            window.scrollTo(0, 0);
+        }
     }
 
     private _canvasOnTouchEnd() {

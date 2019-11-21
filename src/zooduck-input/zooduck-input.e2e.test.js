@@ -452,6 +452,9 @@ describe('<zooduck-input>', () => {
                     expect(await getClassList(sectionWithTagsA)).toEqual([]);
                     expect(await getClassList(sectionWithTagsB)).toEqual(['--zooduck-input-filter-hidden']);
 
+                    expect(sectionWithTagsADisplay).not.toEqual('none');
+                    expect(sectionWithTagsBDisplay).toEqual('none');
+
                     await clearInput(page, input);
 
                     await input.type('abc xy');
@@ -480,8 +483,40 @@ describe('<zooduck-input>', () => {
                     expect(await getClassList(sectionWithTagsA)).toEqual([]);
                     expect(await getClassList(sectionWithTagsB)).toEqual(['--zooduck-input-filter-hidden']);
 
-                    expect(sectionWithTagsADisplay).toEqual('block');
+                    expect(sectionWithTagsADisplay).not.toEqual('none');
                     expect(sectionWithTagsBDisplay).toEqual('none');
+                });
+
+                it('should reset scroll on the window when it filters elements', async () => {
+                    await page.setContent(`
+                        <zooduck-input type="filter"></zooduck-input>
+                        <section zooduck-input-tags="abc def">abc xyz</section>
+                        <section zooduck-input-tags="uvw xyz">def ghi</section>
+                    `);
+
+                    const el = await page.$('zooduck-input');
+                    const input = await getElementFromShadow(page, el, 'input');
+
+                    let windowScrollY;
+
+                    await page.evaluate(() => {
+                        document.body.style.height = '2000px';
+                        window.scrollBy(0, 200);
+                    });
+
+                    windowScrollY = await page.evaluate(() => {
+                        return window.scrollY;
+                    });
+
+                    expect(windowScrollY).toEqual(200);
+
+                    await input.type('abc');
+
+                    windowScrollY = await page.evaluate(() => {
+                        return window.scrollY;
+                    });
+
+                    expect(windowScrollY).toEqual(0);
                 });
 
                 it('should dispatch a `zooduck-input:filter` event when its value is changed', async () => {
