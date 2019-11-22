@@ -22,7 +22,7 @@ export class HTMLZooduckInputElement extends HTMLElement {
     private _canvasHeight = 90;
     private _clearInputIconSlot: HTMLElement;
     private _disabled: boolean;
-    private _enterKeydownEvent = 'zooduck-input:enter-keydown';
+    private _keypressEnterEvent = 'keypress:enter';
     private _filter: string;
     private _filterEventName = 'zooduck-input:filter';
     private _filterHiddenClass = '--zooduck-input-filter-hidden';
@@ -128,9 +128,9 @@ export class HTMLZooduckInputElement extends HTMLElement {
             this._updateValue();
         });
 
-        this._input.addEventListener('keydown', (e: KeyboardEvent) => {
+        this._input.addEventListener('keypress', (e: KeyboardEvent) => {
             if (e.code === 'Enter' || e.key === 'Enter') {
-                this.dispatchEvent(new CustomEvent(this._enterKeydownEvent, {
+                this.dispatchEvent(new CustomEvent(this._keypressEnterEvent, {
                     detail: {
                         value: this._input.value,
                     }
