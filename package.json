@@ -1,8 +1,10 @@
 {
-  "name": "zooduck-web-components",
-  "version": "0.0.3-alpha",
+  "name": "@zooduck/zooduck-web-components",
+  "version": "0.0.6-alpha",
   "description": "",
   "main": "index.ts",
+  "url": "github.com/zooduck/zooduck-web-components",
+  "repository": "git://github.com/zooduck/zooduck-web-components.git",
   "scripts": {
     "pretest": "npm run build",
     "test": "jest --verbose --coverage",
