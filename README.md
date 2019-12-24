@@ -144,10 +144,12 @@ Default:
 With CSS vars:
 ```html
 <style>
-  --zooduck-input-label-color: tomato;
-  --zooduck-input-border-color: tomato;
-  --zooduck-input-border-width: 0 0 4px 0;
-  --zooduck-input-font-size: 32px;
+  :root {
+    --zooduck-input-label-color: tomato;
+    --zooduck-input-border-color: tomato;
+    --zooduck-input-border-width: 0 0 4px 0;
+    --zooduck-input-font-size: 32px;
+  }
 </style>
 
 <zooduck-input label="zooduck-input"></zooduck-input>
