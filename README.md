@@ -7,7 +7,7 @@ An up-to-date list of supported browsers can be found here: https://caniuse.com/
 Include the following `<script>` tag in the `<head>` of your page:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/zooduck/zooduck-web-components@0.0.3-alpha/dist/zooduck-web-components.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/zooduck/zooduck-web-components@0.0.7-alpha/dist/zooduck-web-components.min.js"></script>
 ```
 
 Then, either:
