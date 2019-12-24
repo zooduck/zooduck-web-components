@@ -66,7 +66,30 @@ export class HTMLZooduckInputElement extends HTMLElement {
     private _type: string;
     private _value: string;
 
-    public static get observedAttributes(): string[] {
+    constructor() {
+        super();
+
+        this._value = '';
+        this._label = '';
+        this._placeholder = '';
+
+        const shadow = this.attachShadow({ mode: 'open' });
+        const style = document.createElement('style');
+        shadow.appendChild(style);
+
+        this._inputLabelContainer = utils.buildInputLabelContainer();
+        this._input = utils.buildInput();
+        this._canvas = utils.buildCanvas(this._canvasHeight);
+        this._canvasEvents = new utils.CanvasEvents(this._canvas);
+        this._labelEl = utils.buildLabel();
+        this._leftIconSlot = document.createElement('slot');
+        this._leftIconSlot.setAttribute('name', 'left-icon');
+        this._clearInputIconSlot = utils.buildIconSlot('right-icon-clear-input', 'fa-times');
+        this._showPasswordIconSlot = utils.buildIconSlot('right-icon-show-password', 'fa-eye');
+        this._hidePasswordIconSlot = utils.buildIconSlot('right-icon-hide-password', 'fa-eye-slash');
+    }
+
+    protected static get observedAttributes(): string[] {
         return [
             'autocomplete',
             'autofocus',
@@ -444,29 +467,6 @@ export class HTMLZooduckInputElement extends HTMLElement {
         }
 
         this._applyFilter();
-    }
-
-    constructor() {
-        super();
-
-        this._value = '';
-        this._label = '';
-        this._placeholder = '';
-
-        const shadow = this.attachShadow({ mode: 'open' });
-        const style = document.createElement('style');
-        shadow.appendChild(style);
-
-        this._inputLabelContainer = utils.buildInputLabelContainer();
-        this._input = utils.buildInput();
-        this._canvas = utils.buildCanvas(this._canvasHeight);
-        this._canvasEvents = new utils.CanvasEvents(this._canvas);
-        this._labelEl = utils.buildLabel();
-        this._leftIconSlot = document.createElement('slot');
-        this._leftIconSlot.setAttribute('name', 'left-icon');
-        this._clearInputIconSlot = utils.buildIconSlot('right-icon-clear-input', 'fa-times');
-        this._showPasswordIconSlot = utils.buildIconSlot('right-icon-show-password', 'fa-eye');
-        this._hidePasswordIconSlot = utils.buildIconSlot('right-icon-hide-password', 'fa-eye-slash');
     }
 
     public get autocomplete(): string {
