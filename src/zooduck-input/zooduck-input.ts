@@ -300,7 +300,11 @@ export class HTMLZooduckInputElement extends HTMLElement {
     }
 
     private _setHasLeftIconSlotModifierClass() {
-        if (this._leftIconSlot.assignedElements().length) {
+        if (!this._leftIconSlot.assignedNodes) {
+            return;
+        }
+
+        if (this._leftIconSlot.assignedNodes.length) {
             this.classList.add('--has-left-icon');
         }
     }
