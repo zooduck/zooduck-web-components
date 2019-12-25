@@ -1,6 +1,6 @@
 {
   "name": "@zooduck/zooduck-web-components",
-  "version": "0.0.7-alpha",
+  "version": "0.0.8-alpha",
   "description": "",
   "main": "index.ts",
   "url": "github.com/zooduck/zooduck-web-components",
