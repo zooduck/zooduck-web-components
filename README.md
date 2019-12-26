@@ -136,7 +136,7 @@ There are a number of CSS configuration options, in the form of CSS variables, t
 ## Custom Events
 |Name|Description|Event.detail|
 |----|-------|------|
-|keyup:enter|fired when a keyup event for the Enter key is detected|value|
+|keyup:enter|Fired when a keyup event for the Enter key is detected|value|
 
 ## Examples
 Default:
