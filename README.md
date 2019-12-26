@@ -133,6 +133,12 @@ There are a number of CSS configuration options, in the form of CSS variables, t
 | --zooduck-input-icon-padding | The `padding` style of icon slots | 0 20px |
 | --zooduck-input-signature-border-color | The `border-color` style of the signature canvas | #eee |
 
+## Custom Events
+|Name|Description|Event.detail|
+|----|-------|------|
+|keyup:enter|fired when a keyup event for the Enter key is detected|value|
+
+## Examples
 Default:
 
 ```html
