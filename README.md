@@ -117,7 +117,7 @@ There are a number of CSS configuration options, in the form of CSS variables, t
 
 | Name | Description | Default |
 | ---- | ----------- | ------- |
-| --zooduck-input-font-family | The `font-family` style of the element | inherit |
+| --zooduck-input-font-family | The `font-family` style of the element | 'Roboto', sans-serif |
 | --zooduck-input-font-size | The `font-size` style of the element | 19px |
 | --zooduck-input-font-weight | The `font-weight` style of the element | inherit |
 | --zooduck-input-font-style | The `font-style` style of the element | inherit |
