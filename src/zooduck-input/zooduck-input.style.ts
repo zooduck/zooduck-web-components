@@ -1,6 +1,6 @@
 export const style = `
 /**
- * @var --zooduck-input-font-family: The \`font-family\` style of the element. Defaults to \`inherit\`.
+ * @var --zooduck-input-font-family: The \`font-family\` style of the element. Defaults to \`'Roboto', sans-serif\`.
  * @var --zooduck-input-font-size: The \`font-size\` style of the element. Defaults to \`19px\`.
  * @var --zooduck-input-font-weight: The \`font-weight\` style of the element. Defaults to \`inherit\`.
  * @var --zooduck-input-font-style: The \`font-style\` style of the element. Defaults to \`inherit\`.
@@ -16,6 +16,7 @@ export const style = `
  * @var --zooduck-input-icon-padding: The \`padding\` style of icon slots. Defaults to \`0 20px\`.
  * @var --zooduck-input-signature-border-color: The \`border-color\` style of the signature canvas. Defaults to \`#eee\`.
  */
+
 :host {
     --gray: #bbb;
     --black: #222;
@@ -28,6 +29,11 @@ export const style = `
     border-color: var(--zooduck-input-border-color, var(--gray));
     border-width: var(--zooduck-input-border-width, 1px);
     background-color: var(--zooduck-input-background-color, #fff);
+
+    font-family: var(--zooduck-input-font-family, 'Roboto', sans-serif);
+    font-size: var(--zooduck-input-font-size, 19px);
+    font-weight: var(--zooduck-input-font-weight, inherit);
+    font-style: var(--zooduck-input-font-style, inherit);
 }
 :host([disabled]),
 :host([disabled]) input {
@@ -47,10 +53,6 @@ export const style = `
     position: absolute;
     pointer-events: none;
     color: var(--zooduck-input-label-color, var(--gray));
-    font-family: var(--zooduck-input-font-family, 'Roboto', sans-serif);
-    font-size: var(--zooduck-input-font-size, 19px);
-    font-weight: var(--zooduck-input-font-weight, inherit);
-    font-style: var(--zooduck-input-font-style, inherit);
     text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
