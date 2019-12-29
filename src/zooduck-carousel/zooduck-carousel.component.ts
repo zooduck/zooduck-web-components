@@ -1,7 +1,6 @@
 import { style } from './zooduck-carousel.style';
 import  './prototype/Number/to-positive';
-import { wait } from '../utils/wait';
-import { PointerEventDetails, EventDetails } from '../utils/pointer-event-details'; // eslint-disable-line no-unused-vars
+import { wait, isTap, PointerEventDetails, EventDetails } from '../utils/index'; // eslint-disable-line no-unused-vars
 
 interface Slide {
     id: number;
@@ -159,6 +158,15 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         return maxNegativeOffsetX;
     }
 
+    private _getPlaceholder() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 10;
+        canvas.height = 10;
+        const placeholder = canvas.toDataURL('image/png');
+
+        return placeholder;
+    }
+
     private _getPrecedingSlideWidths(nextSlide: Slide) {
         const precedingSlides = this._slides.filter((slide: Slide) => {
             return slide.index < nextSlide.index;
@@ -175,6 +183,15 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         });
 
         return precedingSlideWidths;
+    }
+
+    private _getRandomRGBA(): string {
+        const r = Math.round(Math.random() * 255);
+        const g = Math.round(Math.random() * 255);
+        const b = Math.round(Math.random() * 255);
+        const a = .62;
+
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
     }
 
     private _getSlideSelectorsHeight(): number {
@@ -238,10 +255,13 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
     private _lazyLoad(img: HTMLImageElement) {
         img.dataset.src = img.src;
-        img.src = '';
+        // If we set the src to '' the browser will display a broken image icon
+        img.src = this._getPlaceholder();
 
         this._imagesToLoad.push(img);
 
+        // IntersectionObserver needs something to observe
+        // (1px should be good enough - using 10px to be safe)
         img.style.minWidth = '10px';
         img.style.minHeight = '10px';
 
@@ -257,7 +277,6 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
     }
 
     private _onResize() {
-        this._setTouchActive(true); // to remove transition style
         this._setContainerStyle();
         this._slideIntoView(this._currentSlide);
     }
@@ -473,6 +492,10 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
     private _setCarouselHeightToSlideHeight() {
         this.style.height = `${this._currentSlide.el.offsetHeight + this._getSlideSelectorsHeight()}px`;
+
+        // If the carousel is 100% width and the current slide exceeds the window.innerHeight
+        // then the slide widths will each be reduced by a factor of the browser's scrollbar width
+        this._slideIntoView(this._currentSlide);
     }
 
     private _setContainerStyle(): Promise<any> {
@@ -506,10 +529,9 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
     private _setSlideStyle(slide: HTMLElement) {
         const slideStyles = {
+            'box-sizing': 'border-box',
             width: '100%',
-            height: '100%',
             overflow: 'hidden',
-            'min-height': `calc(100vh - ${this._getSlideSelectorsHeight()}px)`,
             'flex-shrink': '0',
         };
         Object.keys(slideStyles).forEach((prop: string) => {
@@ -553,9 +575,12 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
         this._container.style.transform = `translateX(${translateX}px)`;
 
-        await wait(this._transitionSpeedInMillis);
+        if (!this._touchActive) {
+            await wait(this._transitionSpeedInMillis);
 
-        this.classList.remove('--no-animate');
+            this.classList.remove('--no-animate');
+        }
+
     }
 
     private _syncAttr(name: string, val: string) {
@@ -625,14 +650,13 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
             const images = Array.from(this._container.querySelectorAll('img'));
 
-
-            if (this._loading === 'eager') {
-                this.dispatchEvent(new CustomEvent('load'));
-
-                return;
-            }
-
             images.forEach((img: HTMLImageElement) => {
+                img.style.backgroundColor = this._getRandomRGBA();
+
+                if (this._loading === 'eager') {
+                    return;
+                }
+
                 this._lazyLoad(img);
             });
 

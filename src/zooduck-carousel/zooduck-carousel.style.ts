@@ -7,13 +7,13 @@ export const style = (options: Options): string => {
     return `
         :host {
             display: block;
-            min-height: 100vh;
             overflow: hidden;
             touch-action: pan-y;
             cursor: pointer;
         }
         ::slotted([slot=slides]) {
             display: flex;
+            align-items: flex-start;
         }
         ::slotted([slot=slides]) {
             transition: all ${transitionSpeedInMillis}ms;
