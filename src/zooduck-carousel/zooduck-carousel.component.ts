@@ -266,6 +266,7 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         img.style.minHeight = '10px';
 
         this._imageIntersectionObserver.observe(img);
+        console.log('observing');
     }
 
     private _onCurrentSlideChange(): void {

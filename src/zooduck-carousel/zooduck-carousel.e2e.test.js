@@ -102,8 +102,12 @@ describe('<zooduck-carousel>', () => {
         await page.setContent(`
             <zooduck-carousel>
                 <div slot="slides">
-                    <img src="https://picsum.photos/20/20" />
-                    <img src="https://picsum.photos/20/20" />
+                    <div>
+                        <img src="https://picsum.photos/20/20" width="20" height="20" />
+                    </div>
+                    <div>
+                        <img src="https://picsum.photos/40/40" width="40" height="40" />
+                    </div>
                 </div>
             </zooduck-carousel>
         `);
@@ -131,8 +135,10 @@ describe('<zooduck-carousel>', () => {
             return el.querySelectorAll('img')[1].getAttribute('data-src');
         }, el);
 
-        expect(slideTwoImageSrc).toEqual('');
-        expect(slideTwoImageDataSrc).toEqual('https://picsum.photos/20/20');
+        const brokenImagePlaceholder = 'data:image/png;base64,';
+
+        expect(slideTwoImageSrc).toContain(brokenImagePlaceholder);
+        expect(slideTwoImageDataSrc).toEqual('https://picsum.photos/40/40');
 
         await page.evaluate((el) => {
             const offscreenImage = el.querySelectorAll('img')[1];
@@ -149,33 +155,37 @@ describe('<zooduck-carousel>', () => {
             return el.querySelectorAll('img')[1].getAttribute('data-src');
         }, el);
 
-        expect(slideTwoImageSrc).toEqual('https://picsum.photos/20/20');
-        expect(slideTwoImageSrc).toEqual('https://picsum.photos/20/20');
+        expect(slideTwoImageSrc).toEqual('https://picsum.photos/40/40');
+        expect(slideTwoImageDataSrc).toEqual('https://picsum.photos/40/40');
     });
 
     it('should not lazyload images if its `loading` attribute is set to eager', async () => {
         await page.setContent(`
-        <zooduck-carousel loading="eager">
-            <div slot="slides">
-                <img src="https://picsum.photos/20/20" />
-                <img src="https://picsum.photos/20/20" />
-            </div>
-        </zooduck-carousel>
-    `);
+            <zooduck-carousel loading="eager">
+                <div slot="slides">
+                    <div>
+                        <img src="https://picsum.photos/20/20" width="20" height="20" />
+                    </div>
+                    <div>
+                        <img src="https://picsum.photos/40/40" width="40" height="40" />
+                    </div>
+                </div>
+            </zooduck-carousel>
+        `);
 
-    const el = await page.$('zooduck-carousel');
+        const el = await page.$('zooduck-carousel');
 
-    await page.waitFor(1000);
+        await page.waitFor(1000);
 
-    const slideTwoImageSrc = await page.evaluate((el) => {
-        return el.querySelectorAll('img')[1].getAttribute('src');
-    }, el);
+        const slideTwoImageSrc = await page.evaluate((el) => {
+            return el.querySelectorAll('img')[1].getAttribute('src');
+        }, el);
 
-    const slideTwoImageDataSrc = await page.evaluate((el) => {
-        return el.querySelectorAll('img')[1].getAttribute('data-src');
-    }, el);
+        const slideTwoImageDataSrc = await page.evaluate((el) => {
+            return el.querySelectorAll('img')[1].getAttribute('data-src');
+        }, el);
 
-    expect(slideTwoImageSrc).toEqual('https://picsum.photos/20/20');
-    expect(slideTwoImageDataSrc).toBeNull();
+        expect(slideTwoImageSrc).toEqual('https://picsum.photos/40/40');
+        expect(slideTwoImageDataSrc).toBeNull();
     });
 });
