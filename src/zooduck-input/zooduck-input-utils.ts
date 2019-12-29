@@ -1,4 +1,4 @@
-import { fontAwesomeIcons } from '../icons/index';
+import { fontAwesomeIcons } from './icons/index';
 
 export const buildCanvas = (height: number): HTMLCanvasElement => {
     const canvas = document.createElement('canvas');

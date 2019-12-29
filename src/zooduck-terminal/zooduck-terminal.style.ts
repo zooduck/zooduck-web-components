@@ -44,7 +44,7 @@ export const style = (options: Options) => {
             letter-spacing: var(--letter-spacing, normal);
             color: var(--color, #fff);
             background-color: var(--background-color, #222);
-            padding: var(--padding, 5px);
+            padding: var(--padding, 10px);
         }
         .word {
             display: flex;
