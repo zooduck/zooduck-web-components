@@ -4,21 +4,26 @@ const tagName = 'zooduck-terminal';
 
 class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
     private _content: HTMLElement;
-    private _cursorBlinkSpeed = '1000';
-    private _delay = '0';
+    private _cursorBlinkSpeed: string;
+    private _delay: string;
     private _domParser: DOMParser;
-    private _fullStopInterval = '450';
+    private _fullStopInterval: string;
     private _hasLoaded: boolean;
     private _message: string;
     private _onLoadEvent: CustomEvent;
     private _styleEl: HTMLStyleElement;
-    private _typingSpeed = '50';
-    private _wordBreakInterval = '0';
+    private _typingSpeed: string;
+    private _wordBreakInterval: string;
 
     constructor() {
         super();
 
+        this._cursorBlinkSpeed = '1000';
+        this._delay = '2500';
         this._domParser = new DOMParser();
+        this._fullStopInterval = '1000';
+        this._typingSpeed = '50';
+        this._wordBreakInterval = '0';
 
         this.attachShadow({ mode: 'open' });
 
@@ -141,16 +146,6 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
         let totalDelayInMillis = this._parseMillis(this._delay);
         const wordBreakIntervalInMillis = this._parseMillis(this._wordBreakInterval);
         const fullStopIntervalInMillis = this._parseMillis(this._fullStopInterval);
-        const spaceEls = [];
-        const wordsPlusSpaces = [];
-
-        // try {
-        //     slottedText = this._messageSlot.assignedElements()[0].innerHTML;
-        // } catch (err) {
-        //     slottedText = this._defaultSlotText;
-        //     console.error(this._getSlotMissingError()); // eslint-disable-line no-console
-        // }
-
         const words = this._message.split(' ').map((word: string, wordsArrIndex: number, wordsArr: string[]) => {
             const characterEls = word.split('').map((character: string) => {
                 const char = character;
@@ -164,24 +159,22 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
             const currentWord = wordsArr[wordsArrIndex];
 
             if (this._wordEndsInFullStop(currentWord)) {
-                totalDelayInMillis += (fullStopIntervalInMillis || wordBreakIntervalInMillis);
+                totalDelayInMillis += fullStopIntervalInMillis;
             }
 
             const animationDelayInMillis = totalDelayInMillis + wordBreakIntervalInMillis;
             const spaceChar = this._buildCharacter('&nbsp;', animationDelayInMillis);
 
-            spaceEls.push(spaceChar);
+            totalDelayInMillis = animationDelayInMillis;
+
+            characterEls.push(spaceChar);
 
             return this._buildWord(characterEls);
         });
 
-        words.forEach((wordEl: HTMLElement) => {
-            wordsPlusSpaces.push(wordEl, spaceEls.shift());
-        });
+        words.push(this._buildCursor());
 
-        wordsPlusSpaces.splice(-1, 1, this._buildCursor());
-
-        return wordsPlusSpaces;
+        return words;
     }
 
     private _parseMillis(stringNumber: string): number {
