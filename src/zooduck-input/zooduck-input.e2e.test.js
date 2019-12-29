@@ -34,7 +34,7 @@ const shadowSelector = (el, selector) => el.shadowRoot.querySelector(selector);
 
 describe('<zooduck-input>', () => {
     beforeAll(async () => {
-        await page.goto('http://localhost:4444');
+        await page.goto(PATH);
     });
 
     it('should render with elements in its shadow DOM', async () => {

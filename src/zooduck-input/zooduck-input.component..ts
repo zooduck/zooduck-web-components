@@ -2,7 +2,7 @@ import * as utils from './zooduck-input-utils';
 import { style } from './zooduck-input.style';
 import { globalStyle } from './zooduck-input.global-style';
 
-export class HTMLZooduckInputElement extends HTMLElement {
+class HTMLZooduckInputElement extends HTMLElement {
     private _autocomplete: string;
     private _autofocus: boolean;
     private _booleanAttrs = [
@@ -622,3 +622,5 @@ export class HTMLZooduckInputElement extends HTMLElement {
         }
     }
 }
+
+customElements.define('zooduck-input', HTMLZooduckInputElement);

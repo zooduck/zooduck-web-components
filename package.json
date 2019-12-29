@@ -9,7 +9,7 @@
     "pretest": "npm run build",
     "test": "jest --verbose --coverage",
     "lint": "eslint ./src/**/*",
-    "prebuild": "npm run lint && node clean && node copy src/index.prod.html dist/index.html",
+    "prebuild": "npm run lint && node clean",
     "build": "parcel build src/index.ts --out-file zooduck-web-components.min.js",
     "start": "parcel serve src/index.html"
   },
