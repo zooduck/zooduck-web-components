@@ -1,4 +1,4 @@
-# zooduck-web-components
+# Zooduck Web Components
 Sample library of pure <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components" target="_blank">HTML Web Components</a> *without polyfills*. Can be used with any modern browser that supports <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements" target="_blank">Autonomous custom elements</a> (i.e. Chrome, Firefox, Opera, Safari).
 
 An up-to-date list of supported browsers can be found here: https://caniuse.com/#search=custom%20element
