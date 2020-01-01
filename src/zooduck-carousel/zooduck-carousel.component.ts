@@ -408,7 +408,7 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
             return timeStamp;
         });
 
-        if (this._isDoubleTap(lastTwoPointerdownTimeStamps) && this.offsetHeight >= window.innerHeight) {
+        if (this._isDoubleTap(lastTwoPointerdownTimeStamps)) {
             this.scrollIntoView({ behavior: 'smooth' });
         }
 
