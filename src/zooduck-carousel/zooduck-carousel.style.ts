@@ -7,9 +7,13 @@ export const style = (options: Options): string => {
     return `
         :host {
             display: block;
+            visibility: hidden;
             overflow: hidden;
             touch-action: pan-y;
             cursor: pointer;
+        }
+        :host(.--ready) {
+            visibility: visible;
         }
         ::slotted([slot=slides]) {
             display: flex;

@@ -1,6 +1,6 @@
 import { style } from './zooduck-carousel.style';
 import  './prototype/Number/to-positive';
-import { wait, isTap, PointerEventDetails, EventDetails } from '../utils/index'; // eslint-disable-line no-unused-vars
+import { wait, PointerEventDetails, EventDetails } from '../utils/index'; // eslint-disable-line no-unused-vars
 
 interface Slide {
     id: number;
@@ -430,8 +430,6 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         if (direction === 'right') {
             this._onSwipeRight();
         }
-
-        this._setCarouselHeightToSlideHeight();
     }
 
     private _registerEvents() {
@@ -492,19 +490,15 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
     }
 
     private _setCarouselHeightToSlideHeight() {
-        this.style.height = `${this._currentSlide.el.offsetHeight + this._getSlideSelectorsHeight()}px`;
-
         // If the carousel is 100% width and the current slide exceeds the window.innerHeight
         // then the slide widths will each be reduced by a factor of the browser's scrollbar width
-        this._slideIntoView(this._currentSlide);
+        this.style.height = `${this._currentSlide.el.offsetHeight + this._getSlideSelectorsHeight()}px`;
     }
 
     private _setContainerStyle(): Promise<any> {
         Array.from(this._container.children).forEach((slide: HTMLElement) => {
             this._setSlideStyle(slide);
         });
-
-        this._setCarouselHeightToSlideHeight();
 
         return Promise.resolve();
     }
@@ -576,12 +570,13 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
         this._container.style.transform = `translateX(${translateX}px)`;
 
+        this._setCarouselHeightToSlideHeight();
+
         if (!this._touchActive) {
             await wait(this._transitionSpeedInMillis);
 
             this.classList.remove('--no-animate');
         }
-
     }
 
     private _syncAttr(name: string, val: string) {
@@ -623,7 +618,6 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
                         this._setCurrentSlide(i);
                         this._setTouchActive(false);
-                        this._setCarouselHeightToSlideHeight();
                         this._slideIntoView(this._currentSlide, false);
                     });
                 });
@@ -661,6 +655,7 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
                 this._lazyLoad(img);
             });
 
+            this.classList.add('--ready');
             this.dispatchEvent(new CustomEvent('load'));
         });
     }
