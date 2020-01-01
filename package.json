@@ -1,6 +1,6 @@
 {
   "name": "@zooduck/zooduck-web-components",
-  "version": "0.2.3-alpha",
+  "version": "0.2.4-alpha",
   "description": "",
   "main": "index.ts",
   "url": "github.com/zooduck/zooduck-web-components",
@@ -22,7 +22,6 @@
     "@typescript-eslint/eslint-plugin": "^2.5.0",
     "@typescript-eslint/parser": "^2.5.0",
     "eslint": "^6.5.1",
-    "express": "^4.17.1",
     "jest": "^24.9.0",
     "jest-puppeteer": "^4.3.0",
     "puppeteer": "^1.20.0",
