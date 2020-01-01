@@ -278,8 +278,7 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
     }
 
     private _onResize() {
-        this._setContainerStyle();
-        this._slideIntoView(this._currentSlide);
+        this._slideIntoView(this._currentSlide, false);
     }
 
     private _onSwipeLeft() {
