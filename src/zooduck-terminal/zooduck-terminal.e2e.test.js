@@ -33,14 +33,18 @@ describe('<zooduck-terminal>', () => {
         let cursorblinkspeedAttr = await getAttribute(page, el, 'cursorblinkspeed');
         let delayAttr = await getAttribute(page, el, 'delay');
         let fullstopintervalAttr = await getAttribute(page, el, 'fullstopinterval');
+        let linemodeAttr = await getAttribute(page, el, 'linemode');
         let messageAttr = await getAttribute(page, el, 'message');
+        let screenAttr = await getAttribute(page, el, 'screen');
         let typingspeedAttr = await getAttribute(page, el, 'typingspeed');
         let wordbreakintervalAttr = await getAttribute(page, el, 'wordbreakinterval');
 
         expect(cursorblinkspeedAttr).toBeNull();
         expect(delayAttr).toBeNull();
         expect(fullstopintervalAttr).toBeNull();
+        expect(linemodeAttr).toBeNull();
         expect(messageAttr).toBeNull();
+        expect(screenAttr).toBeNull();
         expect(typingspeedAttr).toBeNull();
         expect(wordbreakintervalAttr).toBeNull();
 
@@ -48,7 +52,9 @@ describe('<zooduck-terminal>', () => {
             el.cursorblinkspeed = 100;
             el.delay = 200;
             el.fullstopinterval = 300;
+            el.linemode = 'single';
             el.message = 'domper pomper dompety do';
+            el.screen = 'retro';
             el.typingspeed = 400;
             el.wordbreakinterval = 500;
         }, el);
@@ -56,14 +62,18 @@ describe('<zooduck-terminal>', () => {
         cursorblinkspeedAttr = await getAttribute(page, el, 'cursorblinkspeed');
         delayAttr = await getAttribute(page, el, 'delay');
         fullstopintervalAttr = await getAttribute(page, el, 'fullstopinterval');
+        linemodeAttr = await getAttribute(page, el, 'linemode');
         messageAttr = await getAttribute(page, el, 'message');
+        screenAttr = await getAttribute(page, el, 'screen');
         typingspeedAttr = await getAttribute(page, el, 'typingspeed');
         wordbreakintervalAttr = await getAttribute(page, el, 'wordbreakinterval');
 
         expect(cursorblinkspeedAttr).toEqual('100');
         expect(delayAttr).toEqual('200');
         expect(fullstopintervalAttr).toEqual('300');
+        expect(linemodeAttr).toEqual('single');
         expect(messageAttr).toEqual('domper pomper dompety do');
+        expect(screenAttr).toEqual('retro');
         expect(typingspeedAttr).toEqual('400');
         expect(wordbreakintervalAttr).toEqual('500');
     });
@@ -76,22 +86,29 @@ describe('<zooduck-terminal>', () => {
         let cursorblinkspeedAttr = await getAttribute(page, el, 'cursorblinkspeed');
         let delayAttr = await getAttribute(page, el, 'delay');
         let fullstopintervalAttr = await getAttribute(page, el, 'fullstopinterval');
+        let linemodeAttr = await getAttribute(page, el, 'linemode');
         let messageAttr = await getAttribute(page, el, 'message');
+        let screenAttr = await getAttribute(page, el, 'screen');
         let typingspeedAttr = await getAttribute(page, el, 'typingspeed');
         let wordbreakintervalAttr = await getAttribute(page, el, 'wordbreakinterval');
 
         expect(cursorblinkspeedAttr).toBeNull();
         expect(delayAttr).toBeNull();
         expect(fullstopintervalAttr).toBeNull();
+        expect(linemodeAttr).toBeNull();
         expect(messageAttr).toBeNull();
+        expect(screenAttr).toBeNull();
         expect(typingspeedAttr).toBeNull();
         expect(wordbreakintervalAttr).toBeNull();
+
 
         await page.evaluateHandle((el) => {
             el.setAttribute('cursorblinkspeed', '100');
             el.setAttribute('delay', '200');
             el.setAttribute('fullstopinterval', '300');
+            el.setAttribute('linemode', 'single');
             el.setAttribute('message', 'ik heb geen pistol');
+            el.setAttribute('screen', 'retro');
             el.setAttribute('typingspeed', '400');
             el.setAttribute('wordbreakinterval', '500');
         }, el);
@@ -101,7 +118,9 @@ describe('<zooduck-terminal>', () => {
                 el.cursorblinkspeed,
                 el.delay,
                 el.fullstopinterval,
+                el.linemode,
                 el.message,
+                el.screen,
                 el.typingspeed,
                 el.wordbreakinterval,
             ];
@@ -111,7 +130,9 @@ describe('<zooduck-terminal>', () => {
             '100',
             '200',
             '300',
+            'single',
             'ik heb geen pistol',
+            'retro',
             '400',
             '500',
         ];

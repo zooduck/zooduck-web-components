@@ -2,7 +2,10 @@ import { style } from './zooduck-terminal.style';
 
 const tagName = 'zooduck-terminal';
 
-class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
+type LineMode = 'single'|'multi';
+type ScreenType = 'retro'|'modern';
+
+class HTMLZooduckTerminal extends HTMLElement {
     private _content: HTMLElement;
     private _cursorBlinkSpeed: string;
     private _delay: string;
@@ -10,7 +13,9 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
     private _fullStopInterval: string;
     private _hasLoaded: boolean;
     private _message: string;
+    private _lineMode: LineMode;
     private _onLoadEvent: CustomEvent;
+    private _screen: ScreenType;
     private _styleEl: HTMLStyleElement;
     private _typingSpeed: string;
     private _wordBreakInterval: string;
@@ -19,9 +24,11 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
         super();
 
         this._cursorBlinkSpeed = '1000';
-        this._delay = '2500';
+        this._delay = '2000';
         this._domParser = new DOMParser();
         this._fullStopInterval = '1000';
+        this._lineMode = 'multi';
+        this._screen = 'modern';
         this._typingSpeed = '50';
         this._wordBreakInterval = '0';
 
@@ -43,7 +50,9 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
             'cursorblinkspeed',
             'delay',
             'fullstopinterval',
+            'linemode',
             'message',
+            'screen',
             'typingspeed',
             'wordbreakinterval',
         ];
@@ -79,6 +88,16 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
         return this._fullStopInterval;
     }
 
+    public set linemode(val: LineMode) {
+        this._lineMode = val;
+        this._syncAttr('linemode', val);
+        this._update();
+    }
+
+    public get linemode(): LineMode {
+        return this._lineMode;
+    }
+
     public set message(val: string) {
         this._message = val;
         this._syncAttr('message', val);
@@ -87,6 +106,16 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
 
     public get message(): string {
         return this._message;
+    }
+
+    public set screen(val: ScreenType) {
+        this._screen = val;
+        this._syncAttr('screen', val);
+        this._update();
+    }
+
+    public get screen(): ScreenType {
+        return this._screen;
     }
 
     public set typingspeed(val: string) {
@@ -142,39 +171,115 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
         return wordEl;
     }
 
-    private _buildWords(): HTMLElement[] {
+    private _getLines(words: string[]) {
+        const lines = [];
+        let lineIndex = 0;
+
+        if (this._lineMode === 'multi') {
+            return [words];
+        }
+
+        words.forEach((word) => {
+            if (!lines[lineIndex]) {
+                lines.push([]);
+            }
+            lines[lineIndex].push(word);
+
+            if (this._wordEndsInFullStop(word)) {
+                lineIndex += 1;
+            }
+        });
+
+        return lines;
+    }
+
+    private _buildLine(words: HTMLElement[]): HTMLElement {
+        const line = this._domParser.parseFromString(`
+            <section class="line"></section>
+        `, 'text/html').body.firstChild as HTMLElement;
+
+        words.forEach((word) => {
+            line.appendChild(word);
+        });
+
+        return line;
+    }
+
+    private _buildLines(): HTMLElement[] {
         let totalDelayInMillis = this._parseMillis(this._delay);
         const wordBreakIntervalInMillis = this._parseMillis(this._wordBreakInterval);
         const fullStopIntervalInMillis = this._parseMillis(this._fullStopInterval);
-        const words = this._message.split(' ').map((word: string, wordsArrIndex: number, wordsArr: string[]) => {
-            const characterEls = word.split('').map((character: string) => {
-                const char = character;
-                const animationDelayInMillis = this._parseMillis(this._typingSpeed) + totalDelayInMillis;
+        const words = this._message.split(' ');
+        const lineDelays = [];
+        const lines = this._getLines(words);
+        const lineEls = lines.map((line: string[], linesArrIndex: number, linesArr: string[]): HTMLElement => {
+            const words = line.map((word: string, wordsArrIndex: number, wordsArr: string[]) => {
+                const characterEls = word.split('').map((character: string) => {
+                    const char = character;
+                    const animationDelayInMillis = this._parseMillis(this._typingSpeed) + totalDelayInMillis;
 
-                totalDelayInMillis = animationDelayInMillis;
+                    totalDelayInMillis = animationDelayInMillis;
 
-                return this._buildCharacter(char, animationDelayInMillis);
+                    return this._buildCharacter(char, animationDelayInMillis);
+                });
+
+                const currentWord = wordsArr[wordsArrIndex];
+
+                if (this._wordEndsInFullStop(currentWord)) {
+                    totalDelayInMillis += fullStopIntervalInMillis;
+                }
+
+                const isLastWord = wordsArrIndex === (wordsArr.length - 1);
+
+                if (!isLastWord) {
+                    const animationDelayInMillis = this._parseMillis(this._typingSpeed) + wordBreakIntervalInMillis + totalDelayInMillis;
+                    const spaceChar = this._buildCharacter('&nbsp;', animationDelayInMillis);
+
+                    totalDelayInMillis = animationDelayInMillis;
+
+                    characterEls.push(spaceChar);
+                }
+
+                return this._buildWord(characterEls);
             });
 
-            const currentWord = wordsArr[wordsArrIndex];
+            const isLastLine = linesArrIndex === (linesArr.length - 1);
 
-            if (this._wordEndsInFullStop(currentWord)) {
-                totalDelayInMillis += fullStopIntervalInMillis;
+            words.push(this._buildCursor());
+
+            const section = this._buildLine(words);
+
+            if (this._lineMode === 'single') {
+                const animateDelayModifier = isLastLine
+                    ? '--animate-delay-visible-last-line'
+                    :  '--animate-delay-visible-line';
+                section.classList.add(animateDelayModifier);
             }
 
-            const animationDelayInMillis = totalDelayInMillis + wordBreakIntervalInMillis;
-            const spaceChar = this._buildCharacter('&nbsp;', animationDelayInMillis);
+            lineDelays.push(totalDelayInMillis);
 
-            totalDelayInMillis = animationDelayInMillis;
-
-            characterEls.push(spaceChar);
-
-            return this._buildWord(characterEls);
+            return section;
         });
 
-        words.push(this._buildCursor());
+        lineDelays.forEach((lineDelay: number, i: number, lineDelays: number[]) => {
+            const currentLinesDelay = lineDelay;
+            const previousLinesDelay = lineDelays[i - 1];
+            const isFirstLine = (i === 0);
 
-        return words;
+            if (isFirstLine) {
+                const animationDuration = lineDelays[i];
+                lineEls[i].style.animationDuration = `${animationDuration}ms`;
+
+                return;
+            }
+
+            const animationDelay = previousLinesDelay;
+            const animationDuration = currentLinesDelay - animationDelay;
+            lineEls[i].style.animationDelay =  `${animationDelay}ms`;
+            lineEls[i].style.animationDuration = `${animationDuration}ms`;
+        });
+
+        return lineEls;
     }
 
     private _parseMillis(stringNumber: string): number {
@@ -184,27 +289,41 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
     private _render() {
         this._updateStyle();
 
-        const lineEl = this._domParser.parseFromString(`
-            <section class="line">${this._buildWords().map((el: HTMLElement) => {
-            return el.outerHTML;
-        }).join('')}</section>
+        const lines = this._buildLines();
+
+        const linesEl = this._domParser.parseFromString(`
+            <div class="lines"></div>
         `, 'text/html').body.firstChild as HTMLElement;
 
-        if (!this._hasLoaded) {
-            this.shadowRoot.appendChild(lineEl);
-        } else {
-            this.shadowRoot.replaceChild(lineEl, this._content);
+        if (this._lineMode === 'single') {
+            const linePlaceholder = this._domParser.parseFromString(`
+                <div class="line-placeholder">X</div>
+            `, 'text/html').body.firstChild;
+            linesEl.appendChild(linePlaceholder);
         }
 
-        this._content = lineEl;
+        lines.forEach((line) => {
+            linesEl.appendChild(line);
+        });
+
+        if (!this._hasLoaded) {
+            this.shadowRoot.appendChild(linesEl);
+        } else {
+            this.shadowRoot.replaceChild(linesEl, this._content);
+        }
+
+        this._content = linesEl;
     }
 
-    private _syncAttr(name: string, val: string) {
+    private _syncAttr(name: string, val: any) {
         this.setAttribute(name, val);
     }
 
     private _updateStyle() {
-        this._styleEl.innerText = style({ blinkDuration: this._parseMillis(this._cursorBlinkSpeed) });
+        this._styleEl.innerHTML = style({
+            blinkDuration: this._parseMillis(this._cursorBlinkSpeed),
+            screenType: this._screen,
+        });
     }
 
     private _update() {
@@ -220,7 +339,7 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
     }
 
     protected attributeChangedCallback(name: string, _oldVal: string, newVal: string) {
-        if (this[name] === newVal) {
+        if (newVal === null || this[name] === newVal) {
             return;
         }
 
@@ -240,4 +359,4 @@ class HTMLZooduckTerminalMessageEmulator extends HTMLElement {
     }
 }
 
-customElements.define(tagName, HTMLZooduckTerminalMessageEmulator);
+customElements.define(tagName, HTMLZooduckTerminal);
