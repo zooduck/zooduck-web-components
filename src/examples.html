@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <script src="index.ts"></script>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0 auto;
+                font: normal 19px 'Calibri', sans-serif;
+                color: #222;
+            }
+            a {
+                color: cornflowerblue;
+            }
+            .content {
+                display: grid;
+                grid-gap: 20px;
+                justify-items: center;
+                margin: 0 auto;
+                padding: 10px;
+                max-width: 1100px;
+            }
+            .header {
+                text-align: center;
+            }
+            .grid {
+                display: grid;
+                width: 100%;
+                grid-gap: 20px;
+                padding: 10px;
+            }
+            .grid__title {
+                justify-self: center;
+                background-color: aliceblue;
+                padding: 0 20px;
+            }
+            .example {
+                display: grid;
+                grid-template-rows: 95px repeat(3, auto);
+                grid-template-columns: 100%;
+                grid-gap: 20px;
+            }
+            .example__header {
+                display: grid;
+                justify-items: center;
+            }
+            .example__config-toggle {
+                color: cornflowerblue;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            .example__html,
+            .example__style {
+                display: none;
+                color: #444;
+                padding: 20px;
+                background-color: floralwhite;
+                border: dashed 3px #ccc;
+                font-size: 16px;
+                white-space: pre-line;
+                margin: 0;
+                overflow: auto;
+            }
+            .example__style {
+                background-color: aliceblue;
+            }
+            .example.--show-config .example__html,
+            .example.--show-config .example__style {
+                display: block;
+            }
+            .example__result {
+                align-self: flex-start;
+                padding: 10px;
+                box-shadow: 2px 2px 15px #ccc;
+            }
+            .example__result.--hidden {
+                display: none;
+            }
+            @media (min-width: 768px) {
+                .grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+                .grid__title {
+                    grid-column: 1 / span 2;
+                }
+            }
+            @media (min-width: 1024px) {
+                .grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+                .grid__title {
+                    grid-column: 1 / span 3;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            <header class="header">
+                <h1>Zooduck Web Components</h1>
+                <p>
+                    A library of pure <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components" target="_blank">HTML Web Components</a> with configurable
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/var" target="_blank">CSS vars</a>.
+                </p>
+            </header>
+            <footer>
+                <a href="https://github.com/zooduck/zooduck-web-components" target="_blank">zooduck-web-components</a>
+            </footer>
+        </div>
+
+        <template id="exampleTemplate">
+            <div class="example">
+                <div class="example__header">
+                    <h3 class="example__title">Title</h3>
+                    <span class="example__config-toggle">Show html</span>
+                </div>
+                <pre class="example__html"></pre>
+                <pre class="example__style"></pre>
+                <div class="example__result"></div>
+            </div>
+        </template>
+
+        <template>
+<zooduck-input></zooduck-input>
+        </template>
+        <style></style>
+
+        <template>
+<zooduck-input
+    label="Location"
+    placeholder="e.g. Tokyo, Japan">
+</zooduck-input>
+        </template>
+        <style></style>
+
+        <template>
+<zooduck-input
+    type="signature"
+    label="Signature">
+</zooduck-input>
+        </template>
+        <style></style>
+
+        <template>
+<zooduck-input
+    type="password"
+    label="Password">
+</zooduck-input>
+        </template>
+        <style></style>
+
+        <template>
+<zooduck-input
+    id="zooduckInputCustomVars_1"
+    label="Custom Vars"
+    value="Preset Value">
+</zooduck-input>
+        </template>
+        <style>
+            #zooduckInputCustomVars_1 {
+                --zooduck-input-background-color: cornflowerblue;
+                --zooduck-input-color: #fff;
+                --zooduck-input-label-color: yellow;
+                --zooduck-input-icon-color: #fff;
+                --zooduck-input-border-width: 10px;
+                --zooduck-input-border-color: #fff;
+                --zooduck-input-border-style: double;
+            }
+        </style>
+
+        <template>
+<zooduck-input
+    id="zooduckInputCustomVars_2"
+    label="Custom Vars">
+</zooduck-input>
+    </template>
+        <style>
+            #zooduckInputCustomVars_2 {
+                --zooduck-input-font-size: 32px;
+                --zooduck-input-font-family: 'Impact', fantasy;
+                --zooduck-input-border-width: 0 0 10px 0;
+                --zooduck-input-border-color: cornflowerblue;
+                --zooduck-input-background-color: #fff;
+                --zooduck-input-color: cornflowerblue;
+                --zooduck-input-label-color: cornflowerblue;
+            }
+        </style>
+
+        <template>
+<zooduck-terminal></zooduck-terminal>
+        </template>
+        <style></style>
+
+        <template>
+<zooduck-terminal
+    id="zooduckTerminal_1"
+    linemode="single"
+    screen="retro"
+    delay="4000"
+    fullstopinterval="2000"
+    typingspeed="250"
+    wordbreakinterval="250"
+    message="Wake up Neo... The matrix has you... Follow the white rabbit.">
+</zooduck-terminal>
+        </template>
+        <style>
+            #zooduckTerminal_1 {
+                --font-size: 18px;
+            }
+        </style>
+
+        <template>
+<zooduck-terminal
+    id="zooduckTerminal_2"
+    delay="0"
+    wordbreakinterval="500"
+    message="Who is number one? You, are number six. I am not a number! I am a free man!">
+</zooduck-terminal>
+        </template>
+            <style>
+                #zooduckTerminal_2 {
+                    --font-family: 'Calibri', sans-serif;
+                    --font-size: 26px;
+                    --background-color: hotpink;
+                    --color: #fff;
+                    --height: auto;
+                }
+            </style>
+
+        <script>
+            const IOCallback = (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.querySelector('.example__result').classList.remove('--hidden');
+                    }
+                });
+            };
+            const intersectionObserver = new IntersectionObserver(IOCallback, {
+                root: null,
+                threshold: [.9],
+            });
+
+            const getInnerHTMLFromTemplate = (template) => {
+                const temp = document.createElement('div');
+                const content = document.importNode(template, true);
+                temp.appendChild(content);
+
+                return temp.children[0].innerHTML.trim();
+            };
+
+            const getStyleForTemplate = (template) => {
+                return template.nextElementSibling;
+            };
+
+            const buildGrid = (templates, title, hideExampleResultsUntilViewable = false) => {
+                const grid = new DOMParser().parseFromString(`
+                    <div class="grid">
+                        <div class="grid__title">
+                            <h2>${title}</h2>
+                        </div>
+                    </div>
+                `, 'text/html').body.firstChild;
+
+                Array.from(templates).forEach((template, i) => {
+                    const html = getInnerHTMLFromTemplate(template);
+                    const result = template.content;
+                    const style = getStyleForTemplate(template);
+
+                    const example = document.querySelector('#exampleTemplate').cloneNode(true).content;
+                    example.appendChild(style);
+                    example.querySelector('.example__title').innerHTML = `Example ${i + 1}`;
+                    example.querySelector('.example__html').innerText = html;
+                    example.querySelector('.example__style').innerText = style.innerHTML
+                        ? `
+                    <style>
+                        ${style.innerHTML}
+                    </style>`.trim()
+                        : '<style></style>';
+                    example.querySelector('.example__result').appendChild(result);
+
+                    if (hideExampleResultsUntilViewable) {
+                        example.querySelector('.example__result').classList.add('--hidden');
+                    }
+
+                    example.querySelector('.example__config-toggle').addEventListener('click', (e) => {
+                        const exampleContainer = e.target.parentNode.parentNode;
+                        exampleContainer.classList.toggle('--show-config');
+                        if (Array.from(exampleContainer.classList).includes('--show-config')) {
+                            e.target.innerHTML = 'Hide html';
+                            exampleContainer.scrollIntoView();
+
+                            return;
+                        }
+                        e.target.innerHTML = 'Show html';
+                    });
+
+                    grid.appendChild(example);
+                });
+
+                const content = document.querySelector('.content');
+                content.insertBefore(grid, content.children[content.children.length - 1]);
+            };
+
+            const templates = document.querySelectorAll('template:not([id=exampleTemplate])');
+
+            const zooduckInputTemplates = Array.from(templates).filter((template) => {
+                return template.content.children[0].nodeName === 'ZOODUCK-INPUT';
+            });
+
+            const zooduckTerminalTemplates = Array.from(templates).filter((template) => {
+                return template.content.children[0].nodeName === 'ZOODUCK-TERMINAL';
+            });
+
+            buildGrid(zooduckInputTemplates, 'ZOODUCK-INPUT');
+            buildGrid(zooduckTerminalTemplates, 'ZOODUCK-TERMINAL', true);
+
+            Array.from(document.querySelectorAll('.example')).forEach((example) => {
+                intersectionObserver.observe(example);
+            });
+        </script>
+    </body>
+</html>

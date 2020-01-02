@@ -11,7 +11,7 @@
     "lint": "eslint ./src/**/*",
     "prebuild": "npm run lint && node clean",
     "build": "parcel build src/index.ts --out-file zooduck-web-components.min.js",
-    "start": "parcel serve src/index.html"
+    "start": "parcel serve src/examples.html"
   },
   "author": "zooduck",
   "license": "ISC",

@@ -40,7 +40,6 @@ export const style = `
     background-color: var(--zooduck-input-disabled-background-color, var(--disabled));
 }
 .input-label-container {
-    position: relative;
     display: flex;
     flex-grow: 1;
 }
