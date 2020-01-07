@@ -9,7 +9,7 @@
     "pretest": "npm run build",
     "test": "jest --verbose --coverage",
     "lint": "eslint ./src/**/*",
-    "prebuild": "npm run lint && node clean",
+    "prebuild": "npm run lint && node clean && parcel build src/examples.html --public-url ./ --no-minify",
     "build": "parcel build src/index.ts --out-file zooduck-web-components.min.js",
     "start": "parcel serve src/examples.html"
   },
