@@ -5,6 +5,9 @@ An up-to-date list of supported browsers can be found here: https://caniuse.com/
 
 ![alt text](https://github.com/zooduck/screenshots/blob/master/zooduck-web-components/zooduck-web-components.png)
 
+## Examples
+https://zooduck.github.io/zooduck-web-components/dist/examples.html
+
 ## Usage
 Include the following `<script>` tag in the `<head>` of your page:
 
@@ -139,27 +142,3 @@ There are a number of CSS configuration options, in the form of CSS variables, t
 |Name|Description|Event.detail|
 |----|-------|------|
 |keyup:enter|Fired when a keyup event for the Enter key is detected|value|
-
-## Examples
-Default:
-
-```html
-<zooduck-input label="zooduck-input"></zooduck-input>
-```
-
-![alt text](https://github.com/zooduck/screenshots/blob/master/zooduck-web-components/zooduck-input/zooduck-input-default.png)
-
-With CSS vars:
-```html
-<style>
-  :root {
-    --zooduck-input-label-color: tomato;
-    --zooduck-input-border-color: tomato;
-    --zooduck-input-border-width: 0 0 4px 0;
-    --zooduck-input-font-size: 32px;
-  }
-</style>
-
-<zooduck-input label="zooduck-input"></zooduck-input>
-```
-![alt text](https://github.com/zooduck/screenshots/blob/master/zooduck-web-components/zooduck-input/zooduck-input-css-vars-1.png)
