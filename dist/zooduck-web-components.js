@@ -1771,7 +1771,7 @@ function (_HTMLElement) {
       var slideIndex = parseInt(slideNumber, 10) - 1;
       var requestedSlide = this._slides[slideIndex];
 
-      if (!requestedSlide) {
+      if (!requestedSlide || requestedSlide === this._currentSlide) {
         return;
       }
 

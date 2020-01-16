@@ -1771,7 +1771,7 @@ function (_HTMLElement) {
       var slideIndex = parseInt(slideNumber, 10) - 1;
       var requestedSlide = this._slides[slideIndex];
 
-      if (!requestedSlide) {
+      if (!requestedSlide || requestedSlide === this._currentSlide) {
         return;
       }
 
@@ -3437,4 +3437,4 @@ require("./zooduck-radio/zooduck-radio.component");
 
 require("./zooduck-terminal/zooduck-terminal.component");
 },{"regenerator-runtime/runtime":"QVnC","./zooduck-carousel/zooduck-carousel.component":"tZiM","./zooduck-input/zooduck-input.component.":"Y4ya","./zooduck-radio/zooduck-radio.component":"KH65","./zooduck-terminal/zooduck-terminal.component":"wMMK"}]},{},["QCba"], null)
-//# sourceMappingURL=src.d2c03ff1.js.map
+//# sourceMappingURL=src.163ca054.js.map
