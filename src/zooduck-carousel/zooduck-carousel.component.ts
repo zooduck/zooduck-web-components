@@ -68,6 +68,7 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         super();
 
         this._currentOffsetX = 0;
+        this._currentslide = '1';
         this._minPixelsMovementRequiredToRegisterMove = 10;
         this._imageIntersectionObserver = new IntersectionObserver(this._imageIntersectionObserverCallback, {
             root: null,

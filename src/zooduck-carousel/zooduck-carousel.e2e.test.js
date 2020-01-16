@@ -188,4 +188,24 @@ describe('<zooduck-carousel>', () => {
         expect(slideTwoImageSrc).toEqual('https://picsum.photos/40/40');
         expect(slideTwoImageDataSrc).toBeNull();
     });
+
+    it('should return a value for its `currentslide` properrty / attribute when it has not been set', async () => {
+        await page.setContent(`
+            <zooduck-carousel>
+                <div slot="slides">
+                    <div>SLIDE ONE</div>
+                    <div>SLIDE TWO</div>
+                </div>
+            </zooduck-carousel>
+        `);
+
+        const el = await page.$('zooduck-carousel');
+
+        const currentslide = await page.evaluate((el) => {
+            return el.currentslide;
+        }, el);
+
+        expect(currentslide).toBeDefined();
+        expect(currentslide).toEqual('1');
+    });
 });
