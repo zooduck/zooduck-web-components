@@ -122,11 +122,11 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
     }
 
     public set currentslide(slideNumber: any) {
-        if (this._currentslide === slideNumber) {
+        if (this._currentslide == slideNumber) { // non-strict == is intentional
             return;
         }
 
-        this._currentslide = slideNumber;
+        this._currentslide = slideNumber.toString();
         this._syncAttr('currentslide', slideNumber);
 
         const slideIndex = parseInt(slideNumber, 10) - 1;
