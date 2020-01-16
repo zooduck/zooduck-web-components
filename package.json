@@ -10,7 +10,7 @@
     "test": "jest --verbose --coverage",
     "lint": "eslint ./src/**/*",
     "prebuild": "npm run lint && node clean && parcel build src/examples.html --public-url ./ --no-minify",
-    "build": "parcel build src/index.ts --out-file zooduck-web-components.min.js",
+    "build": "parcel build src/index.ts --out-file zooduck-web-components.min.js && parcel build src/index.ts --out-file zooduck-web-components.js --no-minify",
     "start": "parcel serve src/examples.html"
   },
   "author": "zooduck",
