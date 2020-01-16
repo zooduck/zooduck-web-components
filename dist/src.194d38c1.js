@@ -1099,6 +1099,7 @@ function (_HTMLElement) {
     };
 
     _this._currentOffsetX = 0;
+    _this._currentslide = '1';
     _this._minPixelsMovementRequiredToRegisterMove = 10;
     _this._imageIntersectionObserver = new IntersectionObserver(_this._imageIntersectionObserverCallback, {
       root: null,
@@ -3437,4 +3438,4 @@ require("./zooduck-radio/zooduck-radio.component");
 
 require("./zooduck-terminal/zooduck-terminal.component");
 },{"regenerator-runtime/runtime":"QVnC","./zooduck-carousel/zooduck-carousel.component":"tZiM","./zooduck-input/zooduck-input.component.":"Y4ya","./zooduck-radio/zooduck-radio.component":"KH65","./zooduck-terminal/zooduck-terminal.component":"wMMK"}]},{},["QCba"], null)
-//# sourceMappingURL=src.163ca054.js.map
+//# sourceMappingURL=src.194d38c1.js.map
