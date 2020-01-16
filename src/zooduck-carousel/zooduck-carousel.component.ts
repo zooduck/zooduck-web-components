@@ -132,7 +132,7 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         const slideIndex = parseInt(slideNumber, 10) - 1;
         const requestedSlide = this._slides[slideIndex];
 
-        if (!requestedSlide) {
+        if (!requestedSlide || requestedSlide === this._currentSlide) {
             return;
         }
 
