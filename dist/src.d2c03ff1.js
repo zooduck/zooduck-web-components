@@ -1759,11 +1759,12 @@ function (_HTMLElement) {
   }, {
     key: "currentslide",
     set: function set(slideNumber) {
-      if (this._currentslide === slideNumber) {
+      if (this._currentslide == slideNumber) {
+        // non-strict == is intentional
         return;
       }
 
-      this._currentslide = slideNumber;
+      this._currentslide = slideNumber.toString();
 
       this._syncAttr('currentslide', slideNumber);
 
@@ -3436,4 +3437,4 @@ require("./zooduck-radio/zooduck-radio.component");
 
 require("./zooduck-terminal/zooduck-terminal.component");
 },{"regenerator-runtime/runtime":"QVnC","./zooduck-carousel/zooduck-carousel.component":"tZiM","./zooduck-input/zooduck-input.component.":"Y4ya","./zooduck-radio/zooduck-radio.component":"KH65","./zooduck-terminal/zooduck-terminal.component":"wMMK"}]},{},["QCba"], null)
-//# sourceMappingURL=src.0a1bbab5.js.map
+//# sourceMappingURL=src.d2c03ff1.js.map
