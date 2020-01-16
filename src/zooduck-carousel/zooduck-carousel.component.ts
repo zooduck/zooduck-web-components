@@ -122,6 +122,10 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
     }
 
     public set currentslide(slideNumber: any) {
+        if (this._currentslide === slideNumber) {
+            return;
+        }
+
         this._currentslide = slideNumber;
         this._syncAttr('currentslide', slideNumber);
 
