@@ -189,7 +189,7 @@ describe('<zooduck-carousel>', () => {
         expect(slideTwoImageDataSrc).toBeNull();
     });
 
-    it('should return a value for its `currentslide` properrty / attribute when it has not been set', async () => {
+    it('should return a value for its `currentslide` property / attribute when it has not been set', async () => {
         await page.setContent(`
             <zooduck-carousel>
                 <div slot="slides">
@@ -207,5 +207,48 @@ describe('<zooduck-carousel>', () => {
 
         expect(currentslide).toBeDefined();
         expect(currentslide).toEqual('1');
+    });
+
+    it('should set an `--active` modifier class on the slide selector relative to the currently selected slide', async () => {
+        await page.setContent(`
+            <zooduck-carousel>
+                <div slot="slide-selectors">
+                    <div>SLIDE SELECTOR ONE</div>
+                    <div>SLIDE SELECTOR TWO</div>
+                </div>
+                <div slot="slides">
+                    <div>SLIDE ONE</div>
+                    <div>SLIDE TWO</div>
+                </div>
+            </zooduck-carousel>
+        `);
+
+        const el = await page.$('zooduck-carousel');
+
+        let firstSlideSelectorClassList = await page.evaluate((el) => {
+            return Array.from(el.querySelector('[slot=slide-selectors]').firstElementChild.classList);
+        }, el);
+
+        let secondSlideSelectorClassList = await page.evaluate((el) => {
+            return Array.from(el.querySelector('[slot=slide-selectors]').children[1].classList);
+        }, el);
+
+        expect(firstSlideSelectorClassList).toEqual(['--active']);
+        expect(secondSlideSelectorClassList).toEqual([]);
+
+        await page.evaluate((el) => {
+           el.currentslide = 2;
+        }, el);
+
+        firstSlideSelectorClassList = await page.evaluate((el) => {
+            return Array.from(el.querySelector('[slot=slide-selectors]').firstElementChild.classList);
+        }, el);
+
+        secondSlideSelectorClassList = await page.evaluate((el) => {
+            return Array.from(el.querySelector('[slot=slide-selectors]').children[1].classList);
+        }, el);
+
+        expect(firstSlideSelectorClassList).toEqual([]);
+        expect(secondSlideSelectorClassList).toEqual(['--active']);
     });
 });

@@ -268,6 +268,8 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
                 currentSlide: this._currentSlide,
             },
         }));
+
+        this._setActiveSlideSelector();
     }
 
     private _onResize() {
@@ -471,6 +473,17 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         });
     }
 
+    private _setActiveSlideSelector() {
+        if (this._slideSelectors) {
+            Array.from(this._slideSelectors.children).forEach((slideSelector: HTMLElement) => {
+                slideSelector.classList.remove('--active');
+            });
+
+            const currentSlideSelector = this._slideSelectors.children[this._currentSlide.index] as HTMLElement;
+            currentSlideSelector.classList.add('--active');
+        }
+    }
+
     private _setCarouselHeightToSlideHeight() {
         // If the carousel is 100% width and the current slide exceeds the window.innerHeight
         // then the slide widths will each be reduced by a factor of the browser's scrollbar width
@@ -590,8 +603,8 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         const slideSelectorsSlot = this.querySelector('[slot=slide-selectors]');
         if (slideSelectorsSlot) {
             Array.from(this.querySelector('[slot=slide-selectors]').children)
-                .map((item: HTMLElement, i: number) => {
-                    item.addEventListener('pointerup', (e: PointerEvent) => {
+                .map((slideSelectorEl: HTMLElement, i: number) => {
+                    slideSelectorEl.addEventListener('pointerup', (e: PointerEvent) => {
                         e.preventDefault();
 
                         if (this._touchMoveInProgress) {
