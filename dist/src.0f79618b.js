@@ -1204,18 +1204,6 @@ function (_HTMLElement) {
       return slideSelectorsHeight;
     }
   }, {
-    key: "_isDoubleTap",
-    value: function _isDoubleTap(lastTwoPointerdownTimeStamps) {
-      if (lastTwoPointerdownTimeStamps.length < 2) {
-        return false;
-      }
-
-      var secondToLastPointerdownTime = lastTwoPointerdownTimeStamps[0];
-      var lastPointerdownTime = lastTwoPointerdownTimeStamps[1];
-      var maxTimeBetweenPointerDown = 250;
-      return lastPointerdownTime - secondToLastPointerdownTime < maxTimeBetweenPointerDown;
-    }
-  }, {
     key: "_isSwipeValid",
     value: function _isSwipeValid(distanceX) {
       var minTravel = 50;
@@ -1389,7 +1377,7 @@ function (_HTMLElement) {
       return __awaiter(this, void 0, void 0,
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee() {
-        var e, lastTwoPointerdownTimeStamps, distanceX, direction;
+        var e, distanceX, direction;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -1402,21 +1390,10 @@ function (_HTMLElement) {
                 this.removeEventListener('pointermove', this._onTouchMove);
                 this.removeEventListener('touchmove', this._onTouchMove);
                 this.removeEventListener('mousemove', this._onTouchMove);
-                lastTwoPointerdownTimeStamps = this._pointerEvents.pointerdown.slice(-2).map(function (eventDetails) {
-                  var timeStamp = eventDetails.timeStamp;
-                  return timeStamp;
-                });
-
-                if (this._isDoubleTap(lastTwoPointerdownTimeStamps)) {
-                  this.scrollIntoView({
-                    behavior: 'smooth'
-                  });
-                }
-
                 distanceX = this._touchMoveData.distanceX;
 
                 if (this._isSwipeValid(distanceX)) {
-                  _context.next = 12;
+                  _context.next = 10;
                   break;
                 }
 
@@ -1424,7 +1401,7 @@ function (_HTMLElement) {
 
                 return _context.abrupt("return");
 
-              case 12:
+              case 10:
                 direction = distanceX < 0 ? 'right' : 'left';
 
                 if (direction === 'left') {
@@ -1435,7 +1412,7 @@ function (_HTMLElement) {
                   this._onSwipeRight();
                 }
 
-              case 15:
+              case 13:
               case "end":
                 return _context.stop();
             }
@@ -3441,4 +3418,4 @@ require("./zooduck-radio/zooduck-radio.component");
 
 require("./zooduck-terminal/zooduck-terminal.component");
 },{"regenerator-runtime/runtime":"QVnC","./zooduck-carousel/zooduck-carousel.component":"tZiM","./zooduck-input/zooduck-input.component.":"Y4ya","./zooduck-radio/zooduck-radio.component":"KH65","./zooduck-terminal/zooduck-terminal.component":"wMMK"}]},{},["QCba"], null)
-//# sourceMappingURL=src.6eedf793.js.map
+//# sourceMappingURL=src.0f79618b.js.map
