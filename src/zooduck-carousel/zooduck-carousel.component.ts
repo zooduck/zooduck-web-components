@@ -233,18 +233,6 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         });
     }
 
-    private _isDoubleTap(lastTwoPointerdownTimeStamps: number[]): boolean {
-        if (lastTwoPointerdownTimeStamps.length < 2) {
-            return false;
-        }
-
-        const secondToLastPointerdownTime = lastTwoPointerdownTimeStamps[0];
-        const lastPointerdownTime = lastTwoPointerdownTimeStamps[1];
-        const maxTimeBetweenPointerDown = 250;
-
-        return (lastPointerdownTime - secondToLastPointerdownTime) < maxTimeBetweenPointerDown;
-    }
-
     private _isSwipeValid(distanceX: number) {
         const minTravel = 50;
         const isSwipeValid = distanceX.toPositive() > minTravel;
@@ -406,16 +394,6 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         this.removeEventListener('pointermove', this._onTouchMove);
         this.removeEventListener('touchmove', this._onTouchMove);
         this.removeEventListener('mousemove', this._onTouchMove);
-
-        const lastTwoPointerdownTimeStamps = this._pointerEvents.pointerdown.slice(-2).map((eventDetails: EventDetails) => {
-            const { timeStamp } = eventDetails;
-
-            return timeStamp;
-        });
-
-        if (this._isDoubleTap(lastTwoPointerdownTimeStamps)) {
-            this.scrollIntoView({ behavior: 'smooth' });
-        }
 
         const { distanceX } = this._touchMoveData;
 
