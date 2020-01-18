@@ -2278,6 +2278,9 @@ function (_HTMLElement) {
               value: _this3._input.value
             }
           }));
+
+          _this3._input.blur(); // Instruct mobile browsers to remove keyboard interface
+
         }
       });
 
