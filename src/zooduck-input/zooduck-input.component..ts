@@ -159,6 +159,8 @@ class HTMLZooduckInputElement extends HTMLElement {
                         value: this._input.value,
                     }
                 }));
+
+                this._input.blur(); // Instruct mobile browsers to remove keyboard interface
             }
         });
 
