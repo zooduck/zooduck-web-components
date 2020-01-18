@@ -1243,6 +1243,8 @@ function (_HTMLElement) {
           currentSlide: this._currentSlide
         }
       }));
+
+      this._setActiveSlideSelector();
     }
   }, {
     key: "_onResize",
@@ -1497,6 +1499,17 @@ function (_HTMLElement) {
       });
     }
   }, {
+    key: "_setActiveSlideSelector",
+    value: function _setActiveSlideSelector() {
+      if (this._slideSelectors) {
+        Array.from(this._slideSelectors.children).forEach(function (slideSelector) {
+          slideSelector.classList.remove('--active');
+        });
+        var currentSlideSelector = this._slideSelectors.children[this._currentSlide.index];
+        currentSlideSelector.classList.add('--active');
+      }
+    }
+  }, {
     key: "_setCarouselHeightToSlideHeight",
     value: function _setCarouselHeightToSlideHeight() {
       // If the carousel is 100% width and the current slide exceeds the window.innerHeight
@@ -1665,8 +1678,8 @@ function (_HTMLElement) {
                 slideSelectorsSlot = this.querySelector('[slot=slide-selectors]');
 
                 if (slideSelectorsSlot) {
-                  Array.from(this.querySelector('[slot=slide-selectors]').children).map(function (item, i) {
-                    item.addEventListener('pointerup', function (e) {
+                  Array.from(this.querySelector('[slot=slide-selectors]').children).map(function (slideSelectorEl, i) {
+                    slideSelectorEl.addEventListener('pointerup', function (e) {
                       e.preventDefault();
 
                       if (_this7._touchMoveInProgress) {
