@@ -1,6 +1,7 @@
 import * as utils from './zooduck-input-utils';
 import { style } from './zooduck-input.style';
 import { globalStyle } from './zooduck-input.global-style';
+import { PointerEventDetails } from '../utils/index';
 
 class HTMLZooduckInputElement extends HTMLElement {
     private _autocomplete: string;
@@ -37,6 +38,7 @@ class HTMLZooduckInputElement extends HTMLElement {
     private _name: string;
     private _noIcons: boolean;
     private _placeholder: string;
+    private _pointerEventDetails: PointerEventDetails;
     private _readOnly: boolean;
     private _required: boolean;
     private _sharedAttrs = [
@@ -87,6 +89,8 @@ class HTMLZooduckInputElement extends HTMLElement {
         this._clearInputIconSlot = utils.buildIconSlot('right-icon-clear-input', 'fa-times');
         this._showPasswordIconSlot = utils.buildIconSlot('right-icon-show-password', 'fa-eye');
         this._hidePasswordIconSlot = utils.buildIconSlot('right-icon-hide-password', 'fa-eye-slash');
+
+        this._pointerEventDetails = new PointerEventDetails();
     }
 
     protected static get observedAttributes(): string[] {
@@ -108,15 +112,40 @@ class HTMLZooduckInputElement extends HTMLElement {
     }
 
     private _addCanvasEvents() {
-        this._canvas.addEventListener('mousedown', (e: MouseEvent) => this._canvasEvents.onTouchStart(e));
-        this._canvas.addEventListener('mousemove', (e: MouseEvent) => this._canvasEvents.onTouchMove(e));
-        this._canvas.addEventListener('mouseup', () => this._canvasOnTouchEnd());
-        this._canvas.addEventListener('mouseout', () => this._canvasOnTouchEnd());
-
-        this._canvas.addEventListener('touchstart', (e: TouchEvent) => this._canvasEvents.onTouchStart(e));
-        this._canvas.addEventListener('touchmove', (e: TouchEvent) => this._canvasEvents.onTouchMove(e));
-        this._canvas.addEventListener('touchcancel', () => this._canvasOnTouchEnd());
-        this._canvas.addEventListener('touchend', () => this._canvasOnTouchEnd());
+        if ('PointerEvent' in window) {
+            this._canvas.addEventListener('pointerdown', (e: PointerEvent) => {
+                const eventDetails = this._pointerEventDetails.fromPointer(e);
+                this._canvasEvents.onTouchStart(eventDetails);
+            });
+            this._canvas.addEventListener('pointermove', (e: PointerEvent) => {
+                const eventDetails = this._pointerEventDetails.fromPointer(e);
+                this._canvasEvents.onTouchMove(eventDetails);
+            });
+            this._canvas.addEventListener('pointerup', this._canvasOnTouchEnd.bind(this));
+            this._canvas.addEventListener('pointerleave', this._canvasOnTouchEnd.bind(this));
+        } else if ('TouchEvent' in window) {
+            this._canvas.addEventListener('touchstart', (e: TouchEvent) => {
+                const eventDetails = this._pointerEventDetails.fromTouch(e);
+                this._canvasEvents.onTouchStart(eventDetails);
+            });
+            this._canvas.addEventListener('touchmove', (e: TouchEvent) => {
+                const eventDetails = this._pointerEventDetails.fromTouch(e);
+                this._canvasEvents.onTouchMove(eventDetails);
+            });
+            this._canvas.addEventListener('touchcancel', this._canvasOnTouchEnd.bind(this));
+            this._canvas.addEventListener('touchend', this._canvasOnTouchEnd.bind(this));
+        } else {
+            this._canvas.addEventListener('mousedown', (e: MouseEvent) => {
+                const eventDetails = this._pointerEventDetails.fromMouse(e);
+                this._canvasEvents.onTouchStart(eventDetails);
+            });
+            this._canvas.addEventListener('mousemove', (e: MouseEvent) => {
+                const eventDetails = this._pointerEventDetails.fromMouse(e);
+                this._canvasEvents.onTouchMove(eventDetails);
+            });
+            this._canvas.addEventListener('mouseup', this._canvasOnTouchEnd.bind(this));
+            this._canvas.addEventListener('mouseleave', this._canvasOnTouchEnd.bind(this));
+        }
     }
 
     private _addEvents(): void {
@@ -164,16 +193,19 @@ class HTMLZooduckInputElement extends HTMLElement {
             }
         });
 
-        this._leftIconSlot.addEventListener('mousedown', (e: MouseEvent) => {
-            e.preventDefault();
-        });
-
         [
+            this._leftIconSlot,
             this._clearInputIconSlot,
             this._showPasswordIconSlot,
             this._hidePasswordIconSlot
         ].forEach((slot) => {
-            slot.addEventListener('mousedown', (e: MouseEvent) => e.preventDefault());
+            if ('PointerEvent' in window) {
+                slot.addEventListener('pointerdown', (e: PointerEvent) => e.preventDefault());
+            } else if ('TouchEvent' in window) {
+                slot.addEventListener('touchstart', (e: TouchEvent) => e.preventDefault());
+            } else {
+                slot.addEventListener('mousedown', (e: MouseEvent) => e.preventDefault());
+            }
         });
 
         this._clearInputIconSlot.addEventListener('click', () => {

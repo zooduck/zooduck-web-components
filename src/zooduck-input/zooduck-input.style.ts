@@ -30,12 +30,12 @@ export const style = `
 
     position: relative;
     display: flex;
+    touch-action: none;
     width: var(--zooduck-input-width, auto);
     border-style: var(--zooduck-input-border-style, solid);
     border-color: var(--zooduck-input-border-color, var(--gray));
     border-width: var(--zooduck-input-border-width, 1px);
     background-color: var(--zooduck-input-background-color, var(--white));
-
     font-family: var(--zooduck-input-font-family, 'Roboto', sans-serif);
     font-size: var(--zooduck-input-font-size, 19px);
     font-weight: var(--zooduck-input-font-weight, inherit);

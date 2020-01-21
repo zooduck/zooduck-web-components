@@ -1,4 +1,6 @@
 import { fontAwesomeIcons } from './icons/index';
+// eslint-disable-next-line no-unused-vars
+import { EventDetails } from '../utils/index';
 
 export const buildCanvas = (height: number): HTMLCanvasElement => {
     const canvas = document.createElement('canvas');
@@ -57,17 +59,9 @@ export class CanvasEvents {
         this._signatureInkColor = '#222';
     }
 
-    private _eventType(e: Event): string {
-        return e.constructor.name;
-    }
-
-    private _getEventCoords(e: MouseEvent | TouchEvent): any {
-        const x = this._eventType(e) === 'TouchEvent'
-            ? (e as TouchEvent).touches[0].clientX - this._domRect.x
-            : (e as MouseEvent).clientX - this._domRect.x;
-        const y = this._eventType(e) === 'TouchEvent'
-            ? (e as TouchEvent).touches[0].clientY - this._domRect.y
-            : (e as MouseEvent).clientY - this._domRect.y;
+    private _getEventCoords(eventDetails: EventDetails): any {
+        const x = eventDetails.clientX - this._domRect.x;
+        const y = eventDetails.clientY - this._domRect.y;
 
         return {
             x,
@@ -86,15 +80,15 @@ export class CanvasEvents {
         return true;
     }
 
-    public onTouchStart(e: MouseEvent | TouchEvent) {
-        if (this._eventType(e) !== 'MouseEvent' && this._eventType(e) !== 'TouchEvent') {
-            return;
-        }
+    public onTouchStart(eventDetails: EventDetails) {
+        const { event: e } = eventDetails;
+
+        e.preventDefault();
 
         this._canDraw = true;
         this._domRect = this._canvas.getBoundingClientRect() as DOMRect;
 
-        const eventCoords = this._getEventCoords(e);
+        const eventCoords = this._getEventCoords(eventDetails);
 
         this._context = this._canvas.getContext('2d');
         this._context.lineWidth = this._lineWidth;
@@ -108,9 +102,9 @@ export class CanvasEvents {
         this._context.stroke();
     }
 
-    public onTouchMove(e: MouseEvent | TouchEvent) {
+    public onTouchMove(eventDetails: EventDetails) {
         if (this._canDraw) {
-            const eventCoords = this._getEventCoords(e);
+            const eventCoords = this._getEventCoords(eventDetails);
 
             if (!this._isTouchInCanvas(eventCoords)) {
                 this._canDraw = false;
