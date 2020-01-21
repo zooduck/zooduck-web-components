@@ -25,6 +25,22 @@ export const style = (options: Options) => {
     }
 
     return `
+        /* ============================================================ */
+        /* | CSS VARS                                                 | */
+        /* ============================================================ */
+        /* | Name               | Default                             | */
+        /* | -------------------------------------------------------- | */
+        /* | --width            | 100%                                | */
+        /* | --height           | auto                                | */
+        /* | --min-width        | 200px                               | */
+        /* | --min-height       | 150px                               | */
+        /* | --background-color | #222                                | */
+        /* | --font-family      | "Courier New", "Courier", monospace | */
+        /* | --font-weight      | normal                              | */
+        /* | --color            | #fff                                | */
+        /* | --letter-spacing   | normal                              | */
+        /* ===========================================================  */
+
         @keyframes blink {
             0% {
                 background-color: var(--background-color, ${backgroundColorBase});
@@ -113,8 +129,10 @@ export const style = (options: Options) => {
         :host {
             box-sizing: border-box;
             display: block;
-            width: 100%;
-            min-height: var(--height, 250px);
+            width: var(--width, 100%);
+            height: var(--height, auto);
+            min-width: var(--min-width, 200px);
+            min-height: var(--min-height, 150px);
             overflow: hidden;
             background-color: var(--background-color, ${backgroundColorBase});
         }
