@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <script src="index.ts"></script>
         <style>
             :root {
@@ -29,17 +29,15 @@
                 grid-gap: 20px;
                 justify-items: center;
                 margin: 0 auto;
-                padding: 10px;
                 max-width: 1100px;
+                padding: 20px;
             }
             .header {
                 text-align: center;
             }
             .grid {
                 display: grid;
-                width: 100%;
                 grid-gap: 20px;
-                padding: 10px;
                 grid-template-columns: auto;
                 max-width: 500px;
             }
@@ -52,8 +50,7 @@
             .example {
                 display: grid;
                 grid-template-rows: 95px repeat(2, auto) 1fr;
-                grid-template-columns: 100%;
-                grid-gap: 20px;
+                grid-row-gap: 20px;
             }
             .example__header {
                 display: grid;
@@ -111,6 +108,13 @@
                 color: gray;
                 max-width: 640px;
                 justify-self: center;
+            }
+            @media (max-width: 600px) {
+                .config-table__tr,
+                .config-table__td {
+                    font-size: .8em;
+                    padding: 2px;
+                }
             }
             .config-table__title {
                 grid-column: 1 / span 3;
@@ -188,21 +192,21 @@
 <zooduck-carousel loading="eager" id="zooduckCarousel_2">
     <div slot="slides">
         <div class="slide">
-            <h1>Potato</h1>
+            <h2>Potato</h2>
             <img src="https://picsum.photos/id/250/400/320" width="400" height="320" alt="400/320" />
             <p>
                 The English word potato comes from Spanish patata (the name used in Spain). The Royal Spanish Academy says the Spanish word is a hybrid of the Taíno batata ('sweet potato') and the Quechua papa ('potato').
             </p>
         </div>
         <div class="slide">
-            <h1>Tomato</h1>
+            <h2>Tomato</h2>
             <img src="https://picsum.photos/id/308/400/320" width="400" height="320" alt="400/320" />
             <p>
                 The word "tomato" comes from the Spanish tomate, which in turn comes from the Nahuatl word tomātl, meaning "the swelling fruit". The native Mexican tomatillo is tomate, meaning "fat water" or "fat thing".
             </p>
         </div>
         <div class="slide">
-            <h1>Banana</h1>
+            <h2>Banana</h2>
             <img src="https://picsum.photos/id/364/100/320" width="100" height="320" alt="100/320" />
             <p>
                 The banana plant is the largest herbaceous flowering plant. All the above-ground parts of a banana plant grow from a structure usually called a "corm". Plants are normally tall and fairly sturdy, and are often mistaken for trees, but what appears to be a trunk is actually a "false stem" or pseudostem.

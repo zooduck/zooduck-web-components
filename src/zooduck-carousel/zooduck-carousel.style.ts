@@ -21,6 +21,7 @@ export const style = (options: Options): string => {
         ::slotted([slot=slides]) {
             display: flex;
             align-items: flex-start;
+            justify-content: left;
         }
         ::slotted([slot=slides]) {
             transition: all ${transitionSpeedInMillis}ms;
