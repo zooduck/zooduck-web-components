@@ -3,9 +3,9 @@ Zero dependency sample library of pure <a href="https://developer.mozilla.org/en
 
 An up-to-date list of supported browsers can be found here: https://caniuse.com/#search=custom%20element
 
-![alt text](https://github.com/zooduck/screenshots/blob/master/zooduck-web-components/zooduck-web-components.png)
+![alt text](https://github.com/zooduck/screenshots/blob/master/zooduck-web-components/v0.7.0-alpha/zooduck-web-components-v0.7.0-alpha.png)
 
-## Examples
+## Examples (with documentation)
 https://zooduck.github.io/zooduck-web-components/dist/examples.html
 
 ## Usage
@@ -54,7 +54,7 @@ or:
 
 | Name | Type | Values | Property | Description |
 | ---- | ---- | ------ | -------- | ----------- |
-| label | string | any | label | Animated placeholder. If both `label` and `placeholder` are set, `placeholder` is ignored. |
+| label | string | any | label | Animated label. Can be used in conjunction with the `placeholder` attribute. |
 | signatureinkcolor* | string | any | signatureInkColor | Sets the ink color for the `signature` type. |
 
 *camelCase property
@@ -105,7 +105,7 @@ The result would be:
 | right-icon-hide-password | Yes | password | Interactive icon that hides the password when clicked. | fas fa-eye-slash* |
 | right-icon-show-password | Yes | password | Intetractive icon that shows the password when clicked. | fas fa-eye* |
 
-*icons provided by Font Awesome - https://fontawesome.com/license
+*icons by Font Awesome - https://fontawesome.com/license
 
 For example, to set an icon for the left-icon (assuming you are using Font Awesome icons):
 
@@ -130,13 +130,13 @@ There are a number of CSS configuration options, in the form of CSS variables, t
 | --zooduck-input-border-style | The `border-style` style of the element | solid |
 | --zooduck-input-border-color | The `border-color` style of the element | var(--gray) |
 | --zooduck-input-border-width | The `border-width` style of the element | 1px |
-| --zooduck-input-background-color | The `background-color` style of the element | #fff |
-| --zooduck-input-disabled-background-color | The `background-color` style of the element when its `disabled` attribute is set | #eee |
+| --zooduck-input-background-color | The `background-color` style of the element | var(--white) |
+| --zooduck-input-disabled-background-color | The `background-color` style of the element when its `disabled` attribute is set | var(--disabled) |
 | --zooduck-input-color | The `color` style of the element's input | var(--black) |
 | --zooduck-input-label-color | The `color` style of the element's label | var(--gray) |
 | --zooduck-input-icon-color | The `color` style of the icon slots | var(--zooduck-input-label-color, var(--gray)) |
 | --zooduck-input-icon-padding | The `padding` style of icon slots | 0 20px |
-| --zooduck-input-signature-border-color | The `border-color` style of the signature canvas | #eee |
+| --zooduck-input-signature-border-color | The `border-color` style of the signature canvas | var(--palegray) |
 
 ## Custom Events
 |Name|Description|Event.detail|
