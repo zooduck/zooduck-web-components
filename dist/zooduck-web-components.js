@@ -854,7 +854,7 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.style = function (options) {
   var transitionSpeedInMillis = options.transitionSpeed;
-  return "\n        :host {\n            position: relative;\n            display: block;\n            visibility: hidden;\n            overflow: hidden;\n            touch-action: pan-y;\n            cursor: pointer;\n            user-select: none;\n            transition: height ".concat(transitionSpeedInMillis, "ms;\n        }\n        :host(.--ready) {\n            visibility: visible;\n        }\n        ::slotted([slot=slides]) {\n            display: flex;\n            align-items: flex-start;\n        }\n        ::slotted([slot=slides]) {\n            transition: all ").concat(transitionSpeedInMillis, "ms;\n        }\n        :host(.--touch-active) ::slotted([slot=slides]) {\n            transition: none;\n        }\n        :host(.--no-animate) ::slotted([slot=slides]) {\n            transition: none;\n        }\n    ");
+  return "\n        :host {\n            position: relative;\n            display: block;\n            visibility: hidden;\n            overflow: hidden;\n            touch-action: pan-y;\n            cursor: pointer;\n            user-select: none;\n            transition: height ".concat(transitionSpeedInMillis, "ms;\n        }\n        :host(.--ready) {\n            visibility: visible;\n        }\n        ::slotted([slot=slides]) {\n            display: flex;\n            align-items: flex-start;\n            justify-content: left;\n        }\n        ::slotted([slot=slides]) {\n            transition: all ").concat(transitionSpeedInMillis, "ms;\n        }\n        :host(.--touch-active) ::slotted([slot=slides]) {\n            transition: none;\n        }\n        :host(.--no-animate) ::slotted([slot=slides]) {\n            transition: none;\n        }\n    ");
 };
 },{}],"vlYQ":[function(require,module,exports) {
 Number.prototype.toPositive = function () {
@@ -1918,15 +1918,10 @@ function () {
   }
 
   _createClass(CanvasEvents, [{
-    key: "_eventType",
-    value: function _eventType(e) {
-      return e.constructor.name;
-    }
-  }, {
     key: "_getEventCoords",
-    value: function _getEventCoords(e) {
-      var x = this._eventType(e) === 'TouchEvent' ? e.touches[0].clientX - this._domRect.x : e.clientX - this._domRect.x;
-      var y = this._eventType(e) === 'TouchEvent' ? e.touches[0].clientY - this._domRect.y : e.clientY - this._domRect.y;
+    value: function _getEventCoords(eventDetails) {
+      var x = eventDetails.clientX - this._domRect.x;
+      var y = eventDetails.clientY - this._domRect.y;
       return {
         x: x,
         y: y
@@ -1943,15 +1938,13 @@ function () {
     }
   }, {
     key: "onTouchStart",
-    value: function onTouchStart(e) {
-      if (this._eventType(e) !== 'MouseEvent' && this._eventType(e) !== 'TouchEvent') {
-        return;
-      }
-
+    value: function onTouchStart(eventDetails) {
+      var e = eventDetails.event;
+      e.preventDefault();
       this._canDraw = true;
       this._domRect = this._canvas.getBoundingClientRect();
 
-      var eventCoords = this._getEventCoords(e);
+      var eventCoords = this._getEventCoords(eventDetails);
 
       this._context = this._canvas.getContext('2d');
       this._context.lineWidth = this._lineWidth;
@@ -1968,9 +1961,9 @@ function () {
     }
   }, {
     key: "onTouchMove",
-    value: function onTouchMove(e) {
+    value: function onTouchMove(eventDetails) {
       if (this._canDraw) {
-        var eventCoords = this._getEventCoords(e);
+        var eventCoords = this._getEventCoords(eventDetails);
 
         if (!this._isTouchInCanvas(eventCoords)) {
           this._canDraw = false;
@@ -2023,7 +2016,7 @@ exports.CanvasEvents = CanvasEvents;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.style = "\n/* ============================================================================================= */\n/* | CSS VARS                                                                                  | */\n/* ============================================================================================= */\n/* | Name                                      | Default                                       | */\n/* | ----------------------------------------------------------------------------------------- | */\n/* | --zooduck-input-font-family               | \"Roboto\", sans-serif                          | */\n/* | --zooduck-input-font-size                 | 19px                                          | */\n/* | --zooduck-input-font-weight               | inherit                                       | */\n/* | --zooduck-input-font-style                | inherit                                       | */\n/* | --zooduck-input-width                     | auto                                          | */\n/* | --zooduck-input-border-style              | solid                                         | */\n/* | --zooduck-input-border-color              | var(--gray)                                   | */\n/* | --zooduck-input-border-width              | 1px                                           | */\n/* | --zooduck-input-background-color          | var(--white)                                  | */\n/* | --zooduck-input-disabled-background-color | var(--disabled)                               | */\n/* | --zooduck-input-color                     | var(--black)                                  | */\n/* | --zooduck-input-label-color               | var(--gray)                                   | */\n/* | --zooduck-input-icon-color                | var(--zooduck-input-label-color, var(--gray)) | */\n/* | --zooduck-input-icon-padding              | 0 20px                                        | */\n/* | --zooduck-input-signature-border-color    | var(--palegray)                               | */\n/* ============================================================================================= */\n\n:host {\n    --gray: #bbb;\n    --palegray: #eee;\n    --black: #222;\n    --white: #fff;\n    --disabled: #eee;\n\n    position: relative;\n    display: flex;\n    width: var(--zooduck-input-width, auto);\n    border-style: var(--zooduck-input-border-style, solid);\n    border-color: var(--zooduck-input-border-color, var(--gray));\n    border-width: var(--zooduck-input-border-width, 1px);\n    background-color: var(--zooduck-input-background-color, var(--white));\n\n    font-family: var(--zooduck-input-font-family, 'Roboto', sans-serif);\n    font-size: var(--zooduck-input-font-size, 19px);\n    font-weight: var(--zooduck-input-font-weight, inherit);\n    font-style: var(--zooduck-input-font-style, inherit);\n}\n:host([disabled]),\n:host([disabled]) input {\n    background-color: var(--zooduck-input-disabled-background-color, var(--disabled));\n}\n.input-label-container {\n    display: flex;\n    flex-grow: 1;\n}\n:host([type=signature]) .input-label-container {\n    min-width: 200px;\n}\n.label {\n    display: none;\n}\n:host(.--has-valid-label) .label {\n    display: block;\n    user-select: none;\n    position: absolute;\n    pointer-events: none;\n    color: var(--zooduck-input-label-color, var(--gray));\n    text-align: left;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    width: calc(100% - 10px);\n    overflow: hidden;\n    left: 10px;\n    top: 50%;\n    transform-origin: left top;\n    transform: translateY(-50%);\n    transition: all .25s;\n}\n:host([required]) .label:after {\n    content: \"*\";\n}\n:host(.--active) .label,\n:host(.--has-content) .label,\n:host([type=signature]) .label {\n    top: 5px;\n    transform: translateY(0) scale(.8);\n}\n:host(.--has-left-icon) .label {\n    left: 0;\n}\ninput {\n    width: 100%;\n    border: none;\n    outline: none;\n    flex-grow: 1;\n    padding: 10px;\n    font-family: var(--zooduck-input-font-family, inherit);\n    font-size: var(--zooduck-input-font-size, 19px);\n    font-weight: var(--zooduck-input-font-weight, inherit);\n    font-style: var(--zooduck-input-font-style, inherit);\n    background-color: var(--zooduck-input-background-color, var(--white));\n    color: var(--zooduck-input-color, var(--black));\n}\n:host(.--has-left-icon) input {\n    padding-left: 0;\n}\ncanvas {\n   display: none;\n}\n:host([type=signature]) input {\n    display: none;\n}\n:host([type=signature]) canvas {\n    display: block;\n    margin-top: calc(var(--zooduck-input-font-size, 19px) + 15px);\n    border-style: dashed;\n    border-color: var(--zooduck-input-signature-border-color, var(--palegray));\n    border-width: 6px 6px 0 0;\n}\n:host(.--has-valid-label) input {\n    padding-top: calc(var(--zooduck-input-font-size, 19px) + 5px);\n}\n::slotted(*),\nslot > * {\n    padding: var(--zooduck-input-icon-padding, 0 20px);\n}\nslot[hidden] {\n    display: none !important;\n}\nslot[name*=icon] {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: var(--zooduck-input-font-size, 19px);\n    color: var(--zooduck-input-icon-color, var(--zooduck-input-label-color, var(--gray)));\n}\nslot[name*=icon] svg {\n    height: var(--zooduck-input-font-size, 19px);\n}\nslot[name^=right-icon] {\n    cursor: pointer;\n    display: none;\n}\n:host(:not([type=password])) slot[name=right-icon-clear-input] {\n    display: flex;\n}\n:host([type=password]:not(.--show-password)) slot[name=right-icon-show-password] {\n    display: flex;\n}\n:host([type=password].--show-password) slot[name=right-icon-hide-password] {\n    display: flex;\n}\n.--zooduck-input-filter-hidden {\n    display: none;\n}\n";
+exports.style = "\n/* ============================================================================================= */\n/* | CSS VARS                                                                                  | */\n/* ============================================================================================= */\n/* | Name                                      | Default                                       | */\n/* | ----------------------------------------------------------------------------------------- | */\n/* | --zooduck-input-font-family               | \"Roboto\", sans-serif                          | */\n/* | --zooduck-input-font-size                 | 19px                                          | */\n/* | --zooduck-input-font-weight               | inherit                                       | */\n/* | --zooduck-input-font-style                | inherit                                       | */\n/* | --zooduck-input-width                     | auto                                          | */\n/* | --zooduck-input-border-style              | solid                                         | */\n/* | --zooduck-input-border-color              | var(--gray)                                   | */\n/* | --zooduck-input-border-width              | 1px                                           | */\n/* | --zooduck-input-background-color          | var(--white)                                  | */\n/* | --zooduck-input-disabled-background-color | var(--disabled)                               | */\n/* | --zooduck-input-color                     | var(--black)                                  | */\n/* | --zooduck-input-label-color               | var(--gray)                                   | */\n/* | --zooduck-input-icon-color                | var(--zooduck-input-label-color, var(--gray)) | */\n/* | --zooduck-input-icon-padding              | 0 20px                                        | */\n/* | --zooduck-input-signature-border-color    | var(--palegray)                               | */\n/* ============================================================================================= */\n\n:host {\n    --gray: #bbb;\n    --palegray: #eee;\n    --black: #222;\n    --white: #fff;\n    --disabled: #eee;\n\n    position: relative;\n    display: flex;\n    touch-action: none;\n    width: var(--zooduck-input-width, auto);\n    border-style: var(--zooduck-input-border-style, solid);\n    border-color: var(--zooduck-input-border-color, var(--gray));\n    border-width: var(--zooduck-input-border-width, 1px);\n    background-color: var(--zooduck-input-background-color, var(--white));\n    font-family: var(--zooduck-input-font-family, 'Roboto', sans-serif);\n    font-size: var(--zooduck-input-font-size, 19px);\n    font-weight: var(--zooduck-input-font-weight, inherit);\n    font-style: var(--zooduck-input-font-style, inherit);\n}\n:host([disabled]),\n:host([disabled]) input {\n    background-color: var(--zooduck-input-disabled-background-color, var(--disabled));\n}\n.input-label-container {\n    display: flex;\n    flex-grow: 1;\n}\n:host([type=signature]) .input-label-container {\n    min-width: 200px;\n}\n.label {\n    display: none;\n}\n:host(.--has-valid-label) .label {\n    display: block;\n    user-select: none;\n    position: absolute;\n    pointer-events: none;\n    color: var(--zooduck-input-label-color, var(--gray));\n    text-align: left;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    width: calc(100% - 10px);\n    overflow: hidden;\n    left: 10px;\n    top: 50%;\n    transform-origin: left top;\n    transform: translateY(-50%);\n    transition: all .25s;\n}\n:host([required]) .label:after {\n    content: \"*\";\n}\n:host(.--active) .label,\n:host(.--has-content) .label,\n:host([type=signature]) .label {\n    top: 5px;\n    transform: translateY(0) scale(.8);\n}\n:host(.--has-left-icon) .label {\n    left: 0;\n}\ninput {\n    width: 100%;\n    border: none;\n    outline: none;\n    flex-grow: 1;\n    padding: 10px;\n    font-family: var(--zooduck-input-font-family, inherit);\n    font-size: var(--zooduck-input-font-size, 19px);\n    font-weight: var(--zooduck-input-font-weight, inherit);\n    font-style: var(--zooduck-input-font-style, inherit);\n    background-color: var(--zooduck-input-background-color, var(--white));\n    color: var(--zooduck-input-color, var(--black));\n}\n:host(.--has-left-icon) input {\n    padding-left: 0;\n}\ncanvas {\n   display: none;\n}\n:host([type=signature]) input {\n    display: none;\n}\n:host([type=signature]) canvas {\n    display: block;\n    margin-top: calc(var(--zooduck-input-font-size, 19px) + 15px);\n    border-style: dashed;\n    border-color: var(--zooduck-input-signature-border-color, var(--palegray));\n    border-width: 6px 6px 0 0;\n}\n:host(.--has-valid-label) input {\n    padding-top: calc(var(--zooduck-input-font-size, 19px) + 5px);\n}\n::slotted(*),\nslot > * {\n    padding: var(--zooduck-input-icon-padding, 0 20px);\n}\nslot[hidden] {\n    display: none !important;\n}\nslot[name*=icon] {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: var(--zooduck-input-font-size, 19px);\n    color: var(--zooduck-input-icon-color, var(--zooduck-input-label-color, var(--gray)));\n}\nslot[name*=icon] svg {\n    height: var(--zooduck-input-font-size, 19px);\n}\nslot[name^=right-icon] {\n    cursor: pointer;\n    display: none;\n}\n:host(:not([type=password])) slot[name=right-icon-clear-input] {\n    display: flex;\n}\n:host([type=password]:not(.--show-password)) slot[name=right-icon-show-password] {\n    display: flex;\n}\n:host([type=password].--show-password) slot[name=right-icon-hide-password] {\n    display: flex;\n}\n.--zooduck-input-filter-hidden {\n    display: none;\n}\n";
 },{}],"YxNP":[function(require,module,exports) {
 "use strict";
 
@@ -2111,6 +2104,8 @@ var utils = __importStar(require("./zooduck-input-utils"));
 var zooduck_input_style_1 = require("./zooduck-input.style");
 
 var zooduck_input_global_style_1 = require("./zooduck-input.global-style");
+
+var index_1 = require("../utils/index");
 
 var HTMLZooduckInputElement =
 /*#__PURE__*/
@@ -2219,6 +2214,7 @@ function (_HTMLElement) {
     _this._clearInputIconSlot = utils.buildIconSlot('right-icon-clear-input', 'fa-times');
     _this._showPasswordIconSlot = utils.buildIconSlot('right-icon-show-password', 'fa-eye');
     _this._hidePasswordIconSlot = utils.buildIconSlot('right-icon-hide-password', 'fa-eye-slash');
+    _this._pointerEventDetails = new index_1.PointerEventDetails();
     return _this;
   }
 
@@ -2227,37 +2223,55 @@ function (_HTMLElement) {
     value: function _addCanvasEvents() {
       var _this2 = this;
 
-      this._canvas.addEventListener('mousedown', function (e) {
-        return _this2._canvasEvents.onTouchStart(e);
-      });
+      if ('PointerEvent' in window) {
+        this._canvas.addEventListener('pointerdown', function (e) {
+          var eventDetails = _this2._pointerEventDetails.fromPointer(e);
 
-      this._canvas.addEventListener('mousemove', function (e) {
-        return _this2._canvasEvents.onTouchMove(e);
-      });
+          _this2._canvasEvents.onTouchStart(eventDetails);
+        });
 
-      this._canvas.addEventListener('mouseup', function () {
-        return _this2._canvasOnTouchEnd();
-      });
+        this._canvas.addEventListener('pointermove', function (e) {
+          var eventDetails = _this2._pointerEventDetails.fromPointer(e);
 
-      this._canvas.addEventListener('mouseout', function () {
-        return _this2._canvasOnTouchEnd();
-      });
+          _this2._canvasEvents.onTouchMove(eventDetails);
+        });
 
-      this._canvas.addEventListener('touchstart', function (e) {
-        return _this2._canvasEvents.onTouchStart(e);
-      });
+        this._canvas.addEventListener('pointerup', this._canvasOnTouchEnd.bind(this));
 
-      this._canvas.addEventListener('touchmove', function (e) {
-        return _this2._canvasEvents.onTouchMove(e);
-      });
+        this._canvas.addEventListener('pointerleave', this._canvasOnTouchEnd.bind(this));
+      } else if ('TouchEvent' in window) {
+        this._canvas.addEventListener('touchstart', function (e) {
+          var eventDetails = _this2._pointerEventDetails.fromTouch(e);
 
-      this._canvas.addEventListener('touchcancel', function () {
-        return _this2._canvasOnTouchEnd();
-      });
+          _this2._canvasEvents.onTouchStart(eventDetails);
+        });
 
-      this._canvas.addEventListener('touchend', function () {
-        return _this2._canvasOnTouchEnd();
-      });
+        this._canvas.addEventListener('touchmove', function (e) {
+          var eventDetails = _this2._pointerEventDetails.fromTouch(e);
+
+          _this2._canvasEvents.onTouchMove(eventDetails);
+        });
+
+        this._canvas.addEventListener('touchcancel', this._canvasOnTouchEnd.bind(this));
+
+        this._canvas.addEventListener('touchend', this._canvasOnTouchEnd.bind(this));
+      } else {
+        this._canvas.addEventListener('mousedown', function (e) {
+          var eventDetails = _this2._pointerEventDetails.fromMouse(e);
+
+          _this2._canvasEvents.onTouchStart(eventDetails);
+        });
+
+        this._canvas.addEventListener('mousemove', function (e) {
+          var eventDetails = _this2._pointerEventDetails.fromMouse(e);
+
+          _this2._canvasEvents.onTouchMove(eventDetails);
+        });
+
+        this._canvas.addEventListener('mouseup', this._canvasOnTouchEnd.bind(this));
+
+        this._canvas.addEventListener('mouseleave', this._canvasOnTouchEnd.bind(this));
+      }
     }
   }, {
     key: "_addEvents",
@@ -2311,14 +2325,20 @@ function (_HTMLElement) {
         }
       });
 
-      this._leftIconSlot.addEventListener('mousedown', function (e) {
-        e.preventDefault();
-      });
-
-      [this._clearInputIconSlot, this._showPasswordIconSlot, this._hidePasswordIconSlot].forEach(function (slot) {
-        slot.addEventListener('mousedown', function (e) {
-          return e.preventDefault();
-        });
+      [this._leftIconSlot, this._clearInputIconSlot, this._showPasswordIconSlot, this._hidePasswordIconSlot].forEach(function (slot) {
+        if ('PointerEvent' in window) {
+          slot.addEventListener('pointerdown', function (e) {
+            return e.preventDefault();
+          });
+        } else if ('TouchEvent' in window) {
+          slot.addEventListener('touchstart', function (e) {
+            return e.preventDefault();
+          });
+        } else {
+          slot.addEventListener('mousedown', function (e) {
+            return e.preventDefault();
+          });
+        }
       });
 
       this._clearInputIconSlot.addEventListener('click', function () {
@@ -2797,7 +2817,7 @@ function (_HTMLElement) {
 }(_wrapNativeSuper(HTMLElement));
 
 customElements.define('zooduck-input', HTMLZooduckInputElement);
-},{"./zooduck-input-utils":"BUZM","./zooduck-input.style":"kAh0","./zooduck-input.global-style":"YxNP"}],"KH65":[function(require,module,exports) {
+},{"./zooduck-input-utils":"BUZM","./zooduck-input.style":"kAh0","./zooduck-input.global-style":"YxNP","../utils/index":"s2T4"}],"KH65":[function(require,module,exports) {
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
