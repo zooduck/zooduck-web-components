@@ -854,7 +854,7 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.style = function (options) {
   var transitionSpeedInMillis = options.transitionSpeed;
-  return "\n        :host {\n            display: block;\n            visibility: hidden;\n            overflow: hidden;\n            touch-action: pan-y;\n            cursor: pointer;\n        }\n        :host(.--ready) {\n            visibility: visible;\n        }\n        ::slotted([slot=slides]) {\n            display: flex;\n            align-items: flex-start;\n        }\n        ::slotted([slot=slides]) {\n            transition: all ".concat(transitionSpeedInMillis, "ms;\n        }\n        :host(.--touch-active) ::slotted([slot=slides]) {\n            transition: none;\n        }\n        :host(.--no-animate) ::slotted([slot=slides]) {\n            transition: none;\n        }\n    ");
+  return "\n        :host {\n            position: relative;\n            display: block;\n            visibility: hidden;\n            overflow: hidden;\n            touch-action: pan-y;\n            cursor: pointer;\n            user-select: none;\n            transition: height ".concat(transitionSpeedInMillis, "ms;\n        }\n        :host(.--ready) {\n            visibility: visible;\n        }\n        ::slotted([slot=slides]) {\n            display: flex;\n            align-items: flex-start;\n        }\n        ::slotted([slot=slides]) {\n            transition: all ").concat(transitionSpeedInMillis, "ms;\n        }\n        :host(.--touch-active) ::slotted([slot=slides]) {\n            transition: none;\n        }\n        :host(.--no-animate) ::slotted([slot=slides]) {\n            transition: none;\n        }\n    ");
 };
 },{}],"vlYQ":[function(require,module,exports) {
 Number.prototype.toPositive = function () {
@@ -1086,11 +1086,7 @@ function (_HTMLElement) {
           imageLoader.onload = function () {
             imageToLoad.src = imageToLoad.dataset.src;
 
-            var imagesToLoadIndex = _this._imagesToLoad.findIndex(function (img) {
-              return imageToLoad === img;
-            });
-
-            _this._imagesToLoad.splice(imagesToLoadIndex, 1);
+            _this._onImageLoad(imageToLoad);
           };
 
           imageLoader.src = imageToLoad.dataset.src;
@@ -1165,8 +1161,8 @@ function (_HTMLElement) {
     key: "_getPlaceholder",
     value: function _getPlaceholder() {
       var canvas = document.createElement('canvas');
-      canvas.width = 10;
-      canvas.height = 10;
+      canvas.width = 1;
+      canvas.height = 1;
       var placeholder = canvas.toDataURL('image/png');
       return placeholder;
     }
@@ -1182,7 +1178,11 @@ function (_HTMLElement) {
       }
 
       var precedingSlideWidths = precedingSlides.map(function (slide) {
-        return slide.el.offsetWidth;
+        // -----------------------------------------------------------------------
+        // @NOTE: HTMLElement.offsetWidth returns a floored value
+        // whereas HTMLElement.getBoundingRect().width returns a precision float.
+        // -----------------------------------------------------------------------
+        return Math.ceil(slide.el.getBoundingClientRect().width); // ceil() required since translateX() ignores pixel fractions
       }).reduce(function (total, offsetWidth) {
         return total + offsetWidth;
       });
@@ -1220,20 +1220,29 @@ function (_HTMLElement) {
   }, {
     key: "_lazyLoad",
     value: function _lazyLoad(img) {
-      img.dataset.src = img.src; // If we set the src to '' the browser will display a broken image icon
-
+      img.dataset.src = img.src;
       img.src = this._getPlaceholder();
 
-      this._imagesToLoad.push(img); // IntersectionObserver needs something to observe
-      // (1px should be good enough - using 10px to be safe)
-
-
-      img.style.minWidth = '10px';
-      img.style.minHeight = '10px';
-
       this._imageIntersectionObserver.observe(img);
+    }
+  }, {
+    key: "_listenToImages",
+    value: function _listenToImages() {
+      var _this2 = this;
 
-      console.log('observing');
+      this._imagesToLoad.forEach(function (imageToLoad) {
+        var hasImageLoaded = !_this2._imagesToLoad.find(function (img) {
+          return imageToLoad === img;
+        });
+
+        if (hasImageLoaded) {
+          return;
+        }
+
+        imageToLoad.addEventListener('load', function () {
+          _this2._onImageLoad(imageToLoad);
+        });
+      });
     }
   }, {
     key: "_onCurrentSlideChange",
@@ -1245,6 +1254,17 @@ function (_HTMLElement) {
       }));
 
       this._setActiveSlideSelector();
+    }
+  }, {
+    key: "_onImageLoad",
+    value: function _onImageLoad(imageToLoad) {
+      var imagesToLoadIndex = this._imagesToLoad.findIndex(function (img) {
+        return imageToLoad === img;
+      });
+
+      this._imagesToLoad.splice(imagesToLoadIndex, 1);
+
+      this._setCarouselHeightToSlideHeight();
     }
   }, {
     key: "_onResize",
@@ -1280,28 +1300,28 @@ function (_HTMLElement) {
   }, {
     key: "_onTouchStart",
     value: function _onTouchStart(eventDetails) {
-      var _this2 = this;
+      var _this3 = this;
 
       var clientX = eventDetails.clientX,
           clientY = eventDetails.clientY;
 
       if ('PointerEvent' in window) {
         this.addEventListener('pointermove', function (e) {
-          var eventDetails = _this2._pointerEventDetails.fromPointer(e);
+          var eventDetails = _this3._pointerEventDetails.fromPointer(e);
 
-          _this2._onTouchMove(eventDetails);
+          _this3._onTouchMove(eventDetails);
         });
       } else if ('TouchEvent' in window) {
         this.addEventListener('touchmove', function (e) {
-          var eventDetails = _this2._pointerEventDetails.fromTouch(e);
+          var eventDetails = _this3._pointerEventDetails.fromTouch(e);
 
-          _this2._onTouchMove(eventDetails);
+          _this3._onTouchMove(eventDetails);
         });
       } else {
         this.addEventListener('mousemove', function (e) {
-          var eventDetails = _this2._pointerEventDetails.fromMouse(e);
+          var eventDetails = _this3._pointerEventDetails.fromMouse(e);
 
-          _this2._onTouchMove(eventDetails);
+          _this3._onTouchMove(eventDetails);
         });
       }
 
@@ -1438,64 +1458,64 @@ function (_HTMLElement) {
   }, {
     key: "_registerMouseEvents",
     value: function _registerMouseEvents() {
-      var _this3 = this;
-
-      this.addEventListener('mousedown', function (e) {
-        var eventDetails = _this3._pointerEventDetails.fromMouse(e);
-
-        _this3._onTouchStart(eventDetails);
-      });
-      this.addEventListener('mouseup', function (e) {
-        var eventDetails = _this3._pointerEventDetails.fromMouse(e);
-
-        _this3._onTouchEnd(eventDetails);
-      });
-      this.addEventListener('mouseleave', function (e) {
-        var eventDetails = _this3._pointerEventDetails.fromMouse(e);
-
-        _this3._onTouchCancel(eventDetails);
-      });
-    }
-  }, {
-    key: "_registerPointerEvents",
-    value: function _registerPointerEvents() {
       var _this4 = this;
 
-      this.addEventListener('pointerdown', function (e) {
-        var eventDetails = _this4._pointerEventDetails.fromPointer(e);
+      this.addEventListener('mousedown', function (e) {
+        var eventDetails = _this4._pointerEventDetails.fromMouse(e);
 
         _this4._onTouchStart(eventDetails);
       });
-      this.addEventListener('pointerup', function (e) {
-        var eventDetails = _this4._pointerEventDetails.fromPointer(e);
+      this.addEventListener('mouseup', function (e) {
+        var eventDetails = _this4._pointerEventDetails.fromMouse(e);
 
         _this4._onTouchEnd(eventDetails);
       });
-      this.addEventListener('pointercancel', function (e) {
-        var eventDetails = _this4._pointerEventDetails.fromPointer(e);
+      this.addEventListener('mouseleave', function (e) {
+        var eventDetails = _this4._pointerEventDetails.fromMouse(e);
 
         _this4._onTouchCancel(eventDetails);
       });
     }
   }, {
-    key: "_registerTouchEvents",
-    value: function _registerTouchEvents() {
+    key: "_registerPointerEvents",
+    value: function _registerPointerEvents() {
       var _this5 = this;
 
-      this.addEventListener('touchstart', function (e) {
-        var eventDetails = _this5._pointerEventDetails.fromTouch(e);
+      this.addEventListener('pointerdown', function (e) {
+        var eventDetails = _this5._pointerEventDetails.fromPointer(e);
 
         _this5._onTouchStart(eventDetails);
       });
-      this.addEventListener('touchend', function (e) {
-        var eventDetails = _this5._pointerEventDetails.fromTouch(e);
+      this.addEventListener('pointerup', function (e) {
+        var eventDetails = _this5._pointerEventDetails.fromPointer(e);
 
         _this5._onTouchEnd(eventDetails);
       });
-      this.addEventListener('touchcancel', function (e) {
-        var eventDetails = _this5._pointerEventDetails.fromTouch(e);
+      this.addEventListener('pointerleave', function (e) {
+        var eventDetails = _this5._pointerEventDetails.fromPointer(e);
 
         _this5._onTouchCancel(eventDetails);
+      });
+    }
+  }, {
+    key: "_registerTouchEvents",
+    value: function _registerTouchEvents() {
+      var _this6 = this;
+
+      this.addEventListener('touchstart', function (e) {
+        var eventDetails = _this6._pointerEventDetails.fromTouch(e);
+
+        _this6._onTouchStart(eventDetails);
+      });
+      this.addEventListener('touchend', function (e) {
+        var eventDetails = _this6._pointerEventDetails.fromTouch(e);
+
+        _this6._onTouchEnd(eventDetails);
+      });
+      this.addEventListener('touchcancel', function (e) {
+        var eventDetails = _this6._pointerEventDetails.fromTouch(e);
+
+        _this6._onTouchCancel(eventDetails);
       });
     }
   }, {
@@ -1519,10 +1539,10 @@ function (_HTMLElement) {
   }, {
     key: "_setContainerStyle",
     value: function _setContainerStyle() {
-      var _this6 = this;
+      var _this7 = this;
 
       Array.from(this._container.children).forEach(function (slide) {
-        _this6._setSlideStyle(slide);
+        _this7._setSlideStyle(slide);
       });
       return Promise.resolve();
     }
@@ -1559,6 +1579,11 @@ function (_HTMLElement) {
       Object.keys(slideStyles).forEach(function (prop) {
         slide.style[prop] = slideStyles[prop];
       });
+      slide.draggable = false;
+
+      slide.ondragstart = function (e) {
+        e.preventDefault();
+      };
     }
   }, {
     key: "_setTouchActive",
@@ -1640,12 +1665,22 @@ function (_HTMLElement) {
       this._setCarouselHeightToSlideHeight();
     }
   }, {
+    key: "_calcMinHeight",
+    value: function _calcMinHeight() {
+      if (!this._slideSelectors) {
+        return 0;
+      }
+
+      var minSlideHeight = 50;
+      return this.querySelector('[slot=slides]').offsetTop + minSlideHeight;
+    }
+  }, {
     key: "connectedCallback",
     value: function connectedCallback() {
       return __awaiter(this, void 0, void 0,
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee3() {
-        var _this7 = this;
+        var _this8 = this;
 
         var requiredSlottedContent, slideSelectorsSlot, currentslideAttrAsIndex;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
@@ -1682,20 +1717,21 @@ function (_HTMLElement) {
                     slideSelectorEl.addEventListener('pointerup', function (e) {
                       e.preventDefault();
 
-                      if (_this7._touchMoveInProgress) {
+                      if (_this8._touchMoveInProgress) {
                         return;
                       }
 
-                      _this7._setCurrentSlide(i);
+                      _this8._setCurrentSlide(i);
 
-                      _this7._setTouchActive(false);
+                      _this8._setTouchActive(false);
 
-                      _this7._slideIntoView(_this7._currentSlide, false);
+                      _this8._slideIntoView(_this8._currentSlide, false);
                     });
                   });
                   this._slideSelectors = slideSelectorsSlot;
                 }
 
+                this.style.minHeight = "".concat(this._calcMinHeight(), "px");
                 this._container = requiredSlottedContent;
                 currentslideAttrAsIndex = parseInt(this._currentslide, 10) - 1;
 
@@ -1710,27 +1746,33 @@ function (_HTMLElement) {
                   // happen each time the node is moved, and may happen before the element's contents
                   // have been fully parsed.
                   // ----------------------------------------------------------------------------------
-                  _this7._setContainerStyle();
+                  _this8._setContainerStyle();
 
-                  _this7._slideIntoView(_this7._currentSlide, false);
+                  _this8._slideIntoView(_this8._currentSlide, false);
 
-                  var images = Array.from(_this7._container.querySelectorAll('img'));
+                  var images = Array.from(_this8._container.querySelectorAll('img'));
                   images.forEach(function (img) {
-                    img.style.backgroundColor = _this7._getRandomRGBA();
+                    img.style.backgroundColor = _this8._getRandomRGBA();
 
-                    if (_this7._loading === 'eager') {
+                    _this8._imagesToLoad.push(img);
+
+                    if (_this8._loading === 'eager') {
                       return;
                     }
 
-                    _this7._lazyLoad(img);
+                    _this8._lazyLoad(img);
                   });
 
-                  _this7.classList.add('--ready');
+                  if (_this8._loading === 'eager') {
+                    _this8._listenToImages();
+                  }
 
-                  _this7.dispatchEvent(new CustomEvent('load'));
+                  _this8.classList.add('--ready');
+
+                  _this8.dispatchEvent(new CustomEvent('load'));
                 });
 
-              case 12:
+              case 13:
               case "end":
                 return _context3.stop();
             }
@@ -1871,8 +1913,8 @@ function () {
 
     this._canDraw = false;
     this._lineWidth = 3;
-    this._signatureInkColorDefault = '#222';
     this._canvas = canvas;
+    this._signatureInkColor = '#222';
   }
 
   _createClass(CanvasEvents, [{
@@ -1914,12 +1956,7 @@ function () {
       this._context = this._canvas.getContext('2d');
       this._context.lineWidth = this._lineWidth;
       this._context.lineCap = 'round';
-
-      if (this._signatureInkColor) {
-        this._context.strokeStyle = this._signatureInkColor;
-      } else {
-        this._context.strokeStyle = this._signatureInkColorDefault;
-      }
+      this._context.strokeStyle = this._signatureInkColor;
 
       this._context.beginPath();
 
@@ -1986,7 +2023,7 @@ exports.CanvasEvents = CanvasEvents;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.style = "\n/**\n * @var --zooduck-input-font-family: The `font-family` style of the element. Defaults to `'Roboto', sans-serif`.\n * @var --zooduck-input-font-size: The `font-size` style of the element. Defaults to `19px`.\n * @var --zooduck-input-font-weight: The `font-weight` style of the element. Defaults to `inherit`.\n * @var --zooduck-input-font-style: The `font-style` style of the element. Defaults to `inherit`.\n * @var --zooduck-input-width: The `width` style of the element. Defaults to `auto`.\n * @var --zooduck-input-border-style: The `border-style` style of the element. Defaults to `solid`.\n * @var --zooduck-input-border-color: The `border-color` style of the element. Defaults to `var(--gray)`.\n * @var --zooduck-input-border-width: The `border-width` style of the element. Defaults to `1px`.\n * @var --zooduck-input-background-color: The `background-color` style of the element. Defaults to `#fff`.\n * @var --zooduck-input-disabled-background-color: The `background-color` style of the element when its `disabled` attribute is set. Defaults to `#eee`.\n * @var --zooduck-input-color: The `color` style of the element's input. Defaults to `var(--black)`.\n * @var --zooduck-input-label-color: The `color` style of the element's label. Defaults to `var(--gray)`.\n * @var --zooduck-input-icon-color: The `color` style of the icon slots. Defaults to `var(--zooduck-input-label-color, var(--gray))`.\n * @var --zooduck-input-icon-padding: The `padding` style of icon slots. Defaults to `0 20px`.\n * @var --zooduck-input-signature-border-color: The `border-color` style of the signature canvas. Defaults to `#eee`.\n */\n\n:host {\n    --gray: #bbb;\n    --black: #222;\n    --disabled: #eee;\n\n    position: relative;\n    display: flex;\n    width: var(--zooduck-input-width, auto);\n    border-style: var(--zooduck-input-border-style, solid);\n    border-color: var(--zooduck-input-border-color, var(--gray));\n    border-width: var(--zooduck-input-border-width, 1px);\n    background-color: var(--zooduck-input-background-color, #fff);\n\n    font-family: var(--zooduck-input-font-family, 'Roboto', sans-serif);\n    font-size: var(--zooduck-input-font-size, 19px);\n    font-weight: var(--zooduck-input-font-weight, inherit);\n    font-style: var(--zooduck-input-font-style, inherit);\n}\n:host([disabled]),\n:host([disabled]) input {\n    background-color: var(--zooduck-input-disabled-background-color, var(--disabled));\n}\n.input-label-container {\n    display: flex;\n    flex-grow: 1;\n}\n.label {\n    display: none;\n}\n:host(.--has-valid-label) .label {\n    display: block;\n    user-select: none;\n    position: absolute;\n    pointer-events: none;\n    color: var(--zooduck-input-label-color, var(--gray));\n    text-align: left;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    width: calc(100% - 10px);\n    overflow: hidden;\n    left: 10px;\n    top: 50%;\n    transform-origin: left top;\n    transform: translateY(-50%);\n    transition: all .25s;\n}\n:host([required]) .label:after {\n    content: \"*\";\n}\n:host(.--active) .label,\n:host(.--has-content) .label,\n:host([type=signature]) .label {\n    top: 5px;\n    transform: translateY(0) scale(.8);\n}\n:host(.--has-left-icon) .label {\n    left: 0;\n}\ninput {\n    width: 100%;\n    border: none;\n    outline: none;\n    flex-grow: 1;\n    padding: 10px;\n    font-family: var(--zooduck-input-font-family, inherit);\n    font-size: var(--zooduck-input-font-size, 19px);\n    font-weight: var(--zooduck-input-font-weight, inherit);\n    font-style: var(--zooduck-input-font-style, inherit);\n    background-color: var(--zooduck-input-background-color, #fff);\n    color: var(--zooduck-input-color, var(--black));\n}\n:host(.--has-left-icon) input {\n    padding-left: 0;\n}\ncanvas {\n   display: none;\n}\n:host([type=signature]) input {\n    display: none;\n}\n:host([type=signature]) canvas {\n    display: block;\n    margin-top: calc(var(--zooduck-input-font-size, 19px) + 15px);\n    border-style: dashed;\n    border-color: var(--zooduck-input-signature-border-color, #eee);\n    border-width: 6px 6px 0 0;\n}\n:host(.--has-valid-label) input {\n    padding-top: calc(var(--zooduck-input-font-size, 19px) + 5px);\n}\n::slotted(*),\nslot > * {\n    padding: var(--zooduck-input-icon-padding, 0 20px);\n}\nslot[hidden] {\n    display: none !important;\n}\nslot[name*=icon] {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: var(--zooduck-input-font-size, 19px);\n    color: var(--zooduck-input-icon-color, var(--zooduck-input-label-color, var(--gray)));\n}\nslot[name*=icon] svg {\n    height: var(--zooduck-input-font-size, 19px);\n}\nslot[name^=right-icon] {\n    cursor: pointer;\n    display: none;\n}\n:host(:not([type=password])) slot[name=right-icon-clear-input] {\n    display: flex;\n}\n:host([type=password]:not(.--show-password)) slot[name=right-icon-show-password] {\n    display: flex;\n}\n:host([type=password].--show-password) slot[name=right-icon-hide-password] {\n    display: flex;\n}\n.--zooduck-input-filter-hidden {\n    display: none;\n}\n";
+exports.style = "\n/* ============================================================================================= */\n/* | CSS VARS                                                                                  | */\n/* ============================================================================================= */\n/* | Name                                      | Default                                       | */\n/* | ----------------------------------------------------------------------------------------- | */\n/* | --zooduck-input-font-family               | \"Roboto\", sans-serif                          | */\n/* | --zooduck-input-font-size                 | 19px                                          | */\n/* | --zooduck-input-font-weight               | inherit                                       | */\n/* | --zooduck-input-font-style                | inherit                                       | */\n/* | --zooduck-input-width                     | auto                                          | */\n/* | --zooduck-input-border-style              | solid                                         | */\n/* | --zooduck-input-border-color              | var(--gray)                                   | */\n/* | --zooduck-input-border-width              | 1px                                           | */\n/* | --zooduck-input-background-color          | var(--white)                                  | */\n/* | --zooduck-input-disabled-background-color | var(--disabled)                               | */\n/* | --zooduck-input-color                     | var(--black)                                  | */\n/* | --zooduck-input-label-color               | var(--gray)                                   | */\n/* | --zooduck-input-icon-color                | var(--zooduck-input-label-color, var(--gray)) | */\n/* | --zooduck-input-icon-padding              | 0 20px                                        | */\n/* | --zooduck-input-signature-border-color    | var(--palegray)                               | */\n/* ============================================================================================= */\n\n:host {\n    --gray: #bbb;\n    --palegray: #eee;\n    --black: #222;\n    --white: #fff;\n    --disabled: #eee;\n\n    position: relative;\n    display: flex;\n    width: var(--zooduck-input-width, auto);\n    border-style: var(--zooduck-input-border-style, solid);\n    border-color: var(--zooduck-input-border-color, var(--gray));\n    border-width: var(--zooduck-input-border-width, 1px);\n    background-color: var(--zooduck-input-background-color, var(--white));\n\n    font-family: var(--zooduck-input-font-family, 'Roboto', sans-serif);\n    font-size: var(--zooduck-input-font-size, 19px);\n    font-weight: var(--zooduck-input-font-weight, inherit);\n    font-style: var(--zooduck-input-font-style, inherit);\n}\n:host([disabled]),\n:host([disabled]) input {\n    background-color: var(--zooduck-input-disabled-background-color, var(--disabled));\n}\n.input-label-container {\n    display: flex;\n    flex-grow: 1;\n}\n:host([type=signature]) .input-label-container {\n    min-width: 200px;\n}\n.label {\n    display: none;\n}\n:host(.--has-valid-label) .label {\n    display: block;\n    user-select: none;\n    position: absolute;\n    pointer-events: none;\n    color: var(--zooduck-input-label-color, var(--gray));\n    text-align: left;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    width: calc(100% - 10px);\n    overflow: hidden;\n    left: 10px;\n    top: 50%;\n    transform-origin: left top;\n    transform: translateY(-50%);\n    transition: all .25s;\n}\n:host([required]) .label:after {\n    content: \"*\";\n}\n:host(.--active) .label,\n:host(.--has-content) .label,\n:host([type=signature]) .label {\n    top: 5px;\n    transform: translateY(0) scale(.8);\n}\n:host(.--has-left-icon) .label {\n    left: 0;\n}\ninput {\n    width: 100%;\n    border: none;\n    outline: none;\n    flex-grow: 1;\n    padding: 10px;\n    font-family: var(--zooduck-input-font-family, inherit);\n    font-size: var(--zooduck-input-font-size, 19px);\n    font-weight: var(--zooduck-input-font-weight, inherit);\n    font-style: var(--zooduck-input-font-style, inherit);\n    background-color: var(--zooduck-input-background-color, var(--white));\n    color: var(--zooduck-input-color, var(--black));\n}\n:host(.--has-left-icon) input {\n    padding-left: 0;\n}\ncanvas {\n   display: none;\n}\n:host([type=signature]) input {\n    display: none;\n}\n:host([type=signature]) canvas {\n    display: block;\n    margin-top: calc(var(--zooduck-input-font-size, 19px) + 15px);\n    border-style: dashed;\n    border-color: var(--zooduck-input-signature-border-color, var(--palegray));\n    border-width: 6px 6px 0 0;\n}\n:host(.--has-valid-label) input {\n    padding-top: calc(var(--zooduck-input-font-size, 19px) + 5px);\n}\n::slotted(*),\nslot > * {\n    padding: var(--zooduck-input-icon-padding, 0 20px);\n}\nslot[hidden] {\n    display: none !important;\n}\nslot[name*=icon] {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: var(--zooduck-input-font-size, 19px);\n    color: var(--zooduck-input-icon-color, var(--zooduck-input-label-color, var(--gray)));\n}\nslot[name*=icon] svg {\n    height: var(--zooduck-input-font-size, 19px);\n}\nslot[name^=right-icon] {\n    cursor: pointer;\n    display: none;\n}\n:host(:not([type=password])) slot[name=right-icon-clear-input] {\n    display: flex;\n}\n:host([type=password]:not(.--show-password)) slot[name=right-icon-show-password] {\n    display: flex;\n}\n:host([type=password].--show-password) slot[name=right-icon-hide-password] {\n    display: flex;\n}\n.--zooduck-input-filter-hidden {\n    display: none;\n}\n";
 },{}],"YxNP":[function(require,module,exports) {
 "use strict";
 
@@ -3018,7 +3055,7 @@ exports.style = function (options) {
       fontFamilyBase = '"Courier New", "Courier", monospace';
   }
 
-  return "\n        @keyframes blink {\n            0% {\n                background-color: var(--background-color, ".concat(backgroundColorBase, ");\n                color: var(--background-color, ").concat(backgroundColorBase, ");\n            }\n            49% {\n                background-color: var(--background-color, ").concat(backgroundColorBase, ");\n                color: var(--background-color, ").concat(backgroundColorBase, ");\n            }\n            50% {\n                background-color: var(--color, ").concat(colorBase, ");\n                color: var(--color, ").concat(colorBase, ");\n            }\n            100% {\n                background-color: var(--color, ").concat(colorBase, ");\n                color: var(--color, ").concat(colorBase, ");\n            }\n        }\n        .--animate-blink {\n            animation: blink ").concat(blinkDuration, "ms linear infinite;\n        }\n        @keyframes delayVisible {\n            0% {\n                width: 0;\n                height: 0;\n            }\n            1% {\n                width: auto;\n                height: auto;\n            }\n            100% {\n                width: auto;\n                height: auto;\n            }\n        }\n        .--animate-delay-visible {\n            animation: delayVisible .25ms linear both;\n        }\n        @keyframes delayVisibleLine {\n            0% {\n                visbility: hidden;\n                position: absolute;\n                top: 0;\n                left: 0;\n            }\n            1% {\n                visibility: visible;\n                position: static;\n            }\n            99% {\n                visibility: visible;\n                position: static;\n                width: auto;\n                height: auto;\n            }\n            100% {\n                visibility: hidden;\n                position: absolute;\n                top: 0;\n                left: 0;\n                width: 0;\n                height: 0;\n            }\n        }\n        .--animate-delay-visible-line {\n            visibility: hidden;\n            animation: delayVisibleLine .25ms linear both;\n        }\n        @keyframes delayVisibleLastLine {\n            0% {\n                width: 0;\n                height: 0;\n            }\n            1% {\n                width: auto;\n                height: auto;\n            }\n            100% {\n                width: auto;\n                height: auto;\n            }\n        }\n        .--animate-delay-visible-last-line {\n            animation: delayVisibleLastLine .25ms linear both;\n        }\n        :host {\n            box-sizing: border-box;\n            display: block;\n            width: 100%;\n            min-height: var(--height, 250px);\n            overflow: hidden;\n            background-color: var(--background-color, ").concat(backgroundColorBase, ");\n        }\n        .lines {\n            position: relative;\n            padding: 10px;\n            background-color: var(--background-color, ").concat(backgroundColorBase, ");\n        }\n        .line {\n            display: inline-flex;\n            flex-wrap: wrap;\n            width: auto;\n            height: auto;\n            overflow: hidden;\n            font-family: var(--font-family, ").concat(fontFamilyBase, ");\n            font-size: var(--font-size, inherit);\n            font-weight: var(--font-weight, normal);\n            letter-spacing: var(--letter-spacing, normal);\n            color: var(--color, ").concat(colorBase, ");\n            background-color: var(--background-color, ").concat(backgroundColorBase, ");\n        }\n        .line-placeholder {\n            display: inline-block;\n            color: var(--background-color, ").concat(backgroundColorBase, ");\n            width: 1px;\n        }\n        .word {\n            display: flex;\n        }\n        .char {\n            width: 0;\n            overflow: hidden;\n        }\n        .cursor {\n            background-color: var(--color, ").concat(colorBase, ");\n            color: var(--color, ").concat(colorBase, ");\n        }\n        .cursor:before {\n            content: 'X';\n        }\n        slot,\n        ::slotted(*) {\n            display: none;\n        }\n    ");
+  return "\n        /* ============================================================ */\n        /* | CSS VARS                                                 | */\n        /* ============================================================ */\n        /* | Name               | Default                             | */\n        /* | -------------------------------------------------------- | */\n        /* | --width            | 100%                                | */\n        /* | --height           | auto                                | */\n        /* | --min-width        | 200px                               | */\n        /* | --min-height       | 150px                               | */\n        /* | --background-color | #222                                | */\n        /* | --font-family      | \"Courier New\", \"Courier\", monospace | */\n        /* | --font-weight      | normal                              | */\n        /* | --color            | #fff                                | */\n        /* | --letter-spacing   | normal                              | */\n        /* ===========================================================  */\n\n        @keyframes blink {\n            0% {\n                background-color: var(--background-color, ".concat(backgroundColorBase, ");\n                color: var(--background-color, ").concat(backgroundColorBase, ");\n            }\n            49% {\n                background-color: var(--background-color, ").concat(backgroundColorBase, ");\n                color: var(--background-color, ").concat(backgroundColorBase, ");\n            }\n            50% {\n                background-color: var(--color, ").concat(colorBase, ");\n                color: var(--color, ").concat(colorBase, ");\n            }\n            100% {\n                background-color: var(--color, ").concat(colorBase, ");\n                color: var(--color, ").concat(colorBase, ");\n            }\n        }\n        .--animate-blink {\n            animation: blink ").concat(blinkDuration, "ms linear infinite;\n        }\n        @keyframes delayVisible {\n            0% {\n                width: 0;\n                height: 0;\n            }\n            1% {\n                width: auto;\n                height: auto;\n            }\n            100% {\n                width: auto;\n                height: auto;\n            }\n        }\n        .--animate-delay-visible {\n            animation: delayVisible .25ms linear both;\n        }\n        @keyframes delayVisibleLine {\n            0% {\n                visbility: hidden;\n                position: absolute;\n                top: 0;\n                left: 0;\n            }\n            1% {\n                visibility: visible;\n                position: static;\n            }\n            99% {\n                visibility: visible;\n                position: static;\n                width: auto;\n                height: auto;\n            }\n            100% {\n                visibility: hidden;\n                position: absolute;\n                top: 0;\n                left: 0;\n                width: 0;\n                height: 0;\n            }\n        }\n        .--animate-delay-visible-line {\n            visibility: hidden;\n            animation: delayVisibleLine .25ms linear both;\n        }\n        @keyframes delayVisibleLastLine {\n            0% {\n                width: 0;\n                height: 0;\n            }\n            1% {\n                width: auto;\n                height: auto;\n            }\n            100% {\n                width: auto;\n                height: auto;\n            }\n        }\n        .--animate-delay-visible-last-line {\n            animation: delayVisibleLastLine .25ms linear both;\n        }\n        :host {\n            box-sizing: border-box;\n            display: block;\n            width: var(--width, 100%);\n            height: var(--height, auto);\n            min-width: var(--min-width, 200px);\n            min-height: var(--min-height, 150px);\n            overflow: hidden;\n            background-color: var(--background-color, ").concat(backgroundColorBase, ");\n        }\n        .lines {\n            position: relative;\n            padding: 10px;\n            background-color: var(--background-color, ").concat(backgroundColorBase, ");\n        }\n        .line {\n            display: inline-flex;\n            flex-wrap: wrap;\n            width: auto;\n            height: auto;\n            overflow: hidden;\n            font-family: var(--font-family, ").concat(fontFamilyBase, ");\n            font-size: var(--font-size, inherit);\n            font-weight: var(--font-weight, normal);\n            letter-spacing: var(--letter-spacing, normal);\n            color: var(--color, ").concat(colorBase, ");\n            background-color: var(--background-color, ").concat(backgroundColorBase, ");\n        }\n        .line-placeholder {\n            display: inline-block;\n            color: var(--background-color, ").concat(backgroundColorBase, ");\n            width: 1px;\n        }\n        .word {\n            display: flex;\n        }\n        .char {\n            width: 0;\n            overflow: hidden;\n        }\n        .cursor {\n            background-color: var(--color, ").concat(colorBase, ");\n            color: var(--color, ").concat(colorBase, ");\n        }\n        .cursor:before {\n            content: 'X';\n        }\n        slot,\n        ::slotted(*) {\n            display: none;\n        }\n    ");
 };
 },{}],"wMMK":[function(require,module,exports) {
 "use strict";
@@ -3431,4 +3468,4 @@ require("./zooduck-radio/zooduck-radio.component");
 
 require("./zooduck-terminal/zooduck-terminal.component");
 },{"regenerator-runtime/runtime":"QVnC","./zooduck-carousel/zooduck-carousel.component":"tZiM","./zooduck-input/zooduck-input.component.":"Y4ya","./zooduck-radio/zooduck-radio.component":"KH65","./zooduck-terminal/zooduck-terminal.component":"wMMK"}]},{},["QCba"], null)
-//# sourceMappingURL=src.27607723.js.map
+//# sourceMappingURL=src.4dd16845.js.map
