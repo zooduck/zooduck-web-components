@@ -51,7 +51,11 @@ export class CanvasEvents {
     private _imageData: string;
     private _lineWidth = 3;
     private _signatureInkColor: string;
-    private _signatureInkColorDefault = '#222';
+
+    constructor(canvas: HTMLCanvasElement) {
+        this._canvas = canvas;
+        this._signatureInkColor = '#222';
+    }
 
     private _eventType(e: Event): string {
         return e.constructor.name;
@@ -82,10 +86,6 @@ export class CanvasEvents {
         return true;
     }
 
-    constructor(canvas: HTMLCanvasElement) {
-        this._canvas = canvas;
-    }
-
     public onTouchStart(e: MouseEvent | TouchEvent) {
         if (this._eventType(e) !== 'MouseEvent' && this._eventType(e) !== 'TouchEvent') {
             return;
@@ -100,11 +100,7 @@ export class CanvasEvents {
         this._context.lineWidth = this._lineWidth;
         this._context.lineCap = 'round';
 
-        if (this._signatureInkColor) {
-            this._context.strokeStyle = this._signatureInkColor;
-        } else {
-            this._context.strokeStyle = this._signatureInkColorDefault;
-        }
+        this._context.strokeStyle = this._signatureInkColor;
 
         this._context.beginPath();
         this._context.moveTo(eventCoords.x, eventCoords.y);

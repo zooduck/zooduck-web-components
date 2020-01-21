@@ -1,25 +1,31 @@
 export const style = `
-/**
- * @var --zooduck-input-font-family: The \`font-family\` style of the element. Defaults to \`'Roboto', sans-serif\`.
- * @var --zooduck-input-font-size: The \`font-size\` style of the element. Defaults to \`19px\`.
- * @var --zooduck-input-font-weight: The \`font-weight\` style of the element. Defaults to \`inherit\`.
- * @var --zooduck-input-font-style: The \`font-style\` style of the element. Defaults to \`inherit\`.
- * @var --zooduck-input-width: The \`width\` style of the element. Defaults to \`auto\`.
- * @var --zooduck-input-border-style: The \`border-style\` style of the element. Defaults to \`solid\`.
- * @var --zooduck-input-border-color: The \`border-color\` style of the element. Defaults to \`var(--gray)\`.
- * @var --zooduck-input-border-width: The \`border-width\` style of the element. Defaults to \`1px\`.
- * @var --zooduck-input-background-color: The \`background-color\` style of the element. Defaults to \`#fff\`.
- * @var --zooduck-input-disabled-background-color: The \`background-color\` style of the element when its \`disabled\` attribute is set. Defaults to \`#eee\`.
- * @var --zooduck-input-color: The \`color\` style of the element's input. Defaults to \`var(--black)\`.
- * @var --zooduck-input-label-color: The \`color\` style of the element's label. Defaults to \`var(--gray)\`.
- * @var --zooduck-input-icon-color: The \`color\` style of the icon slots. Defaults to \`var(--zooduck-input-label-color, var(--gray))\`.
- * @var --zooduck-input-icon-padding: The \`padding\` style of icon slots. Defaults to \`0 20px\`.
- * @var --zooduck-input-signature-border-color: The \`border-color\` style of the signature canvas. Defaults to \`#eee\`.
- */
+/* ============================================================================================= */
+/* | CSS VARS                                                                                  | */
+/* ============================================================================================= */
+/* | Name                                      | Default                                       | */
+/* | ----------------------------------------------------------------------------------------- | */
+/* | --zooduck-input-font-family               | "Roboto", sans-serif                          | */
+/* | --zooduck-input-font-size                 | 19px                                          | */
+/* | --zooduck-input-font-weight               | inherit                                       | */
+/* | --zooduck-input-font-style                | inherit                                       | */
+/* | --zooduck-input-width                     | auto                                          | */
+/* | --zooduck-input-border-style              | solid                                         | */
+/* | --zooduck-input-border-color              | var(--gray)                                   | */
+/* | --zooduck-input-border-width              | 1px                                           | */
+/* | --zooduck-input-background-color          | var(--white)                                  | */
+/* | --zooduck-input-disabled-background-color | var(--disabled)                               | */
+/* | --zooduck-input-color                     | var(--black)                                  | */
+/* | --zooduck-input-label-color               | var(--gray)                                   | */
+/* | --zooduck-input-icon-color                | var(--zooduck-input-label-color, var(--gray)) | */
+/* | --zooduck-input-icon-padding              | 0 20px                                        | */
+/* | --zooduck-input-signature-border-color    | var(--palegray)                               | */
+/* ============================================================================================= */
 
 :host {
     --gray: #bbb;
+    --palegray: #eee;
     --black: #222;
+    --white: #fff;
     --disabled: #eee;
 
     position: relative;
@@ -28,7 +34,7 @@ export const style = `
     border-style: var(--zooduck-input-border-style, solid);
     border-color: var(--zooduck-input-border-color, var(--gray));
     border-width: var(--zooduck-input-border-width, 1px);
-    background-color: var(--zooduck-input-background-color, #fff);
+    background-color: var(--zooduck-input-background-color, var(--white));
 
     font-family: var(--zooduck-input-font-family, 'Roboto', sans-serif);
     font-size: var(--zooduck-input-font-size, 19px);
@@ -42,6 +48,9 @@ export const style = `
 .input-label-container {
     display: flex;
     flex-grow: 1;
+}
+:host([type=signature]) .input-label-container {
+    min-width: 200px;
 }
 .label {
     display: none;
@@ -85,7 +94,7 @@ input {
     font-size: var(--zooduck-input-font-size, 19px);
     font-weight: var(--zooduck-input-font-weight, inherit);
     font-style: var(--zooduck-input-font-style, inherit);
-    background-color: var(--zooduck-input-background-color, #fff);
+    background-color: var(--zooduck-input-background-color, var(--white));
     color: var(--zooduck-input-color, var(--black));
 }
 :host(.--has-left-icon) input {
@@ -101,7 +110,7 @@ canvas {
     display: block;
     margin-top: calc(var(--zooduck-input-font-size, 19px) + 15px);
     border-style: dashed;
-    border-color: var(--zooduck-input-signature-border-color, #eee);
+    border-color: var(--zooduck-input-signature-border-color, var(--palegray));
     border-width: 6px 6px 0 0;
 }
 :host(.--has-valid-label) input {
