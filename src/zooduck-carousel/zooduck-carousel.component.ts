@@ -49,8 +49,8 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
     private _currentOffsetX: number;
     private _currentslide: string;
     private _currentSlide: Slide;
-    private _imagesToLoad: HTMLImageElement[];
     private _imageIntersectionObserver: IntersectionObserver;
+    private _imagesToLoad: HTMLImageElement[];
     private _loading: Loading;
     private _maxOffsetX: number;
     private _minPixelsMovementRequiredToRegisterMove: number;
@@ -165,8 +165,9 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
     private _getPlaceholder() {
         const canvas = document.createElement('canvas');
-        canvas.width = 10;
-        canvas.height = 10;
+        canvas.width = 1;
+        canvas.height = 1;
+
         const placeholder = canvas.toDataURL('image/png');
 
         return placeholder;
@@ -182,7 +183,11 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         }
 
         const precedingSlideWidths = precedingSlides.map((slide: Slide) => {
-            return slide.el.offsetWidth;
+            // -----------------------------------------------------------------------
+            // @NOTE: HTMLElement.offsetWidth returns a floored value
+            // whereas HTMLElement.getBoundingRect().width returns a precision float.
+            // -----------------------------------------------------------------------
+            return Math.ceil(slide.el.getBoundingClientRect().width); // ceil() required since translateX() ignores pixel fractions
         }).reduce((total: number, offsetWidth: number) => {
             return total + offsetWidth;
         });
@@ -222,10 +227,7 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
                 imageLoader.onload = () => {
                     imageToLoad.src = imageToLoad.dataset.src;
-                    const imagesToLoadIndex = this._imagesToLoad.findIndex((img: HTMLImageElement) => {
-                        return imageToLoad === img;
-                    });
-                    this._imagesToLoad.splice(imagesToLoadIndex, 1);
+                    this._onImageLoad(imageToLoad);
                 };
 
                 imageLoader.src = imageToLoad.dataset.src;
@@ -248,18 +250,25 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
     private _lazyLoad(img: HTMLImageElement) {
         img.dataset.src = img.src;
-        // If we set the src to '' the browser will display a broken image icon
         img.src = this._getPlaceholder();
 
-        this._imagesToLoad.push(img);
-
-        // IntersectionObserver needs something to observe
-        // (1px should be good enough - using 10px to be safe)
-        img.style.minWidth = '10px';
-        img.style.minHeight = '10px';
-
         this._imageIntersectionObserver.observe(img);
-        console.log('observing');
+    }
+
+    private _listenToImages() {
+        this._imagesToLoad.forEach((imageToLoad: HTMLImageElement) => {
+            const hasImageLoaded = !this._imagesToLoad.find((img: HTMLImageElement) => {
+                return imageToLoad === img;
+            });
+
+            if (hasImageLoaded) {
+                return;
+            }
+
+            imageToLoad.addEventListener('load', () => {
+                this._onImageLoad(imageToLoad);
+            });
+        });
     }
 
     private _onCurrentSlideChange(): void {
@@ -270,6 +279,16 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         }));
 
         this._setActiveSlideSelector();
+    }
+
+    private _onImageLoad(imageToLoad: HTMLImageElement) {
+        const imagesToLoadIndex = this._imagesToLoad.findIndex((img: HTMLImageElement) => {
+            return imageToLoad === img;
+        });
+
+        this._imagesToLoad.splice(imagesToLoadIndex, 1);
+
+        this._setCarouselHeightToSlideHeight();
     }
 
     private _onResize() {
@@ -452,7 +471,7 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
             const eventDetails = this._pointerEventDetails.fromPointer(e);
             this._onTouchEnd(eventDetails);
         });
-        this.addEventListener('pointercancel', (e: PointerEvent) => {
+        this.addEventListener('pointerleave', (e: PointerEvent) => {
             const eventDetails = this._pointerEventDetails.fromPointer(e);
             this._onTouchCancel(eventDetails);
         });
@@ -527,6 +546,11 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         Object.keys(slideStyles).forEach((prop: string) => {
             slide.style[prop] = slideStyles[prop];
         });
+
+        slide.draggable = false;
+        slide.ondragstart = (e: DragEvent) => {
+            e.preventDefault();
+        };
     }
 
     private _setTouchActive(bool: boolean) {
@@ -582,6 +606,16 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         this._setCarouselHeightToSlideHeight();
     }
 
+    private _calcMinHeight() {
+        if (!this._slideSelectors) {
+            return 0;
+        }
+
+        const minSlideHeight = 50;
+
+        return (this.querySelector('[slot=slides]') as HTMLElement).offsetTop + minSlideHeight;
+    }
+
     protected async connectedCallback() {
         // Required "slides" slot
         await wait(0); // without this timeout, puppeteer tests will fail (with requiredSlotMissingError)
@@ -620,6 +654,8 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
             this._slideSelectors = slideSelectorsSlot as HTMLElement;
         }
 
+        this.style.minHeight = `${this._calcMinHeight()}px`;
+
         this._container = requiredSlottedContent as HTMLElement;
 
         const currentslideAttrAsIndex = parseInt(this._currentslide, 10) - 1;
@@ -643,12 +679,18 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
             images.forEach((img: HTMLImageElement) => {
                 img.style.backgroundColor = this._getRandomRGBA();
 
+                this._imagesToLoad.push(img);
+
                 if (this._loading === 'eager') {
                     return;
                 }
 
                 this._lazyLoad(img);
             });
+
+            if (this._loading === 'eager') {
+                this._listenToImages();
+            }
 
             this.classList.add('--ready');
             this.dispatchEvent(new CustomEvent('load'));

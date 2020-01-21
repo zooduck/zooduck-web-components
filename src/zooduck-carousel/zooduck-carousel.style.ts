@@ -6,11 +6,14 @@ export const style = (options: Options): string => {
     const { transitionSpeed: transitionSpeedInMillis } = options;
     return `
         :host {
+            position: relative;
             display: block;
             visibility: hidden;
             overflow: hidden;
             touch-action: pan-y;
             cursor: pointer;
+            user-select: none;
+            transition: height ${transitionSpeedInMillis}ms;
         }
         :host(.--ready) {
             visibility: visible;
