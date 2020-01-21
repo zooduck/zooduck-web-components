@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <script src="index.ts"></script>
         <style>
+            :root {
+                --config-table-border-color: lightgray;
+            }
             * {
                 box-sizing: border-box;
             }
@@ -15,6 +18,11 @@
             }
             a {
                 color: cornflowerblue;
+            }
+            code {
+                font-size: .9em;
+                background-color: whitesmoke;
+                padding: 5px;
             }
             .content {
                 display: grid;
@@ -32,15 +40,18 @@
                 width: 100%;
                 grid-gap: 20px;
                 padding: 10px;
+                grid-template-columns: auto;
+                max-width: 500px;
             }
             .grid__title {
                 justify-self: center;
-                background-color: aliceblue;
                 padding: 0 20px;
+                background-color: whitesmoke;
+                color: gray;
             }
             .example {
                 display: grid;
-                grid-template-rows: 95px repeat(3, auto);
+                grid-template-rows: 95px repeat(2, auto) 1fr;
                 grid-template-columns: 100%;
                 grid-gap: 20px;
             }
@@ -61,9 +72,9 @@
                 background-color: floralwhite;
                 border: dashed 3px #ccc;
                 font-size: 16px;
-                white-space: pre-line;
                 margin: 0;
                 overflow: auto;
+                align-self: start;
             }
             .example__style {
                 background-color: aliceblue;
@@ -80,21 +91,44 @@
             .example__result.--hidden {
                 display: none;
             }
-            @media (min-width: 768px) {
-                .grid {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-                .grid__title {
-                    grid-column: 1 / span 2;
-                }
-            }
             @media (min-width: 1024px) {
                 .grid {
                     grid-template-columns: repeat(3, 1fr);
+                    max-width: none;
                 }
                 .grid__title {
                     grid-column: 1 / span 3;
                 }
+                .config-table {
+                    grid-column: 1 / span 3;
+                }
+            }
+            .config-table {
+                display: grid;
+                grid-template-columns: repeat(3, auto);
+                border-top: solid 2px var(--config-table-border-color);
+                border-left: solid 2px var(--config-table-border-color);
+                color: gray;
+                max-width: 640px;
+                justify-self: center;
+            }
+            .config-table__title {
+                grid-column: 1 / span 3;
+                border-right: solid 2px var(--config-table-border-color);
+                border-bottom: solid 2px var(--config-table-border-color);
+                margin: 0;
+                padding: 10px;
+                text-align: center;
+            }
+            .config-table__tr,
+            .config-table__td {
+                border-right: solid 2px var(--config-table-border-color);
+                border-bottom: solid 2px var(--config-table-border-color);
+                padding: 10px;
+            }
+            .config-table__tr {
+                font-weight: bold;
+                background-color: whitesmoke;
             }
         </style>
     </head>
@@ -115,7 +149,7 @@
         <template id="exampleTemplate">
             <div class="example">
                 <div class="example__header">
-                    <h3 class="example__title">Title</h3>
+                    <h3 class="example__title">TITLE_MISSING</h3>
                     <span class="example__config-toggle">Show html</span>
                 </div>
                 <pre class="example__html"></pre>
@@ -124,6 +158,116 @@
             </div>
         </template>
 
+        <!-- zooduck-carousel -->
+        <template>
+<zooduck-carousel id="zooduckCarousel_1">
+    <div slot="slides">
+        <img src="https://picsum.photos/id/1011/300/300" width="300" height="300" alt="300/300" />
+        <img src="https://picsum.photos/id/1063/300/300" width="300" height="300" alt="300/300" />
+        <div class="image-container">
+            <img src="https://picsum.photos/id/1072/300/300" width="300" height="300" alt="300/300" />
+        </div>
+    </div>
+</zooduck-carousel>
+        </template>
+        <style>
+#zooduckCarousel_1 {
+    max-width: 300px;
+    margin: 0 auto;
+}
+#zooduckCarousel_1 .image-container {
+    display: flex;
+    justify-content: center;
+}
+#zooduckCarousel_1 img {
+    max-width: 100%;
+}
+        </style>
+
+        <template>
+<zooduck-carousel loading="eager" id="zooduckCarousel_2">
+    <div slot="slides">
+        <div class="slide">
+            <h1>Potato</h1>
+            <img src="https://picsum.photos/id/250/400/320" width="400" height="320" alt="400/320" />
+            <p>
+                The English word potato comes from Spanish patata (the name used in Spain). The Royal Spanish Academy says the Spanish word is a hybrid of the Taíno batata ('sweet potato') and the Quechua papa ('potato').
+            </p>
+        </div>
+        <div class="slide">
+            <h1>Tomato</h1>
+            <img src="https://picsum.photos/id/308/400/320" width="400" height="320" alt="400/320" />
+            <p>
+                The word "tomato" comes from the Spanish tomate, which in turn comes from the Nahuatl word tomātl, meaning "the swelling fruit". The native Mexican tomatillo is tomate, meaning "fat water" or "fat thing".
+            </p>
+        </div>
+        <div class="slide">
+            <h1>Banana</h1>
+            <img src="https://picsum.photos/id/364/100/320" width="100" height="320" alt="100/320" />
+            <p>
+                The banana plant is the largest herbaceous flowering plant. All the above-ground parts of a banana plant grow from a structure usually called a "corm". Plants are normally tall and fairly sturdy, and are often mistaken for trees, but what appears to be a trunk is actually a "false stem" or pseudostem.
+            </p>
+        </div>
+    </div>
+</zooduck-carousel>
+        </template>
+        <style>
+
+#zooduckCarousel_2 .slide {
+    display: grid;
+    grid-template-rows: repeat(3, auto);
+    justify-items: center;
+    grid-gap: 10px;
+}
+#zooduckCarousel_2 img {
+    max-width: 100%;
+}
+        </style>
+
+        <template>
+<zooduck-carousel id="zooduckCarousel_3">
+    <div slot="slide-selectors">
+        <div class="slide-selector">1</div>
+        <div class="slide-selector">2</div>
+        <div class="slide-selector">3</div>
+    </div>
+    <div slot="slides">
+        <div class="image-container">
+            <img src="https://picsum.photos/id/230/320/400" width="320" height="400" alt="320/400" />
+        </div>
+        <div class="image-container">
+            <img src="https://picsum.photos/id/376/400/320" width="400" height="320" alt="400/320" />
+        </div>
+        <div class="image-container">
+            <img src="https://picsum.photos/id/146/100/400" width="100" height="400" alt="100/400" />
+        </div>
+    </div>
+</zooduck-carousel>
+        </template>
+        <style>
+#zooduckCarousel_3 .image-container {
+    display: flex;
+    justify-content: center;
+}
+#zooduckCarousel_3 [slot=slide-selectors] {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: center;
+    grid-gap: 10px;
+    margin-bottom: 10px;
+}
+#zooduckCarousel_3 .slide-selector {
+    padding: 10px;
+}
+#zooduckCarousel_3 .slide-selector.--active {
+    background-color: lavender;
+}
+#zooduckCarousel_3 img {
+    max-width: 100%;
+}
+        </style>
+
+        <!-- zooduck-input -->
         <template>
 <zooduck-input></zooduck-input>
         </template>
@@ -140,7 +284,8 @@
         <template>
 <zooduck-input
     type="signature"
-    label="Signature">
+    label="Signature"
+    signatureinkcolor="blue">
 </zooduck-input>
         </template>
         <style></style>
@@ -161,15 +306,15 @@
 </zooduck-input>
         </template>
         <style>
-            #zooduckInputCustomVars_1 {
-                --zooduck-input-background-color: cornflowerblue;
-                --zooduck-input-color: #fff;
-                --zooduck-input-label-color: yellow;
-                --zooduck-input-icon-color: #fff;
-                --zooduck-input-border-width: 10px;
-                --zooduck-input-border-color: #fff;
-                --zooduck-input-border-style: double;
-            }
+#zooduckInputCustomVars_1 {
+    --zooduck-input-background-color: cornflowerblue;
+    --zooduck-input-color: #fff;
+    --zooduck-input-label-color: yellow;
+    --zooduck-input-icon-color: #fff;
+    --zooduck-input-border-width: 10px;
+    --zooduck-input-border-color: #fff;
+    --zooduck-input-border-style: double;
+}
         </style>
 
         <template>
@@ -179,15 +324,15 @@
 </zooduck-input>
     </template>
         <style>
-            #zooduckInputCustomVars_2 {
-                --zooduck-input-font-size: 32px;
-                --zooduck-input-font-family: 'Impact', fantasy;
-                --zooduck-input-border-width: 0 0 10px 0;
-                --zooduck-input-border-color: cornflowerblue;
-                --zooduck-input-background-color: #fff;
-                --zooduck-input-color: cornflowerblue;
-                --zooduck-input-label-color: cornflowerblue;
-            }
+#zooduckInputCustomVars_2 {
+    --zooduck-input-font-size: 32px;
+    --zooduck-input-font-family: 'Impact', fantasy;
+    --zooduck-input-border-width: 0 0 10px 0;
+    --zooduck-input-border-color: cornflowerblue;
+    --zooduck-input-background-color: #fff;
+    --zooduck-input-color: cornflowerblue;
+    --zooduck-input-label-color: cornflowerblue;
+}
         </style>
 
         <template>
@@ -195,6 +340,7 @@
         </template>
         <style></style>
 
+        <!-- zooduck-terminal -->
         <template>
 <zooduck-terminal
     id="zooduckTerminal_1"
@@ -208,9 +354,9 @@
 </zooduck-terminal>
         </template>
         <style>
-            #zooduckTerminal_1 {
-                --font-size: 18px;
-            }
+#zooduckTerminal_1 {
+    --font-size: 18px;
+}
         </style>
 
         <template>
@@ -222,16 +368,235 @@
 </zooduck-terminal>
         </template>
             <style>
-                #zooduckTerminal_2 {
-                    --font-family: 'Calibri', sans-serif;
-                    --font-size: 26px;
-                    --background-color: hotpink;
-                    --color: #fff;
-                    --height: auto;
-                }
+#zooduckTerminal_2 {
+    --font-family: 'Calibri', sans-serif;
+    --font-size: 26px;
+    --background-color: hotpink;
+    --color: #fff;
+    --height: auto;
+}
             </style>
 
         <script>
+            const slotsMap = {
+                'ZOODUCK-CAROUSEL': [
+                    {
+                        name: 'slides (required)',
+                        value: 'HTMLElement[]',
+                        description: 'An array of slide elements.',
+                    },
+                    {
+                        name: 'slide-selectors',
+                        value: 'HTMLElement[]',
+                        description: `
+                            An array slide selector elements which should match the number of slide elements.
+                            <p>Each selector is decorated with an event to load the requested slide.</p>
+                            <p>Additionally, a modifier class of "--active" is added to the slide selector for styling purposes.</p>
+                        `,
+                    },
+                ],
+                'ZOODUCK-INPUT': [
+                    {
+                        name: 'left-icon',
+                        value: 'SVGElement, HTMLElement, Text',
+                        description: 'Optional informative (non-functional) icon.',
+                    },
+                    {
+                        name: 'right-icon-clear-input',
+                        value: 'SVGElement, HTMLElement, Text',
+                        description: 'Optional override for the clear-input icon.',
+                    },
+                    {
+                        name: 'right-icon-hide-password',
+                        value: 'SVGElement, HTMLElement, Text',
+                        description: 'Optional override for the hide-password icon.',
+                    },
+                    {
+                        name: 'right-icon-show-password',
+                        value: 'SVGElement, HTMLElement, Text',
+                        description: 'Optional override for the show-password icon.',
+                    },
+                ],
+                'ZOODUCK-TERMINAL': [],
+            };
+            const customAttributesMap = {
+                'ZOODUCK-CAROUSEL': [
+                    {
+                        name: 'loading',
+                        value: 'eager, lazy (default)',
+                        description: 'Wait until images are visible before loading them.'
+                    }
+                ],
+                'ZOODUCK-INPUT': [
+                    {
+                        name: 'label',
+                        value: 'string',
+                        description: 'Animated label overlay for the input.',
+                    },
+                    {
+                        name: 'type',
+                        value: 'signature',
+                        description: `
+                            A canvas input that can be drawn on using mouse, touch or stylus.
+                            <p>The image is saved as a base64 string, suitable for storing to a database and using with an &lt;img&gt; element.</p>
+                        `,
+                    },
+                    {
+                        name: 'signatureinkcolor',
+                        value: 'string',
+                        description: 'The signature ink colour when the type attribute is set to signature.',
+                    },
+                ],
+                'ZOODUCK-TERMINAL': [
+                    {
+                        name: 'delay',
+                        value: 'number',
+                        description: 'The amount of time (in milliseconds) to display the flashing cursor before typing begins.',
+                    },
+                    {
+                        name: 'fullstopinterval',
+                        value: 'number',
+                        description: 'The amount of time (in milliseconds) to wait before typing a new sentence.',
+                    },
+                    {
+                        name: 'linemode',
+                        value: 'single, multi (default)',
+                        description: 'Whether or not to clear the console after each sentence.',
+                    },
+                    {
+                        name: 'message',
+                        value: 'string',
+                        description: 'The text to display in the terminal.',
+                    },
+                    {
+                        name: 'screen',
+                        value: 'retro, modern (default)',
+                        description: 'The terminal style.',
+                    },
+                    {
+                        name: 'wordbreakinterval',
+                        value: 'number',
+                        description: 'The amount of time (in milliseconds) to wait before typing a new word.',
+                    },
+                ],
+            };
+            const cssVarsMap = {
+                'ZOODUCK-CAROUSEL': [],
+                'ZOODUCK-INPUT': [
+                    {
+                        name: '--zooduck-input-font-family',
+                        value: '\'Roboto\', sans-serif',
+                        description: 'The <code>font-family</code> style of the element.',
+                    },
+                    {
+                        name: '--zooduck-input-font-weight',
+                        value: 'inherit',
+                        description: 'The <code>font-weight</code> style of the element.',
+                    },
+                    {
+                        name: '--zooduck-input-font-style',
+                        value: 'inherit',
+                        description: 'The <code>font-style</code> style of the element.',
+                    },
+                    {
+                        name: '--zooduck-input-width',
+                        value: 'auto',
+                        description: 'The <code>width</code> style of the element.',
+                    },
+                    {
+                        name: '--zooduck-input-border-style',
+                        value: 'solid',
+                        description: 'The <code>border-style</code> style of the element.',
+                    },
+                    {
+                        name: '--zooduck-input-border-color',
+                        value: 'var(--gray)',
+                        description: 'The <code>border-color</code> style of the element.',
+                    },
+                    {
+                        name: '--zooduck-input-border-width',
+                        value: '1px',
+                        description: 'The <code>border-width</code> style of the element.',
+                    },
+                    {
+                        name: '--zooduck-input-background-color',
+                        value: 'var(--white)',
+                        description: 'The <code>background-color</code> style of the element.',
+                    },
+                    {
+                        name: '--zooduck-input-disabled-background-color',
+                        value: 'var(--disabled)',
+                        description: 'The <code>background-color</code> style of the element when its <code>disabled</code> attribute is set.',
+                    },
+                    {
+                        name: '--zooduck-input-label-color',
+                        value: 'var(--gray)',
+                        description: 'The <code>color</code> style of the element\'s label.',
+                    },
+                    {
+                        name: '--zooduck-input-icon-color',
+                        value: 'var(--zooduck-input-label-color, var(--gray))',
+                        description: 'The <code>color</code> style of the icon slots.',
+                    },
+                    {
+                        name: '--zooduck-input-icon-padding',
+                        value: '0 20px',
+                        description: 'The <code>padding</code> style of the icon slots.',
+                    },
+                    {
+                        name: '--zooduck-input-signature-border-color',
+                        value: 'var(--palegray)',
+                        description: 'The <code>border-color</code> style of the signature canvas.',
+                    },
+                ],
+                'ZOODUCK-TERMINAL': [
+                    {
+                        name: '--width',
+                        value: '100%',
+                        description: 'The <code>width</code> style of the element.'
+                    },
+                    {
+                        name: '--height',
+                        value: 'auto',
+                        description: 'The <code>height</code> style of the element.'
+                    },
+                    {
+                        name: '--min-width',
+                        value: '200px',
+                        description: 'The <code>min-width</code> style of the element.'
+                    },
+                    {
+                        name: '--min-height',
+                        value: '150px',
+                        description: 'The <code>min-height</code> style of the element.'
+                    },
+                    {
+                        name: '--background-color',
+                        value: '#222',
+                        description: 'The <code>background-color</code> style of the element.'
+                    },
+                    {
+                        name: '--font-family',
+                        value: '"Courier New", "Courier", monospace',
+                        description: 'The <code>font-family</code> style of the element.'
+                    },
+                    {
+                        name: '--font-weight',
+                        value: '100%',
+                        description: 'The <code>font-weight</code> style of the element.'
+                    },
+                    {
+                        name: '--color',
+                        value: '#fff',
+                        description: 'The <code>color</code> style of the element.'
+                    },
+                    {
+                        name: '--letter-spacing',
+                        value: 'normal',
+                        description: 'The <code>letter-spacing</code> style of the element.'
+                    },
+                ],
+            };
             const IOCallback = (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
@@ -256,6 +621,75 @@
                 return template.nextElementSibling;
             };
 
+            const buildConfigTable = (title, modifier) => {
+                return new DOMParser().parseFromString(`
+                    <div class="config-table ${modifier}">
+                        <h2 class="config-table__title">${title}</h2>
+                        <span class="config-table__tr">Name</span><span class="config-table__tr">Value</span><span class="config-table__tr">Description</span>
+                    </div>
+                `, 'text/html').body.firstChild;
+            };
+
+            const buildDocs = (nodeName, grid) => {
+                if (customAttributesMap[nodeName].length > 0) {
+                    grid.appendChild(buildConfigTable('Custom Attributes', '--custom-attributes'));
+                }
+                if (slotsMap[nodeName].length > 0) {
+                    grid.appendChild(buildConfigTable('Slots', '--slots'));
+                }
+                if (cssVarsMap[nodeName].length > 0) {
+                    grid.appendChild(buildConfigTable('CSS Vars', '--css-vars'));
+                }
+
+                customAttributesMap[nodeName].forEach((customAttrData) => {
+                    const name = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${customAttrData.name}</span>
+                    `, 'text/html').body.firstChild;
+                    const value = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${customAttrData.value}</span>
+                    `, 'text/html').body.firstChild;
+                    const desc = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${customAttrData.description}</span>
+                    `, 'text/html').body.firstChild;
+
+                    [name, value, desc].forEach((el) => {
+                        grid.querySelector('.config-table.--custom-attributes').appendChild(el);
+                    });
+                });
+
+                slotsMap[nodeName].forEach((slotData) => {
+                    const name = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${slotData.name}</span>
+                    `, 'text/html').body.firstChild;
+                    const value = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${slotData.value}</span>
+                    `, 'text/html').body.firstChild;
+                    const desc = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${slotData.description}</span>
+                    `, 'text/html').body.firstChild;
+
+                    [name, value, desc].forEach((el) => {
+                        grid.querySelector('.config-table.--slots').appendChild(el);
+                    });
+                });
+
+                cssVarsMap[nodeName].forEach((cssVarData) => {
+                    const name = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${cssVarData.name}</span>
+                    `, 'text/html').body.firstChild;
+                    const value = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${cssVarData.value}</span>
+                    `, 'text/html').body.firstChild;
+                    const desc = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${cssVarData.description}</span>
+                    `, 'text/html').body.firstChild;
+
+                    [name, value, desc].forEach((el) => {
+                        grid.querySelector('.config-table.--css-vars').appendChild(el);
+                    });
+                });
+            };
+
             const buildGrid = (templates, title, hideExampleResultsUntilViewable = false) => {
                 const grid = new DOMParser().parseFromString(`
                     <div class="grid">
@@ -276,9 +710,9 @@
                     example.querySelector('.example__html').innerText = html;
                     example.querySelector('.example__style').innerText = style.innerHTML
                         ? `
-                    <style>
-                        ${style.innerHTML}
-                    </style>`.trim()
+<style>
+${style.textContent}
+</style>`.trim()
                         : '<style></style>';
                     example.querySelector('.example__result').appendChild(result);
 
@@ -289,6 +723,7 @@
                     example.querySelector('.example__config-toggle').addEventListener('click', (e) => {
                         const exampleContainer = e.target.parentNode.parentNode;
                         exampleContainer.classList.toggle('--show-config');
+
                         if (Array.from(exampleContainer.classList).includes('--show-config')) {
                             e.target.innerHTML = 'Hide html';
                             exampleContainer.scrollIntoView();
@@ -301,11 +736,17 @@
                     grid.appendChild(example);
                 });
 
+                buildDocs(title, grid);
+
                 const content = document.querySelector('.content');
                 content.insertBefore(grid, content.children[content.children.length - 1]);
             };
 
             const templates = document.querySelectorAll('template:not([id=exampleTemplate])');
+
+            const zooduckCarouselTemplates = Array.from(templates).filter((template) => {
+                return template.content.children[0].nodeName ===  'ZOODUCK-CAROUSEL';
+            });
 
             const zooduckInputTemplates = Array.from(templates).filter((template) => {
                 return template.content.children[0].nodeName === 'ZOODUCK-INPUT';
@@ -316,6 +757,7 @@
             });
 
             buildGrid(zooduckInputTemplates, 'ZOODUCK-INPUT');
+            buildGrid(zooduckCarouselTemplates, 'ZOODUCK-CAROUSEL');
             buildGrid(zooduckTerminalTemplates, 'ZOODUCK-TERMINAL', true);
 
             Array.from(document.querySelectorAll('.example')).forEach((example) => {
