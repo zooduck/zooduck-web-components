@@ -23,18 +23,19 @@ class HTMLZooduckInputElement extends HTMLElement {
     private _canvasHeight = 90;
     private _clearInputIconSlot: HTMLElement;
     private _disabled: boolean;
-    private _keyupEnterEvent = 'keyup:enter';
     private _filter: string;
-    private _filterEventName = 'zooduck-input:filter';
+    private _filterEventName = 'filter';
     private _filterHiddenClass = '--zooduck-input-filter-hidden';
     private _filterMinChars = 2;
     private _filterTagsName = 'zooduck-input-tags';
     private _hidePasswordIconSlot: HTMLElement;
     private _input: HTMLInputElement;
     private _inputLabelContainer: HTMLElement;
+    private _keyupEnterEventName = 'keyup:enter';
     private _label: string;
     private _labelEl: HTMLElement;
     private _leftIconSlot: HTMLSlotElement;
+    private _loadEventName = 'load';
     private _name: string;
     private _noIcons: boolean;
     private _placeholder: string;
@@ -183,7 +184,7 @@ class HTMLZooduckInputElement extends HTMLElement {
         this._input.addEventListener('keyup', (e: KeyboardEvent) => {
             const isEnterKey = (e.code === 'Enter' || e.key === 'Enter' || e.keyCode === 13 || e.which === 13);
             if (isEnterKey) {
-                this.dispatchEvent(new CustomEvent(this._keyupEnterEvent, {
+                this.dispatchEvent(new CustomEvent(this._keyupEnterEventName, {
                     detail: {
                         value: this._input.value,
                     }
@@ -640,6 +641,8 @@ class HTMLZooduckInputElement extends HTMLElement {
         }
 
         this._setup();
+
+        this.dispatchEvent(new CustomEvent(this._loadEventName));
     }
 
     protected attributeChangedCallback(name: string, _oldVal: string, newVal: string) {
