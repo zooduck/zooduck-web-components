@@ -616,10 +616,46 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
         return (this.querySelector('[slot=slides]') as HTMLElement).offsetTop + minSlideHeight;
     }
 
-    protected async connectedCallback() {
+    protected _setup() {
+        this._setupSlots();
+
+        this.style.minHeight = `${this._calcMinHeight()}px`;
+
+        const requiredSlottedContent = this.querySelector('[slot=slides]') as HTMLElement;
+        this._container = requiredSlottedContent;
+
+        const currentslideAttrAsIndex = parseInt(this._currentslide, 10) - 1;
+        this._setCurrentSlide(currentslideAttrAsIndex || 0);
+
+        this._setContainerStyle();
+
+        this._slideIntoView(this._currentSlide, false);
+
+        const images = Array.from(this._container.querySelectorAll('img'));
+
+        images.forEach((img: HTMLImageElement) => {
+            img.style.backgroundColor = this._getRandomRGBA();
+
+            this._imagesToLoad.push(img);
+
+            if (this._loading === 'eager') {
+                return;
+            }
+
+            this._lazyLoad(img);
+        });
+
+        if (this._loading === 'eager') {
+            this._listenToImages();
+        }
+
+        this.classList.add('--ready');
+    }
+
+    protected _setupSlots(): void {
         // Required "slides" slot
-        await wait(0); // without this timeout, puppeteer tests will fail (with requiredSlotMissingError)
         const requiredSlottedContent = this.querySelector('[slot=slides]');
+
         if (!requiredSlottedContent || !requiredSlottedContent.children.length) {
             throw Error(requiredSlotMissingError('slides'));
         }
@@ -635,8 +671,16 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
         // Optional "slide-selectors" slot
         const slideSelectorsSlot = this.querySelector('[slot=slide-selectors]');
+
+
         if (slideSelectorsSlot) {
-            Array.from(this.querySelector('[slot=slide-selectors]').children)
+            const slideSelectors = Array.from(this.querySelector('[slot=slide-selectors]').children);
+
+            if (slideSelectors.length !== this._slides.length) {
+                throw Error(`The number of slide-selectors (${slideSelectors.length}) must match the number of slides (${this._slides.length})!`);
+            }
+
+            slideSelectors
                 .map((slideSelectorEl: HTMLElement, i: number) => {
                     slideSelectorEl.addEventListener('pointerup', (e: PointerEvent) => {
                         e.preventDefault();
@@ -653,48 +697,14 @@ export class HTMLZooduckCarouselElement extends HTMLElement {
 
             this._slideSelectors = slideSelectorsSlot as HTMLElement;
         }
+    }
 
-        this.style.minHeight = `${this._calcMinHeight()}px`;
+    protected async connectedCallback() {
+        await wait(); // without this timeout, puppeteer tests will fail (with requiredSlotMissingError)
 
-        this._container = requiredSlottedContent as HTMLElement;
+        this._setup();
 
-        const currentslideAttrAsIndex = parseInt(this._currentslide, 10) - 1;
-        this._setCurrentSlide(currentslideAttrAsIndex || 0);
-
-        setTimeout(() => {
-            // Timeout neccessary or this._setContainerStyle() will be called
-            // before the element has loaded.
-            // ---------------------------------------------------------------------------------
-            // According to MDN: The connectedCallback lifecycle callback is invoked each time
-            // the custom element is appended into a document-connected element. This will
-            // happen each time the node is moved, and may happen before the element's contents
-            // have been fully parsed.
-            // ----------------------------------------------------------------------------------
-            this._setContainerStyle();
-
-            this._slideIntoView(this._currentSlide, false);
-
-            const images = Array.from(this._container.querySelectorAll('img'));
-
-            images.forEach((img: HTMLImageElement) => {
-                img.style.backgroundColor = this._getRandomRGBA();
-
-                this._imagesToLoad.push(img);
-
-                if (this._loading === 'eager') {
-                    return;
-                }
-
-                this._lazyLoad(img);
-            });
-
-            if (this._loading === 'eager') {
-                this._listenToImages();
-            }
-
-            this.classList.add('--ready');
-            this.dispatchEvent(new CustomEvent('load'));
-        });
+        this.dispatchEvent(new CustomEvent('load'));
     }
 
     protected attributeChangedCallback(name: string, _oldVal: any, newVal: any) {
