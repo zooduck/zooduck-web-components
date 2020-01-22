@@ -1675,104 +1675,109 @@ function (_HTMLElement) {
       return this.querySelector('[slot=slides]').offsetTop + minSlideHeight;
     }
   }, {
+    key: "_setup",
+    value: function _setup() {
+      var _this8 = this;
+
+      this._setupSlots();
+
+      this.style.minHeight = "".concat(this._calcMinHeight(), "px");
+      var requiredSlottedContent = this.querySelector('[slot=slides]');
+      this._container = requiredSlottedContent;
+      var currentslideAttrAsIndex = parseInt(this._currentslide, 10) - 1;
+
+      this._setCurrentSlide(currentslideAttrAsIndex || 0);
+
+      this._setContainerStyle();
+
+      this._slideIntoView(this._currentSlide, false);
+
+      var images = Array.from(this._container.querySelectorAll('img'));
+      images.forEach(function (img) {
+        img.style.backgroundColor = _this8._getRandomRGBA();
+
+        _this8._imagesToLoad.push(img);
+
+        if (_this8._loading === 'eager') {
+          return;
+        }
+
+        _this8._lazyLoad(img);
+      });
+
+      if (this._loading === 'eager') {
+        this._listenToImages();
+      }
+
+      this.classList.add('--ready');
+    }
+  }, {
+    key: "_setupSlots",
+    value: function _setupSlots() {
+      var _this9 = this;
+
+      // Required "slides" slot
+      var requiredSlottedContent = this.querySelector('[slot=slides]');
+
+      if (!requiredSlottedContent || !requiredSlottedContent.children.length) {
+        throw Error(requiredSlotMissingError('slides'));
+      }
+
+      this._slides = Array.from(requiredSlottedContent.children).map(function (slide, i) {
+        return {
+          id: i + 1,
+          index: i,
+          el: slide
+        };
+      }); // Optional "slide-selectors" slot
+
+      var slideSelectorsSlot = this.querySelector('[slot=slide-selectors]');
+
+      if (slideSelectorsSlot) {
+        var slideSelectors = Array.from(this.querySelector('[slot=slide-selectors]').children);
+
+        if (slideSelectors.length !== this._slides.length) {
+          throw Error("The number of slide-selectors (".concat(slideSelectors.length, ") must match the number of slides (").concat(this._slides.length, ")!"));
+        }
+
+        slideSelectors.map(function (slideSelectorEl, i) {
+          slideSelectorEl.addEventListener('pointerup', function (e) {
+            e.preventDefault();
+
+            if (_this9._touchMoveInProgress) {
+              return;
+            }
+
+            _this9._setCurrentSlide(i);
+
+            _this9._setTouchActive(false);
+
+            _this9._slideIntoView(_this9._currentSlide, false);
+          });
+        });
+        this._slideSelectors = slideSelectorsSlot;
+      }
+    }
+  }, {
     key: "connectedCallback",
     value: function connectedCallback() {
       return __awaiter(this, void 0, void 0,
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee3() {
-        var _this8 = this;
-
-        var requiredSlottedContent, slideSelectorsSlot, currentslideAttrAsIndex;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.next = 2;
-                return index_1.wait(0);
+                return index_1.wait();
 
               case 2:
                 // without this timeout, puppeteer tests will fail (with requiredSlotMissingError)
-                requiredSlottedContent = this.querySelector('[slot=slides]');
+                this._setup();
 
-                if (!(!requiredSlottedContent || !requiredSlottedContent.children.length)) {
-                  _context3.next = 5;
-                  break;
-                }
+                this.dispatchEvent(new CustomEvent('load'));
 
-                throw Error(requiredSlotMissingError('slides'));
-
-              case 5:
-                this._slides = Array.from(requiredSlottedContent.children).map(function (slide, i) {
-                  return {
-                    id: i + 1,
-                    index: i,
-                    el: slide
-                  };
-                }); // Optional "slide-selectors" slot
-
-                slideSelectorsSlot = this.querySelector('[slot=slide-selectors]');
-
-                if (slideSelectorsSlot) {
-                  Array.from(this.querySelector('[slot=slide-selectors]').children).map(function (slideSelectorEl, i) {
-                    slideSelectorEl.addEventListener('pointerup', function (e) {
-                      e.preventDefault();
-
-                      if (_this8._touchMoveInProgress) {
-                        return;
-                      }
-
-                      _this8._setCurrentSlide(i);
-
-                      _this8._setTouchActive(false);
-
-                      _this8._slideIntoView(_this8._currentSlide, false);
-                    });
-                  });
-                  this._slideSelectors = slideSelectorsSlot;
-                }
-
-                this.style.minHeight = "".concat(this._calcMinHeight(), "px");
-                this._container = requiredSlottedContent;
-                currentslideAttrAsIndex = parseInt(this._currentslide, 10) - 1;
-
-                this._setCurrentSlide(currentslideAttrAsIndex || 0);
-
-                setTimeout(function () {
-                  // Timeout neccessary or this._setContainerStyle() will be called
-                  // before the element has loaded.
-                  // ---------------------------------------------------------------------------------
-                  // According to MDN: The connectedCallback lifecycle callback is invoked each time
-                  // the custom element is appended into a document-connected element. This will
-                  // happen each time the node is moved, and may happen before the element's contents
-                  // have been fully parsed.
-                  // ----------------------------------------------------------------------------------
-                  _this8._setContainerStyle();
-
-                  _this8._slideIntoView(_this8._currentSlide, false);
-
-                  var images = Array.from(_this8._container.querySelectorAll('img'));
-                  images.forEach(function (img) {
-                    img.style.backgroundColor = _this8._getRandomRGBA();
-
-                    _this8._imagesToLoad.push(img);
-
-                    if (_this8._loading === 'eager') {
-                      return;
-                    }
-
-                    _this8._lazyLoad(img);
-                  });
-
-                  if (_this8._loading === 'eager') {
-                    _this8._listenToImages();
-                  }
-
-                  _this8.classList.add('--ready');
-
-                  _this8.dispatchEvent(new CustomEvent('load'));
-                });
-
-              case 13:
+              case 4:
               case "end":
                 return _context3.stop();
             }
@@ -2125,11 +2130,12 @@ function (_HTMLElement) {
       signatureinkcolor: 'signatureInkColor'
     };
     _this._canvasHeight = 90;
-    _this._keyupEnterEvent = 'keyup:enter';
-    _this._filterEventName = 'zooduck-input:filter';
+    _this._filterEventName = 'filter';
     _this._filterHiddenClass = '--zooduck-input-filter-hidden';
     _this._filterMinChars = 2;
     _this._filterTagsName = 'zooduck-input-tags';
+    _this._keyupEnterEventName = 'keyup:enter';
+    _this._loadEventName = 'load';
     _this._sharedAttrs = ['autocomplete', 'autofocus', 'disabled', 'name', 'placeholder', 'readonly', 'required', 'type', 'value'];
     _this._signatureInkColor = '#222';
     _this._supportedTypes = ['email', 'password', 'tel', 'text', 'url'];
@@ -2314,7 +2320,7 @@ function (_HTMLElement) {
         var isEnterKey = e.code === 'Enter' || e.key === 'Enter' || e.keyCode === 13 || e.which === 13;
 
         if (isEnterKey) {
-          _this3.dispatchEvent(new CustomEvent(_this3._keyupEnterEvent, {
+          _this3.dispatchEvent(new CustomEvent(_this3._keyupEnterEventName, {
             detail: {
               value: _this3._input.value
             }
@@ -2642,7 +2648,9 @@ function (_HTMLElement) {
               case 2:
                 this._setup();
 
-              case 3:
+                this.dispatchEvent(new CustomEvent(this._loadEventName));
+
+              case 4:
               case "end":
                 return _context.stop();
             }
@@ -3488,4 +3496,4 @@ require("./zooduck-radio/zooduck-radio.component");
 
 require("./zooduck-terminal/zooduck-terminal.component");
 },{"regenerator-runtime/runtime":"QVnC","./zooduck-carousel/zooduck-carousel.component":"tZiM","./zooduck-input/zooduck-input.component.":"Y4ya","./zooduck-radio/zooduck-radio.component":"KH65","./zooduck-terminal/zooduck-terminal.component":"wMMK"}]},{},["QCba"], null)
-//# sourceMappingURL=src.5998578f.js.map
+//# sourceMappingURL=src.ccededdd.js.map
