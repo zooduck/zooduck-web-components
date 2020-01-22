@@ -39,7 +39,6 @@
                 display: grid;
                 grid-gap: 20px;
                 grid-template-columns: auto;
-                max-width: 500px;
             }
             .grid__title {
                 justify-self: center;
@@ -51,6 +50,9 @@
                 display: grid;
                 grid-template-rows: 95px repeat(2, auto) 1fr;
                 grid-row-gap: 20px;
+                justify-self: center;
+                width: 100%;
+                max-width: 440px;
             }
             .example__header {
                 display: grid;
@@ -92,6 +94,7 @@
                 .grid {
                     grid-template-columns: repeat(3, 1fr);
                     max-width: none;
+                    width: 100%;
                 }
                 .grid__title {
                     grid-column: 1 / span 3;
@@ -106,10 +109,11 @@
                 border-top: solid 2px var(--config-table-border-color);
                 border-left: solid 2px var(--config-table-border-color);
                 color: gray;
+                width: 100%;
                 max-width: 640px;
                 justify-self: center;
             }
-            @media (max-width: 500px) {
+            @media (max-width: 440px) {
                 .grid {
                     min-width: 100%;
                 }
@@ -138,6 +142,7 @@
             .config-table__tr {
                 font-weight: bold;
                 background-color: whitesmoke;
+                text-align: center;
             }
         </style>
     </head>
@@ -230,6 +235,7 @@
 }
 #zooduckCarousel_2 img {
     max-width: 100%;
+    height: auto;
 }
         </style>
 
@@ -239,16 +245,26 @@
         <div class="slide-selector">1</div>
         <div class="slide-selector">2</div>
         <div class="slide-selector">3</div>
+        <div class="slide-selector">4</div>
     </div>
     <div slot="slides">
         <div class="image-container">
+            <h1>Slide 1</h1>
             <img src="https://picsum.photos/id/230/320/400" width="320" height="400" alt="320/400" />
         </div>
         <div class="image-container">
+            <h1>Slide 2</h1>
             <img src="https://picsum.photos/id/376/400/320" width="400" height="320" alt="400/320" />
         </div>
         <div class="image-container">
+            <h1>Slide 3</h1>
             <img src="https://picsum.photos/id/146/100/400" width="100" height="400" alt="100/400" />
+        </div>
+        <div class="simple-slide">
+            <h1>Slide 4</h1>
+            <p>
+                Slides do not have to contain images.
+            </p>
         </div>
     </div>
 </zooduck-carousel>
@@ -256,11 +272,18 @@
         <style>
 #zooduckCarousel_3 .image-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+}
+#zooduckCarousel_3 .simple-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 #zooduckCarousel_3 [slot=slide-selectors] {
     display: grid;
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: repeat(4, auto);
     justify-content: center;
     grid-gap: 10px;
     margin-bottom: 10px;
@@ -335,7 +358,7 @@
         <style>
 #zooduckInputCustomVars_2 {
     --zooduck-input-font-size: 32px;
-    --zooduck-input-font-family: 'Impact', fantasy;
+    --zooduck-input-font-family: 'Courier', monospace;
     --zooduck-input-border-width: 0 0 10px 0;
     --zooduck-input-border-color: cornflowerblue;
     --zooduck-input-background-color: #fff;
@@ -392,7 +415,7 @@
                     {
                         name: 'slides (required)',
                         value: 'HTMLElement[]',
-                        description: 'An array of slide elements.',
+                        description: 'One or more slide elements.',
                     },
                     {
                         name: 'slide-selectors',
@@ -433,21 +456,32 @@
                     {
                         name: 'loading',
                         value: 'eager, lazy (default)',
-                        description: 'Wait until images are visible before loading them.'
+                        description: 'Wait until images are visible before loading them.<p>Note: Images are automatically detected and are entirely optional (slides do not need to contain images).</p>'
                     }
                 ],
                 'ZOODUCK-INPUT': [
+                    {
+                        name: 'autocomplete, autofocus, disabled, name, placeholder, type (email, password, tel, text, url)',
+                        value: '-',
+                        description: 'List of supported (standard) attributes.'
+
+                    },
                     {
                         name: 'label',
                         value: 'string',
                         description: 'Animated label overlay for the input.',
                     },
                     {
+                        name: 'noicons',
+                        value: 'boolean',
+                        description: 'If this attribute is present, or its property alias of <code>noIcons</code> is set to <code>true</code>, the input will not render any icons.',
+                    },
+                    {
                         name: 'type',
                         value: 'signature',
                         description: `
                             A canvas input that can be drawn on using mouse, touch or stylus.
-                            <p>The image is saved as a base64 string, suitable for storing to a database and using with an &lt;img&gt; element.</p>
+                            <p>The image is saved to a <code>Data URL</code> as a base64-encoded binary data string, suitable for storing to a database and rendering with an <code>&lt;img&gt;</code> element.</p>
                         `,
                     },
                     {
@@ -486,6 +520,39 @@
                         name: 'wordbreakinterval',
                         value: 'number',
                         description: 'The amount of time (in milliseconds) to wait before typing a new word.',
+                    },
+                ],
+            };
+            const customEventsMap = {
+                'ZOODUCK-CAROUSEL': [
+                    {
+                        name: 'load',
+                        value: 'Custom Event',
+                        description: 'Fired when the component loads.',
+                    },
+                    {
+                        name: 'slidechange',
+                        value: 'Custom Event, with a detail object containing the slide element, index and id.',
+                        description: 'Fired when the active slide changes. (This event will fire when the component is first loaded).'
+                    },
+                ],
+                'ZOODUCK-INPUT': [
+                    {
+                        name: 'load',
+                        value: 'Custom Event',
+                        description: 'Fired when the component loads.',
+                    },
+                    {
+                        name: 'keyup:enter',
+                        value: 'CustomEvent, with a detail object containing the value of the input',
+                        description: 'Fired when a keyup event for the Enter key is detected.',
+                    },
+                ],
+                'ZOODUCK-TERMINAL': [
+                    {
+                        name: 'load',
+                        value: 'Custom Event',
+                        description: 'Fired when the component loads.',
                     },
                 ],
             };
@@ -643,6 +710,9 @@
                 if (customAttributesMap[nodeName].length > 0) {
                     grid.appendChild(buildConfigTable('Custom Attributes', '--custom-attributes'));
                 }
+                if (customEventsMap[nodeName].length > 0) {
+                    grid.appendChild(buildConfigTable('Custom Events', '--custom-events'));
+                }
                 if (slotsMap[nodeName].length > 0) {
                     grid.appendChild(buildConfigTable('Slots', '--slots'));
                 }
@@ -663,6 +733,22 @@
 
                     [name, value, desc].forEach((el) => {
                         grid.querySelector('.config-table.--custom-attributes').appendChild(el);
+                    });
+                });
+
+                customEventsMap[nodeName].forEach((customEventData) => {
+                    const name = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${customEventData.name}</span>
+                    `, 'text/html').body.firstChild;
+                    const value = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${customEventData.value}</span>
+                    `, 'text/html').body.firstChild;
+                    const desc = new DOMParser().parseFromString(`
+                        <span class="config-table__td">${customEventData.description}</span>
+                    `, 'text/html').body.firstChild;
+
+                    [name, value, desc].forEach((el) => {
+                        grid.querySelector('.config-table.--custom-events').appendChild(el);
                     });
                 });
 
