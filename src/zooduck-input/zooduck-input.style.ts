@@ -137,6 +137,9 @@ slot[name^=right-icon] {
     cursor: pointer;
     display: none;
 }
+:host([disabled]) slot[name^=right-icon] {
+    pointer-events: none;
+}
 :host(:not([type=password])) slot[name=right-icon-clear-input] {
     display: flex;
 }
