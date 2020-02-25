@@ -367,12 +367,35 @@
 }
         </style>
 
+        <!-- zooduck-jelly-squares -->
+        <template>
+<zooduck-jelly-squares></zooduck-jelly-squares>
+        </template>
+        <style></style>
+
+        <template>
+<zooduck-jelly-squares
+    color="magenta"
+    density="3"
+    height="400px">
+</zooduck-jelly-squares>
+        </template>
+        <style></style>
+
+        <template>
+<zooduck-jelly-squares
+    color="#333"
+    density="19">
+</zooduck-jelly-squares>
+        </template>
+        <style></style>
+
+        <!-- zooduck-terminal -->
         <template>
 <zooduck-terminal></zooduck-terminal>
         </template>
         <style></style>
 
-        <!-- zooduck-terminal -->
         <template>
 <zooduck-terminal
     id="zooduckTerminal_1"
@@ -423,7 +446,7 @@
                         description: `
                             An array slide selector elements which should match the number of slide elements.
                             <p>Each selector is decorated with an event to load the requested slide.</p>
-                            <p>Additionally, a modifier class of "--active" is added to the slide selector for styling purposes.</p>
+                            <p>Additionally, a modifier class of <code>--active</code> is added to the slide selector for styling purposes.</p>
                         `,
                     },
                 ],
@@ -449,6 +472,7 @@
                         description: 'Optional override for the show-password icon.',
                     },
                 ],
+                'ZOODUCK-JELLY-SQUARES': [],
                 'ZOODUCK-TERMINAL': [],
             };
             const customAttributesMap = {
@@ -489,6 +513,29 @@
                         value: 'string',
                         description: 'The signature ink colour when the type attribute is set to signature.',
                     },
+                ],
+                'ZOODUCK-JELLY-SQUARES': [
+                    {
+                        name: 'color',
+                        value: 'string',
+                        description: 'CSS style declaration for setting the colour of the squares.'
+
+                    },
+                    {
+                        name: 'density',
+                        value: 'string',
+                        description: 'The number of squares to display along the x-axis.',
+                    },
+                    {
+                        name: 'height',
+                        value: 'string',
+                        description: 'CSS style declaration for setting the overall height.',
+                    },
+                    {
+                        name:  'width',
+                        value: 'string',
+                        description: 'CSS style declaration for setting the overall width.'
+                    }
                 ],
                 'ZOODUCK-TERMINAL': [
                     {
@@ -548,6 +595,7 @@
                         description: 'Fired when a keyup event for the Enter key is detected.',
                     },
                 ],
+                'ZOODUCK-JELLY-SQUARES': [],
                 'ZOODUCK-TERMINAL': [
                     {
                         name: 'load',
@@ -625,6 +673,7 @@
                         description: 'The <code>border-color</code> style of the signature canvas.',
                     },
                 ],
+                'ZOODUCK-JELLY-SQUARES': [],
                 'ZOODUCK-TERMINAL': [
                     {
                         name: '--width',
@@ -847,11 +896,16 @@ ${style.textContent}
                 return template.content.children[0].nodeName === 'ZOODUCK-INPUT';
             });
 
+            const zooduckJellySquaresTemplates = Array.from(templates).filter((template) => {
+                return template.content.children[0].nodeName === 'ZOODUCK-JELLY-SQUARES';
+            });
+
             const zooduckTerminalTemplates = Array.from(templates).filter((template) => {
                 return template.content.children[0].nodeName === 'ZOODUCK-TERMINAL';
             });
 
             buildGrid(zooduckInputTemplates, 'ZOODUCK-INPUT');
+            buildGrid(zooduckJellySquaresTemplates, 'ZOODUCK-JELLY-SQUARES');
             buildGrid(zooduckCarouselTemplates, 'ZOODUCK-CAROUSEL');
             buildGrid(zooduckTerminalTemplates, 'ZOODUCK-TERMINAL', true);
 
