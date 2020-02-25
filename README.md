@@ -3,7 +3,7 @@ Zero dependency sample library of pure <a href="https://developer.mozilla.org/en
 
 An up-to-date list of supported browsers can be found here: https://caniuse.com/#search=custom%20element
 
-![alt text](https://github.com/zooduck/screenshots/blob/master/zooduck-web-components/v0.9.0-alpha/zooduck-web-components-v0.9.0-alpha.png)
+![alt text](https://github.com/zooduck/screenshots/blob/master/zooduck-web-components/v0.10.0-alpha/zooduck-web-components-v0.10.0-alpha.png)
 
 ## Examples (with documentation)
 https://zooduck.github.io/zooduck-web-components/dist/examples.html
