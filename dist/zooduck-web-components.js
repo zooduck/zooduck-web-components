@@ -2825,7 +2825,235 @@ function (_HTMLElement) {
 }(_wrapNativeSuper(HTMLElement));
 
 customElements.define('zooduck-input', HTMLZooduckInputElement);
-},{"./zooduck-input-utils":"BUZM","./zooduck-input.style":"kAh0","./zooduck-input.global-style":"YxNP","../utils/index":"s2T4"}],"KH65":[function(require,module,exports) {
+},{"./zooduck-input-utils":"BUZM","./zooduck-input.style":"kAh0","./zooduck-input.global-style":"YxNP","../utils/index":"s2T4"}],"Dxyl":[function(require,module,exports) {
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
+
+function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var tagName = 'zooduck-jelly-squares';
+
+var ZooduckJellySquares =
+/*#__PURE__*/
+function (_HTMLElement) {
+  _inherits(ZooduckJellySquares, _HTMLElement);
+
+  function ZooduckJellySquares() {
+    var _this;
+
+    _classCallCheck(this, ZooduckJellySquares);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ZooduckJellySquares).call(this));
+    _this._MIN_ANIMATION_DELAY_IN_SECONDS = 0;
+    _this._MAX_ANIMATION_DELAY_IN_SECONDS = 5;
+    _this._MIN_ANIMATION_DURATION_IN_SECONDS = .5;
+    _this._MAX_ANIMATION_DURATION_IN_SECONDS = 5;
+    _this._COLOR = 'limegreen';
+    _this._DENSITY = 8;
+    _this._WIDTH = '100%';
+    _this._HEIGHT = '200px';
+
+    _this.attachShadow({
+      mode: 'open'
+    });
+
+    var style = document.createElement('style');
+
+    _this.shadowRoot.appendChild(style);
+
+    _this._color = _this._COLOR;
+    _this._density = _this._DENSITY;
+    _this._height = _this._HEIGHT;
+    _this._width = _this._WIDTH;
+    return _this;
+  }
+
+  _createClass(ZooduckJellySquares, [{
+    key: "_buildSquares",
+    value: function _buildSquares() {
+      var _this2 = this;
+
+      var _this$getBoundingClie = this.getBoundingClientRect(),
+          width = _this$getBoundingClie.width,
+          height = _this$getBoundingClie.height;
+
+      var SQUARE_SIZE = width / this._density;
+      var ROWS = Math.ceil(height / SQUARE_SIZE);
+      var TOTAL_SQUARES = ROWS * this._density;
+      var squares = Array.from({
+        length: TOTAL_SQUARES
+      }).map(function () {
+        var square = document.createElement('div');
+        square.className = 'zooduck-jelly-square --animation-square-push';
+        square.style.animationDelay = "".concat(_this2._getAnimationDelay(), "s");
+        square.style.animationDuration = "".concat(_this2._getAnimationDuration(), "s");
+        return square;
+      });
+
+      if (!squares.length) {
+        return;
+      }
+
+      this._clearContent();
+
+      squares.forEach(function (square) {
+        _this2.shadowRoot.appendChild(square);
+      });
+    }
+  }, {
+    key: "_clearContent",
+    value: function _clearContent() {
+      Array.from(this.shadowRoot.childNodes).forEach(function (node) {
+        if (node.nodeName !== 'STYLE') {
+          node.parentNode.removeChild(node);
+        }
+      });
+    }
+  }, {
+    key: "_getAnimationDelay",
+    value: function _getAnimationDelay() {
+      return Math.round(Math.random() * this._MAX_ANIMATION_DELAY_IN_SECONDS + this._MIN_ANIMATION_DELAY_IN_SECONDS);
+    }
+  }, {
+    key: "_getAnimationDuration",
+    value: function _getAnimationDuration() {
+      return Math.round(Math.random() * this._MAX_ANIMATION_DURATION_IN_SECONDS + this._MIN_ANIMATION_DURATION_IN_SECONDS);
+    }
+  }, {
+    key: "_registerEvents",
+    value: function _registerEvents() {
+      window.addEventListener('resize', this._render.bind(this));
+    }
+  }, {
+    key: "_render",
+    value: function _render() {
+      this._updateStyle();
+
+      this._buildSquares();
+
+      this._setSquareHeights();
+    }
+  }, {
+    key: "_setSquareHeights",
+    value: function _setSquareHeights() {
+      this.shadowRoot.querySelector('style').innerHTML += "\n            .zooduck-jelly-square {\n                height: calc(".concat(this.getBoundingClientRect().width, " / var(--cols));\n            }\n        ");
+    }
+  }, {
+    key: "_updateStyle",
+    value: function _updateStyle() {
+      var style = "\n            :host {\n                --cols: ".concat(this._density, ";\n\n                position: relative;\n                display: grid;\n                grid-template-columns: repeat(var(--cols), 1fr);\n                width: ").concat(this._width, ";\n                height: ").concat(this._height, ";\n                overflow: hidden;\n            }\n            .zooduck-jelly-square {\n                background: ").concat(this._color, ";\n                width: 100%;\n                height: calc(").concat(this._width, " / var(--cols));\n            }\n            @keyframes squarePush {\n                0% {\n                transform: scale(1);\n                }\n                50% {\n                transform: scale(.8);\n                }\n                100% {\n                transform: scale(1);\n                }\n            }\n            .--animation-square-push {\n                animation: squarePush infinite both;\n            }\n        ");
+      this.shadowRoot.querySelector('style').innerHTML = style;
+    }
+  }, {
+    key: "_syncAttr",
+    value: function _syncAttr(prop) {
+      var propVal = this[prop];
+      var attrVal = this.getAttribute(prop);
+
+      if (attrVal !== propVal) {
+        this.setAttribute(prop, propVal);
+      }
+
+      this._render();
+    }
+  }, {
+    key: "attributeChangedCallback",
+    value: function attributeChangedCallback(name, _oldVal, newVal) {
+      if (this[name] != newVal) {
+        // Non-strict equals intentional
+        this[name] = newVal;
+      }
+    }
+  }, {
+    key: "connectedCallback",
+    value: function connectedCallback() {
+      var _this3 = this;
+
+      setTimeout(function () {
+        _this3._render();
+
+        _this3._registerEvents();
+      });
+    }
+  }, {
+    key: "color",
+    set: function set(color) {
+      this._color = color;
+
+      this._syncAttr('color');
+    },
+    get: function get() {
+      return this._color;
+    }
+  }, {
+    key: "density",
+    set: function set(density) {
+      this._density = parseInt(density.toString(), 10);
+
+      this._syncAttr('density');
+    },
+    get: function get() {
+      return this._density;
+    }
+  }, {
+    key: "height",
+    set: function set(style) {
+      this._height = style.toString();
+
+      this._syncAttr('height');
+    },
+    get: function get() {
+      return this._height;
+    }
+  }, {
+    key: "width",
+    set: function set(style) {
+      this._width = style.toString();
+
+      this._syncAttr('width');
+    },
+    get: function get() {
+      return this._width;
+    }
+  }], [{
+    key: "observedAttributes",
+    get: function get() {
+      return ['color', 'density', 'height', 'width'];
+    }
+  }]);
+
+  return ZooduckJellySquares;
+}(_wrapNativeSuper(HTMLElement));
+
+exports.ZooduckJellySquares = ZooduckJellySquares;
+customElements.define(tagName, ZooduckJellySquares);
+},{}],"KH65":[function(require,module,exports) {
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3492,8 +3720,10 @@ require("./zooduck-carousel/zooduck-carousel.component");
 
 require("./zooduck-input/zooduck-input.component.");
 
+require("./zooduck-jelly-squares/zooduck-jelly-squares.component");
+
 require("./zooduck-radio/zooduck-radio.component");
 
 require("./zooduck-terminal/zooduck-terminal.component");
-},{"regenerator-runtime/runtime":"QVnC","./zooduck-carousel/zooduck-carousel.component":"tZiM","./zooduck-input/zooduck-input.component.":"Y4ya","./zooduck-radio/zooduck-radio.component":"KH65","./zooduck-terminal/zooduck-terminal.component":"wMMK"}]},{},["QCba"], null)
+},{"regenerator-runtime/runtime":"QVnC","./zooduck-carousel/zooduck-carousel.component":"tZiM","./zooduck-input/zooduck-input.component.":"Y4ya","./zooduck-jelly-squares/zooduck-jelly-squares.component":"Dxyl","./zooduck-radio/zooduck-radio.component":"KH65","./zooduck-terminal/zooduck-terminal.component":"wMMK"}]},{},["QCba"], null)
 //# sourceMappingURL=/zooduck-web-components.js.map

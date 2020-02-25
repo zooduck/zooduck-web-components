@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-        <script src="src.8dbd9f43.js"></script>
+        <script src="src.486e3c76.js"></script>
         <style>:root {
                 --config-table-border-color: lightgray;
             }
@@ -342,12 +342,30 @@
     --zooduck-input-label-color: cornflowerblue;
 }</style>
 
+        <!-- zooduck-jelly-squares -->
+        <template>
+<zooduck-jelly-squares></zooduck-jelly-squares>
+        </template>
+        <style></style>
+
+        <template>
+<zooduck-jelly-squares color="magenta" density="3" height="400px">
+</zooduck-jelly-squares>
+        </template>
+        <style></style>
+
+        <template>
+<zooduck-jelly-squares color="#333" density="19">
+</zooduck-jelly-squares>
+        </template>
+        <style></style>
+
+        <!-- zooduck-terminal -->
         <template>
 <zooduck-terminal></zooduck-terminal>
         </template>
         <style></style>
 
-        <!-- zooduck-terminal -->
         <template>
 <zooduck-terminal id="zooduckTerminal_1" linemode="single" screen="retro" delay="4000" fullstopinterval="2000" typingspeed="250" wordbreakinterval="250" message="Wake up Neo... The matrix has you... Follow the white rabbit.">
 </zooduck-terminal>
@@ -376,7 +394,7 @@
   }, {
     name: 'slide-selectors',
     value: 'HTMLElement[]',
-    description: "\n                            An array slide selector elements which should match the number of slide elements.\n                            <p>Each selector is decorated with an event to load the requested slide.</p>\n                            <p>Additionally, a modifier class of \"--active\" is added to the slide selector for styling purposes.</p>\n                        "
+    description: "\n                            An array slide selector elements which should match the number of slide elements.\n                            <p>Each selector is decorated with an event to load the requested slide.</p>\n                            <p>Additionally, a modifier class of <code>--active</code> is added to the slide selector for styling purposes.</p>\n                        "
   }],
   'ZOODUCK-INPUT': [{
     name: 'left-icon',
@@ -395,6 +413,7 @@
     value: 'SVGElement, HTMLElement, Text',
     description: 'Optional override for the show-password icon.'
   }],
+  'ZOODUCK-JELLY-SQUARES': [],
   'ZOODUCK-TERMINAL': []
 };
 var customAttributesMap = {
@@ -423,6 +442,23 @@ var customAttributesMap = {
     name: 'signatureinkcolor',
     value: 'string',
     description: 'The signature ink colour when the type attribute is set to signature.'
+  }],
+  'ZOODUCK-JELLY-SQUARES': [{
+    name: 'color',
+    value: 'string',
+    description: 'CSS style declaration for setting the colour of the squares.'
+  }, {
+    name: 'density',
+    value: 'string',
+    description: 'The number of squares to display along the x-axis.'
+  }, {
+    name: 'height',
+    value: 'string',
+    description: 'CSS style declaration for setting the overall height.'
+  }, {
+    name: 'width',
+    value: 'string',
+    description: 'CSS style declaration for setting the overall width.'
   }],
   'ZOODUCK-TERMINAL': [{
     name: 'delay',
@@ -469,6 +505,7 @@ var customEventsMap = {
     value: 'CustomEvent, with a detail object containing the value of the input',
     description: 'Fired when a keyup event for the Enter key is detected.'
   }],
+  'ZOODUCK-JELLY-SQUARES': [],
   'ZOODUCK-TERMINAL': [{
     name: 'load',
     value: 'Custom Event',
@@ -530,6 +567,7 @@ var cssVarsMap = {
     value: 'var(--palegray)',
     description: 'The <code>border-color</code> style of the signature canvas.'
   }],
+  'ZOODUCK-JELLY-SQUARES': [],
   'ZOODUCK-TERMINAL': [{
     name: '--width',
     value: '100%',
@@ -692,10 +730,14 @@ var zooduckCarouselTemplates = Array.from(templates).filter(function (template) 
 var zooduckInputTemplates = Array.from(templates).filter(function (template) {
   return template.content.children[0].nodeName === 'ZOODUCK-INPUT';
 });
+var zooduckJellySquaresTemplates = Array.from(templates).filter(function (template) {
+  return template.content.children[0].nodeName === 'ZOODUCK-JELLY-SQUARES';
+});
 var zooduckTerminalTemplates = Array.from(templates).filter(function (template) {
   return template.content.children[0].nodeName === 'ZOODUCK-TERMINAL';
 });
 buildGrid(zooduckInputTemplates, 'ZOODUCK-INPUT');
+buildGrid(zooduckJellySquaresTemplates, 'ZOODUCK-JELLY-SQUARES');
 buildGrid(zooduckCarouselTemplates, 'ZOODUCK-CAROUSEL');
 buildGrid(zooduckTerminalTemplates, 'ZOODUCK-TERMINAL', true);
 Array.from(document.querySelectorAll('.example')).forEach(function (example) {
